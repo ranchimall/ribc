@@ -8771,35 +8771,35 @@ Bitcoin.Util = {
             return internUpdates
         },
 
-        getProjectList: () => {
-            return Object.keys(floGlobals.appObjects.RIBC.projectMaps)
+        getProjectList: function(){
+            return Object.keys(floGlobals.appObjects.RIBC.projectMap)
         },
 
-        getProjectDetails: (project) => {
+        getProjectDetails: function(project){
             return floGlobals.appObjects.RIBC.projectDetails[project]
         },
 
-        getProjectMap: (project) => {
+        getProjectMap: function(project){
             return floGlobals.appObjects.RIBC.ProjectMap[project]
         },
 
-        getProjectBranches: (project) => {
+        getProjectBranches: function(project){
             return this.manage.findAllBranches(project)
         },
 
-        getTaskDetails: (project, branch, task) => {
+        getTaskDetails: function(project, branch, task){
             return this.manage.readTaskDetails(project, branch, task)
         },
 
-        getTaskStatus: (project, branch, task) => {
+        getTaskStatus: function(project, branch, task){
             return this.manage.readTaskStatus(project, branch, task)
         },
 
-        getInternList: () => {
+        getInternList: function(){
             return floGlobals.appObjects.RIBC.internList;
         },
 
-        getInternRating: (floID) => {
+        getInternRating: function(floID){
             return floGlobals.appObjects.RIBC.internRating[floID];
         },
 
@@ -8889,7 +8889,7 @@ Bitcoin.Util = {
                 if (projectCode in this.projectMap) {
                     return "Project Name already exists";
                 }
-                addBranch(projectCode);
+                this.addBranch(projectCode);
                 return "Project Create: " + projectCode
             },
 
@@ -8909,7 +8909,7 @@ Bitcoin.Util = {
                     return "Startpoint cannot be later than endpoint"
                 }
 
-                var newBranch = addBranch(newProjectCode, newBranchConnection, newStartPoint, newEndPoint);
+                var newBranch = this.addBranch(newProjectCode, newBranchConnection, newStartPoint, newEndPoint);
                 this.projectMap[newProjectCode][newBranch] = this.projectMap[oldProjectCode][oldBranch].slice();
 
 
@@ -9031,7 +9031,7 @@ Bitcoin.Util = {
 
             insertTaskInMap: function (projectCode, branchName, insertPoint) {
                 var lastTasks = [];
-                lastTasks = findLastTaskNumber(projectCode);
+                lastTasks = this.findLastTaskNumber(projectCode);
                 var lastNumber = lastTasks[branchName];
                 var arr = this.projectMap[projectCode][branchName];
                 var addedTaskNumber = lastNumber + 1;
@@ -9126,7 +9126,7 @@ Bitcoin.Util = {
 
 
             addBranch: function (projectCode1, branch, startPoint, mergePoint) {
-                var arr = findAllBranches(projectCode1);
+                var arr = this.findAllBranches(projectCode1);
                 var newBranchName;
 
                 if (arr == false) {
@@ -9168,7 +9168,7 @@ Bitcoin.Util = {
 
             addTaskInMap: function (projectCode, branchName) {
                 var lastTasks = [];
-                lastTasks = findLastTaskNumber(projectCode);
+                lastTasks = this.findLastTaskNumber(projectCode);
                 var lastNumber = lastTasks[branchName];
 
                 var addedTaskNumber = lastNumber + 1;
