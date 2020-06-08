@@ -13217,21 +13217,27 @@
                         btn.classList.add('hide-completely')
                     }
                     privField.addEventListener('keyup', (event) => {
-                        if(privField.value.trim() !== '')
+                        checkInput(event)
+                    })
+                    privField.addEventListener('input', (event) => {
+                        checkInput(event)
+                    })
+                    function checkInput(event){
+                        if (privField.value.trim() !== '')
                             enableBtn('sign_in_btn')
                         else
                             disableBtn('sign_in_btn')
-                            if(event.keyCode === 13 || event.key === 13){
-                            if(privField.value.trim().length > 40){
+                        if (event.keyCode === 13 || event.key === "Enter") {
+                            if (privField.value.trim().length > 40) {
                                 resolve(privField.value.trim())
                                 hidePopup('sign_in')
                                 loader('show')
                             }
-                            else{
+                            else {
                                 showMessage('error', 'Please enter correct private key.')
                             }
                         }
-                    })
+                    }
                     document.getElementById('sign_in_btn').onclick = function(){
                         if(privField.value.trim().length > 40){
                             resolve(privField.value.trim())
