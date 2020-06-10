@@ -11718,8 +11718,8 @@
                         var subAdminOnlyList = []
                         
                         if(isSubAdmin){
-                            generalDataList.push("TaskApplications", "InternAppications")
-                            subAdminOnlyList.push("ApplicationStatus")
+                            generalDataList.push("TaskRequests", "InternRequests")
+                            subAdminOnlyList.push("RequestStatus")
                         }
                         var promises = []
                         for(let data of generalDataList)
@@ -11734,7 +11734,7 @@
                 },
 
                 applyForIntern: function(name, comments = ''){
-                    return floCloudAPI.sendGeneralData([name, comments], "InternAppications")
+                    return floCloudAPI.sendGeneralData([name, comments], "InternRequests")
                 },
         
                 postInternUpdate: function(updates){
@@ -11756,7 +11756,7 @@
                 },
 
                 applyForTask: function(projectCode, branch, task, comments = ''){
-                    return floCloudAPI.sendGeneralData([projectCode, branch, task, comments], "TaskApplications")
+                    return floCloudAPI.sendGeneralData([projectCode, branch, task, comments], "TaskRequests")
                 },
         
                 getProjectList: () => {
@@ -11833,12 +11833,12 @@
                         return "added project details for "+projectCode
                     },
 
-                    setApplicationStatus: function(vectorClock, status){
-                        return floCloudAPI.sendGeneralData({vectorClock, status}, "ApplicationStatus")
+                    setRequestStatus: function(vectorClock, status){
+                        return floCloudAPI.sendGeneralData({vectorClock, status}, "RequestStatus")
                     },
 
-                    getApplicationStatus: function(vectorClock = null){
-                        var filterStr = floDapps.util.getFilterString("ApplicationStatus")
+                    getRequestStatus: function(vectorClock = null){
+                        var filterStr = floDapps.util.getFilterString("RequestStatus")
                         if(vectorClock){
                             for(let data of floGlobals.generalData[filterStr]){
                                 if(data.message.vectorClock === vectorClock)
@@ -11853,18 +11853,18 @@
                         }
                     },
 
-                    getInternApplications: function(ignoreProcessed = true){
-                        var filterStr = floDapps.util.getFilterString("InternAppications")
-                        var internApplications = floGlobals.generalData[filterStr].map(data => {return {floID: data.sender, vectorClock: data.vectorClock, name: data.message[0], comments: data.message[1]}})
+                    getInternRequests: function(ignoreProcessed = true){
+                        var filterStr = floDapps.util.getFilterString("InternRequests")
+                        var internRequests = floGlobals.generalData[filterStr].map(data => {return {floID: data.sender, vectorClock: data.vectorClock, name: data.message[0], comments: data.message[1]}})
                         //filter existing interns
-                        internApplications = internApplications.filter(data => !(data.floID in floGlobals.appObjects.RIBC.internList))
-                        //filter processed applications
-                        var applicationStatus = this.getApplicationStatus()
+                        internRequests = internRequests.filter(data => !(data.floID in floGlobals.appObjects.RIBC.internList))
+                        //filter processed requests
+                        var applicationStatus = this.getRequestStatus()
                         if (ignoreProcessed)
-                            internApplications = internApplications.filter(data => !(data.vectorClock in applicationStatus))
+                            internRequests = internRequests.filter(data => !(data.vectorClock in applicationStatus))
                         else 
-                            internApplications.forEach(data => data.status = applicationStatus[data.vectorClock])
-                        return internApplications
+                            internRequests.forEach(data => data.status = applicationStatus[data.vectorClock])
+                        return internRequests
                     },
         
                     addIntern: function(floID, internName){
@@ -11882,18 +11882,18 @@
                         return "Intern rating Updated";
                     },
 
-                    getTaskApplications: function(ignoreProcessed = true){
-                        var filterStr = floDapps.util.getFilterString("TaskApplications")
-                        var taskApplications = floGlobals.generalData[filterStr].map(data => {return {floID: data.sender, vectorClock: data.vectorClock, projectCode: data.message[0], branch: data.message[1], task: data.message[2], comments: data.message[3]}})
-                        //filter only intern applications
-                        taskApplications = taskApplications.filter(data => data.floID in floGlobals.appObjects.RIBC.internList)
-                        //filter processed applications
-                        var applicationStatus = this.getApplicationStatus()
+                    getTaskRequests: function(ignoreProcessed = true){
+                        var filterStr = floDapps.util.getFilterString("TaskRequests")
+                        var taskRequests = floGlobals.generalData[filterStr].map(data => {return {floID: data.sender, vectorClock: data.vectorClock, projectCode: data.message[0], branch: data.message[1], task: data.message[2], comments: data.message[3]}})
+                        //filter only intern requests
+                        taskRequests = taskRequests.filter(data => data.floID in floGlobals.appObjects.RIBC.internList)
+                        //filter processed requests
+                        var applicationStatus = this.getRequestStatus()
                         if (ignoreProcessed)
-                            taskApplications = taskApplications.filter(data => !(data.vectorClock in applicationStatus))
+                            taskRequests = taskRequests.filter(data => !(data.vectorClock in applicationStatus))
                         else 
-                            taskApplications.forEach(data => data.status = applicationStatus[data.vectorClock])
-                        return taskApplications
+                            taskRequests.forEach(data => data.status = applicationStatus[data.vectorClock])
+                        return taskRequests
                     },
 
                     assignInternToTask: function(floID, projectCode, branch, taskNumber){
@@ -13416,7 +13416,7 @@
                 if(floGlobals.subAdmins.includes(myFloID)){
                     typeOfUser = 'admin'
                     let requestsContainer = document.getElementById('requests_container');
-                    RIBC.manage.getTaskApplications().forEach((app) => {
+                    RIBC.manage.getTaskRequests().forEach((app) => {
                         try{
                             if(!Array.isArray(RIBC.getAssignedInterns(app.projectCode, app.branch, app.task)) && typeof RIBC.getTaskDetails(app.projectCode, app.branch, app.task) !== 'undefined')
                                 frag.appendChild(render.requestCard(app.floID, app.projectCode, app.branch, app.task))
