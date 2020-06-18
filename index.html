@@ -13383,8 +13383,8 @@
                             x = RIBC.getProjectMap(newPList[i])[branch].slice(4);
                             for(let j = 0;j < x.length; j++)
                                 if(RIBC.getTaskStatus(newPList[i], branch, x[j]) === 'incomplete' && Array.isArray(RIBC.getAssignedInterns(newPList[i],branch,x[j])) && RIBC.getAssignedInterns(newPList[i],branch,x[j]).includes(myFloID)){
-                                    currentTaskObj.project = pList[i];
-                                    currentTaskObj.projectName = RIBC.getProjectDetails(pList[i]).projectName;
+                                    currentTaskObj.project = newPList[i];
+                                    currentTaskObj.projectName = RIBC.getProjectDetails(newPList[i]).projectName;
                                     currentTaskObj.pBranch = branch;
                                     currentTaskObj.task = x[j]
                                     break;
