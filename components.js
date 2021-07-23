@@ -30,7 +30,7 @@ smButton.innerHTML = `
     color: var(--accent-color);
 }
 :host([variant='no-outline']) .button{
-    background: rgba(var(--background-color), 1); 
+    background: inherit; 
     color: var(--accent-color);
 }
 :host([disabled]){
