@@ -74,14 +74,19 @@
         </sm-button>
     </article>
     <main id="main_page" class="grid">
-        <header id="main_header">
+        <header id="main_header" class="hide-on-desktop">
             <div id="logo" class="logo svg-margin-right">
+                <svg class="icon rm-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z"/></svg>
                 <h4>RIBC</h4>
             </div>
             <div class="spacer"></div>
             <theme-toggle></theme-toggle>
         </header>
         <nav id="main_nav">
+            <div class="nav-list__item hide-on-mobile">
+                <svg class="icon rm-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z"/></svg>
+                <h4 class="hide-on-mobile nav-list__item_title">RIBC</h4>
+            </div>
             <a id="dashboard_btn" href="#dashboard_page" class="nav-list__item nav-list__item--active interact"
                 title="open dashboard page">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -89,7 +94,9 @@
                     <path
                         d="M13 21V11h8v10h-8zM3 13V3h8v10H3zm6-2V5H5v6h4zM3 21v-6h8v6H3zm2-2h4v-2H5v2zm10 0h4v-6h-4v6zM13 3h8v6h-8V3zm2 2v2h4V5h-4z" />
                 </svg>
-                Dashboard
+                <span class="nav-list__item_title">
+                    Dashboard
+                </span>
             </a>
             <a id="update_panel_btn" href="#updates_page" class="nav-list__item interact" title="show updates">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -97,7 +104,9 @@
                     <path
                         d="M18 10a6 6 0 1 0-12 0v8h12v-8zm2 8.667l.4.533a.5.5 0 0 1-.4.8H4a.5.5 0 0 1-.4-.8l.4-.533V10a8 8 0 1 1 16 0v8.667zM9.5 21h5a2.5 2.5 0 1 1-5 0z" />
                 </svg>
-                Updates
+                <span class="nav-list__item_title">
+                    Updates
+                </span>
             </a>
             <a id="admin_page_btn" href="#admin_page" class="admin-options nav-list__item interact"
                 title="open admin panel">
@@ -106,7 +115,9 @@
                     <path
                         d="M12 14v2a6 6 0 0 0-6 6H4a8 8 0 0 1 8-8zm0-1c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm2.595 7.812a3.51 3.51 0 0 1 0-1.623l-.992-.573 1-1.732.992.573A3.496 3.496 0 0 1 17 14.645V13.5h2v1.145c.532.158 1.012.44 1.405.812l.992-.573 1 1.732-.992.573a3.51 3.51 0 0 1 0 1.622l.992.573-1 1.732-.992-.573a3.496 3.496 0 0 1-1.405.812V22.5h-2v-1.145a3.496 3.496 0 0 1-1.405-.812l-.992.573-1-1.732.992-.572zM18 19.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
                 </svg>
-                Manage
+                <span class="nav-list__item_title">
+                    Manage
+                </span>
             </a>
             <a id="settings_btn" href="#settings_page" class="nav-list__item interact" title="open settings page">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -114,8 +125,11 @@
                     <path
                         d="M2 12c0-.865.11-1.703.316-2.504A3 3 0 0 0 4.99 4.867a9.99 9.99 0 0 1 4.335-2.505 3 3 0 0 0 5.348 0 9.99 9.99 0 0 1 4.335 2.505 3 3 0 0 0 2.675 4.63c.206.8.316 1.638.316 2.503 0 .865-.11 1.703-.316 2.504a3 3 0 0 0-2.675 4.629 9.99 9.99 0 0 1-4.335 2.505 3 3 0 0 0-5.348 0 9.99 9.99 0 0 1-4.335-2.505 3 3 0 0 0-2.675-4.63C2.11 13.704 2 12.866 2 12zm4.804 3c.63 1.091.81 2.346.564 3.524.408.29.842.541 1.297.75A4.993 4.993 0 0 1 12 18c1.26 0 2.438.471 3.335 1.274.455-.209.889-.46 1.297-.75A4.993 4.993 0 0 1 17.196 15a4.993 4.993 0 0 1 2.77-2.25 8.126 8.126 0 0 0 0-1.5A4.993 4.993 0 0 1 17.195 9a4.993 4.993 0 0 1-.564-3.524 7.989 7.989 0 0 0-1.297-.75A4.993 4.993 0 0 1 12 6a4.993 4.993 0 0 1-3.335-1.274 7.99 7.99 0 0 0-1.297.75A4.993 4.993 0 0 1 6.804 9a4.993 4.993 0 0 1-2.77 2.25 8.126 8.126 0 0 0 0 1.5A4.993 4.993 0 0 1 6.805 15zM12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
                 </svg>
-                Settings
+                <span class="nav-list__item_title">
+                    Settings
+                </span>
             </a>
+            <theme-toggle class="hide-on-mobile"></theme-toggle>
         </nav>
         <article id="sub_page_container">
             <section id="dashboard_page" class="page">
@@ -174,7 +188,7 @@
                     </div>
                 </div>
             </section>
-            <section id="settings_page" class="page hide-completely container-card">
+            <section id="settings_page" class="page hide-completely">
                 <section class="grid gap-0-5">
                     <h2 id="username" class="capitalize"></h2>
                     <sm-copy id="user_flo_id"></sm-copy>
@@ -287,10 +301,21 @@
 <!--                 <sm-input id="updates_page__search" placeholder="Search interns, projects">
                     <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg>
                 </sm-input> -->
-                <h5 class="uppercase">Projects</h5>
-                <strip-select id="updates_page__project_selector"></strip-select>
-                <ul id="all_updates_list" class="grid gap-1 observe-empty-state"></ul>
-                <h4 class="empty-state">No related updates</h4>
+                <section id="update_filters_wrapper" class="grid">
+                    <h4>Filter</h4>
+                    <div class="grid gap-0-5">
+                        <h5 class="uppercase">By Projects</h5>
+                        <sm-select id="updates_page__project_selector"></sm-select>
+                    </div>
+                    <div class="grid gap-0-5">
+                        <h5 class="uppercase">By Intern</h5>
+                        <sm-select id="updates_page__intern_selector"></sm-select>
+                    </div>
+                </section>
+                <section id="updates_wrapper">
+                    <ul id="all_updates_list" class="grid gap-1 observe-empty-state"></ul>
+                    <h4 class="empty-state">No related updates</h4>
+                </section>
             </section>
             <section id="all_interns_page" class="page hide-completely container-card">
                 <ul id="all_interns_list" class="grid gap-1"></ul>
@@ -9348,7 +9373,7 @@
                 RIBC.initRIBC(floGlobals.subAdmins.includes(myFloID)).then(result => {
                     console.log(result)
                     renderAllElements()
-                    showPage(window.location.hash)
+                    showPage(window.location.hash, {firstLoad: true})
                     loader('hide')
                 }).catch(error => console.error(error))
             }).catch(error => console.error(error))
@@ -10242,8 +10267,11 @@
                     }
                     break;
                 case 'updates_page':
-                    renderInternUpdates()
-                    renderProjectSelectorOptions()
+                    if(!getRef('updates_page__project_selector').children.length){
+                        renderInternUpdates()
+                        renderProjectSelectorOptions()
+                        renderInternSelectorOptions()
+                    }
                     break;
                 case 'project_explorer':
                     if(params){
@@ -10801,16 +10829,16 @@
             getRef('all_updates_list').append(frag)
         }
         
-        function renderProjectSelectorOptions(params) {
+        function renderProjectSelectorOptions() {
             // Render All the projects inside updates page
             getRef('updates_page__project_selector').innerHTML = ``;
-            const stripOption = createElement('strip-option', {
+            const stripOption = createElement('sm-option', {
                 textContent: 'All',
                 attributes: {value: 'all', active: ''}
             })
             frag.append(stripOption)
             RIBC.getProjectList().reverse().forEach(project => {
-                const stripOption = createElement('strip-option', {
+                const stripOption = createElement('sm-option', {
                     textContent: RIBC.getProjectDetails(project).projectName,
                     attributes: {value: project}
                 })
@@ -10818,21 +10846,72 @@
             })
             getRef('updates_page__project_selector').append(frag)
         }
+        function renderInternSelectorOptions() {
+            // Render All the projects inside updates page
+            getRef('updates_page__intern_selector').innerHTML = ``;
+            const stripOption = createElement('sm-option', {
+                textContent: 'All',
+                attributes: {value: 'all', active: ''}
+            })
+            frag.append(stripOption)
+            const allInterns = Object.entries(RIBC.getInternList()).sort((a, b) => a[1].toLowerCase().localeCompare(b[1].toLowerCase()));
+            allInterns.forEach(intern => {
+                const stripOption = createElement('sm-option', {
+                    textContent: intern[1], // Intern Name
+                    attributes: {value: intern[0]} // Intern FLO ID
+                })
+                frag.append(stripOption)
+            })
+            getRef('updates_page__intern_selector').append(frag)
+        }
 
-        getRef('updates_page__project_selector').addEventListener('change', e => {
-            if(e.detail.value !== 'all'){
-                const allUpdates = RIBC.getInternUpdates()
-                const options = {
-                    keys: ['update.topic'],
-                    threshold: 0.2
-                }
-                const fuse = new Fuse(allUpdates, options)
-                const matchedUpdates = fuse.search(RIBC.getProjectDetails(e.detail.value).projectName).map(v => v.item)
+        async function getUpdatesByProject(projectName, allUpdates) {
+            if(!allUpdates){
+                allUpdates = RIBC.getInternUpdates()
+            }
+            const options = {
+                keys: ['update.topic'],
+                threshold: 0.2
+            }
+            const fuse = new Fuse(allUpdates, options)
+            return fuse.search(projectName).map(v => v.item)
+        }
+
+        async function getUpdatesByIntern(floId, allUpdates) {
+            if(!allUpdates){
+                allUpdates = RIBC.getInternUpdates()
+            }
+            const options = {
+                keys: ['floID'],
+                threshold: 0
+            }
+            const fuse = new Fuse(allUpdates, options)
+            return fuse.search(floId).map(v => v.item)
+        }
+
+        async function renderCorrectUpdates() {
+            const selectedProject = getRef('updates_page__project_selector').value
+            const selectedintern = getRef('updates_page__intern_selector').value
+            if(selectedProject === 'all' && selectedintern === 'all'){
+                renderInternUpdates()
+            }else if(selectedProject !== 'all' && selectedintern === 'all'){
+                const projectName = RIBC.getProjectDetails(selectedProject).projectName
+                const matchedUpdates = await getUpdatesByProject(projectName)
+                renderInternUpdates(matchedUpdates)
+            }else if(selectedProject === 'all' && selectedintern !== 'all'){
+                const matchedUpdates = await getUpdatesByIntern(selectedintern)
                 renderInternUpdates(matchedUpdates)
             }else{
-                renderInternUpdates()
+                const projectName = RIBC.getProjectDetails(selectedProject).projectName
+                let matchedUpdates = await getUpdatesByProject(projectName)
+                matchedUpdates = await getUpdatesByIntern(selectedintern, matchedUpdates)
+                renderInternUpdates(matchedUpdates)
             }
-        })
+        }
+
+        getRef('updates_page__project_selector').addEventListener('change', renderCorrectUpdates)
+        getRef('updates_page__intern_selector').addEventListener('change', renderCorrectUpdates)
+        
 
         function watchThisProject(thisBtn) {
             watchList = JSON.parse(localStorage.getItem('watchList'))
