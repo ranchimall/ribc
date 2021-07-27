@@ -3548,8 +3548,20 @@ customElements.define('sm-select', class extends HTMLElement {
         this.setAttribute('value', val)
     }
 
-    reset() {
-
+    reset(fire = true) {
+        if (this.availableOptions[0]) {
+            const firstElement = this.availableOptions[0];
+            if (this.previousOption) {
+                this.previousOption.classList.remove('check-selected')
+            }
+            firstElement.classList.add('check-selected')
+            this.value = firstElement.getAttribute('value')
+            this.selectedOptionText.textContent = firstElement.textContent
+            this.previousOption = firstElement;
+            if (fire) {
+                this.fireEvent()
+            }
+        }
     }
 
     open() {
@@ -3657,16 +3669,7 @@ customElements.define('sm-select', class extends HTMLElement {
         let slot = this.shadowRoot.querySelector('slot')
         slot.addEventListener('slotchange', e => {
             this.availableOptions = slot.assignedElements()
-            if (this.availableOptions[0]) {
-                let firstElement = this.availableOptions[0];
-                this.previousOption = firstElement;
-                firstElement.classList.add('check-selected')
-                this.value = firstElement.getAttribute('value')
-                this.selectedOptionText.textContent = firstElement.textContent
-                this.availableOptions.forEach((element) => {
-                    element.setAttribute('tabindex', "0");
-                })
-            }
+            this.reset(false)
         });
         this.addEventListener('click', this.handleClick)
         this.addEventListener('keydown', this.handleKeydown)
@@ -3704,13 +3707,13 @@ smOption.innerHTML = `
     display: flex;
 }
 .option{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+    display: grid;
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center;
     min-width: 100%;
+    gap: 0.5rem;
+    grid-template-columns: max-content minmax(0, 1fr);
     padding: 0.8rem 1.2rem;
     cursor: pointer;
     overflow-wrap: break-word;
@@ -3725,7 +3728,6 @@ smOption.innerHTML = `
     opacity: 0;
     height: 1.2rem;
     width: 1.2rem;
-    margin-right: 0.5rem;
     fill: rgba(var(--text-color), 0.8);
 }
 :host(:focus) .option .icon{
@@ -3757,5 +3759,6 @@ customElements.define('sm-option', class extends HTMLElement {
 
     connectedCallback() {
         this.setAttribute('role', 'option')
+        this.setAttribute('tabindex', '0')
     }
 })

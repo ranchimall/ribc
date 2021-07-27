@@ -202,10 +202,6 @@
                         Sign out
                     </sm-button>
                 </section>
-                <section>
-                    <h3>About</h3>
-                    <h5>Version 8.2.5</h5>
-                </section>
             </section>
             <section id="admin_page" class="page hide-completely">
                 <header id="admin_page__header">
@@ -249,7 +245,10 @@
                             </div>
                             <div id="interns" class="list-container"></div>
                         </section>
-                        <div id="requests_container" class="list-container"></div>
+                        <section>
+                            <ul id="requests_list" class="list-container observe-empty-state"></ul>
+                            <h4 class="empty-state">No pending requests</h4>
+                        </section>
                     </sm-tab-panels>
                 </section>
                 <div id="project_editing_panel" class="inner-page container-card">
@@ -311,6 +310,7 @@
                         <h5 class="uppercase">By Intern</h5>
                         <sm-select id="updates_page__intern_selector"></sm-select>
                     </div>
+                    <sm-button onclick="clearFilter()">Clear</sm-button>
                 </section>
                 <section id="updates_wrapper">
                     <ul id="all_updates_list" class="grid gap-1 observe-empty-state"></ul>
@@ -10305,7 +10305,7 @@
                     textContent: projectName
                 });
             },
-            taskCard: function (currentProject, currentBranch, taskNo) {
+            taskCard(currentProject, currentBranch, taskNo) {
                 const card = getRef('timeline_task_card').content.cloneNode(true),
                     assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo),
                     frag = document.createDocumentFragment();
@@ -10430,27 +10430,31 @@
                 mapItems.push(card, card.id, branchContainer.id, mapBody.id)
                 return mapItems;
             },
-            requestCard: function (floId, projectCode, branch, taskNo) {
-                let card = document.createElement('div'), name;
-                card.classList.add('request-card')
+            requestCard(floId, projectCode, branch, taskNo) {
+                let name;
                 name = floId;
                 if (getInternDetails(floId).length !== 0)
                     name = getInternDetails(floId)[0].split(':')[1];
-                card.innerHTML = `<p>
-                                        <b class="capitalize">${name}</b> applied for 
-                                        <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, taskNo).taskTitle}</b> from 
-                                        <b class="capitalize">${branch}</b> of
-                                        <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
-                                    </p>
-                                    <button class="hover reject-app">
-                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+                return createElement('li', {
+                    className: 'request-card',
+                    innerHTML: `<p class="request-card__description">
+                                    <b class="capitalize">${name}</b> applied for 
+                                    <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, taskNo).taskTitle}</b> from 
+                                    <b class="capitalize">${branch}</b> of
+                                    <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
+                                </p>
+                                <div class="flex justify-end">
+                                    <sm-button class="reject-app">
+                                        <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
                                         Reject
-                                    </button>
-                                    <button class="hover accept-app" data-flo-id="${floId}" data-project-code="${projectCode}" data-branch="${branch}" data-task-no="${taskNo}">
+                                    </sm-button>
+                                    <sm-button class="accept-app button__icon--left" data-flo-id="${floId}" data-project-code="${projectCode}" data-branch="${branch}" data-task-no="${taskNo}">
                                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>
                                         Accept
-                                    </button>`;
-                return card;
+                                    </sm-button>
+                                </div>
+                                `
+                })
             },
             internTaskCard(taskObj) {
                 const { uniqueId, projectId, projectName, projectBranch, task } = taskObj
@@ -10499,7 +10503,7 @@
             return internInfo;
         }
 
-        let i = currentProgress = projectIndex = 0, prevProject = '', allInternsList = [], newInternList = [], lastState,
+        let i = 0, allInternsList = [], newInternList = [],
             frag = document.createDocumentFragment(), watchList = [], currentIntern, dashboardProject, currentTaskId,
             typeOfUser = 'general';
 
@@ -10508,14 +10512,14 @@
             let internName = getRef('intern_name_field').value.trim(),
                 internFLOID = getRef('intern_flo_id_field').value.trim();
             if (RIBC.manage.addIntern(internFLOID, internName)) {
-                document.getElementById('interns').append(render.internCard(internName, internFLOID, '1', 'interns'))
+                getRef('interns').append(render.internCard(internName, internFLOID, '1', 'interns'))
                 hidePopup();
                 notify(`${internName} added as an intern.`, 'success')
             }
         }
         function addProjectToList() {
-            let projectName = document.getElementById('project_name_field').value.trim(),
-                projectDescription = document.getElementById('project_description_field').value.trim();
+            let projectName = getRef('project_name_field').value.trim(),
+                projectDescription = getRef('project_description_field').value.trim();
             if (!projectName) {
                 notify('Project name is important!', 'error')
                 return
@@ -10810,24 +10814,6 @@
                 hidePopup()
             }
         }
-
-        function renderInternUpdates(updates) {
-            getRef('all_updates_list').innerHTML = ``;
-            if(!updates){
-                updates = RIBC.getInternUpdates();
-            }
-            updates.forEach((entry) => {
-                const { floID, time, update: { topic, description } } = entry
-                const updateObj = {
-                    internName: getInternDetails(floID)[0].split(':')[1],
-                    time: parseInt(time),
-                    topic,
-                    description
-                }
-                frag.append(render.updateCard(updateObj))
-            })
-            getRef('all_updates_list').append(frag)
-        }
         
         function renderProjectSelectorOptions() {
             // Render All the projects inside updates page
@@ -10889,28 +10875,77 @@
             return fuse.search(floId).map(v => v.item)
         }
 
-        async function renderCorrectUpdates() {
+        let updateStartIndex = 0
+        let updateEndIndex = 0
+        const intersectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    observer.disconnect() 
+                    renderFilteredUpdates({lazyLoad: true})
+                }
+            })
+        },{
+            threshold: 0.3
+        })
+        function renderInternUpdates(options = {}) {
+            let {updates, lazyLoad = false} = options
+            if(!updates){
+                updates = RIBC.getInternUpdates();
+            }
+            if(lazyLoad){
+                updateStartIndex = updateEndIndex
+                updateEndIndex = updates.length > updateEndIndex + 10 ? updateEndIndex + 10 : updates.length
+            }else{
+                intersectionObserver.disconnect()
+                getRef('all_updates_list').innerHTML = ``;
+                updateStartIndex = 0
+                updateEndIndex = updates.length > 10 ? 10 : updates.length
+            }
+            for (let index = updateStartIndex; index < updateEndIndex; index++) {
+                const element = updates[index];
+                const { floID, time, update: { topic, description } } = element
+                const updateObj = {
+                    internName: getInternDetails(floID)[0].split(':')[1],
+                    time: parseInt(time),
+                    topic,
+                    description
+                }
+                frag.append(render.updateCard(updateObj))
+            }
+            getRef('all_updates_list').append(frag)
+            if(getRef('all_updates_list').lastElementChild){
+                intersectionObserver.observe(getRef('all_updates_list').lastElementChild)
+            }
+        }
+
+        async function renderFilteredUpdates(options = {}) {
+            const {lazyLoad = false} = options
             const selectedProject = getRef('updates_page__project_selector').value
             const selectedintern = getRef('updates_page__intern_selector').value
             if(selectedProject === 'all' && selectedintern === 'all'){
-                renderInternUpdates()
+                renderInternUpdates({lazyLoad})
             }else if(selectedProject !== 'all' && selectedintern === 'all'){
                 const projectName = RIBC.getProjectDetails(selectedProject).projectName
                 const matchedUpdates = await getUpdatesByProject(projectName)
-                renderInternUpdates(matchedUpdates)
+                renderInternUpdates({updates: matchedUpdates, lazyLoad})
             }else if(selectedProject === 'all' && selectedintern !== 'all'){
                 const matchedUpdates = await getUpdatesByIntern(selectedintern)
-                renderInternUpdates(matchedUpdates)
+                renderInternUpdates({updates: matchedUpdates, lazyLoad})
             }else{
                 const projectName = RIBC.getProjectDetails(selectedProject).projectName
                 let matchedUpdates = await getUpdatesByProject(projectName)
                 matchedUpdates = await getUpdatesByIntern(selectedintern, matchedUpdates)
-                renderInternUpdates(matchedUpdates)
+                renderInternUpdates({updates: matchedUpdates, lazyLoad})
             }
         }
 
-        getRef('updates_page__project_selector').addEventListener('change', renderCorrectUpdates)
-        getRef('updates_page__intern_selector').addEventListener('change', renderCorrectUpdates)
+        function clearFilter(){
+            getRef('updates_page__project_selector').reset()
+            getRef('updates_page__intern_selector').reset()
+        }
+
+        getRef('updates_page__project_selector').addEventListener('change', renderFilteredUpdates)
+        getRef('updates_page__intern_selector').addEventListener('change', renderFilteredUpdates)
         
 
         function watchThisProject(thisBtn) {
@@ -11146,43 +11181,48 @@
             // admin view
             if (floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'admin'
+                getRef('requests_list').innerHTML = ''
                 RIBC.manage.getTaskRequests().forEach((app) => {
                     try {
                         if (!Array.isArray(RIBC.getAssignedInterns(app.projectCode, app.branch, app.task)) && typeof RIBC.getTaskDetails(app.projectCode, app.branch, app.task) !== 'undefined')
-                            frag.appendChild(render.requestCard(app.floID, app.projectCode, app.branch, app.task))
+                            frag.append(render.requestCard(app.floID, app.projectCode, app.branch, app.task))
                     }
                     catch (error) {
                         console.error(error)
                     }
                 })
-                getRef('requests_container').appendChild(frag)
-                if (getRef('requests_container').children.length === 0)
-                    getRef('requests_container').innerHTML = '<h4 class="padding">Nothing to see here.</h4>'
-                getRef('requests_container').addEventListener('click', (e) => {
+                getRef('requests_list').append(frag)
+                getRef('requests_list').addEventListener('click', (e) => {
+                    function removeRequest(requestCard){
+                        requestCard.animate([
+                            {
+                                transform: 'translateX(0)',
+                                opacity: 1
+                            },
+                            {
+                                transform: 'translateX(-100%)',
+                                opacity: 0
+                            },
+                        ], {
+                            duration: 300,
+                            easing: 'ease'
+                        }).onfinish = () => {
+                            requestCard.remove()
+                        }
+                    }
                     if (e.target.closest('.accept-app')) {
                         let btn = e.target.closest('.accept-app'),
-                            parent = e.target.closest('.request-card');
+                            requestCard = e.target.closest('.request-card');
                         if (RIBC.manage.assignInternToTask(btn.dataset.floId, btn.dataset.projectCode, btn.dataset.branch, btn.dataset.taskNo)) {
                             notify('Intern assinged.', 'success')
-                            parent.classList.add('slide-left')
-                            setTimeout(() => {
-                                parent.remove()
-                            }, 600)
-                            if (getRef('requests_container').children.length === 0)
-                                getRef('requests_container').innerHTML = '<h4 class="padding">Nothing to see here.</h4>'
+                            removeRequest(requestCard)
                         }
                         else {
                             notify('Intern already assinged.', 'error')
                         }
-                    }
-                    if (e.target.closest('.reject-app')) {
-                        let parent = e.target.closest('.request-card');
-                        parent.classList.add('slide-left')
-                        setTimeout(() => {
-                            parent.remove()
-                        }, 400)
-                        if (getRef('requests_container').children.length === 0)
-                            getRef('requests_container').innerHTML = '<h4 class="padding">Nothing to see here.</h4>'
+                    }else if (e.target.closest('.reject-app')) {
+                        let requestCard = e.target.closest('.request-card');
+                        removeRequest(requestCard)
                     }
                 })
 
