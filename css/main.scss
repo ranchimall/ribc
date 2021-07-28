@@ -896,7 +896,7 @@ ul {
     position: absolute;
     top: 0;
     right: 0;
-    margin: 0 2rem;
+    margin: -1rem 1rem 0 1rem;
     list-style: none;
     padding: 0.5rem 0;
     width: max-content;
@@ -928,12 +928,11 @@ ul {
     margin: 1rem 0;
 }
 
-#interns_list {
+#intern_list_popup {
     flex-direction: column;
-    min-width: 20rem;
 }
 
-#interns_list #interns_list_container {
+#intern_list_popup #interns_list_container {
     min-height: 50vh;
     max-height: 50vh;
     overflow-y: auto;
@@ -1067,17 +1066,13 @@ ul {
 #admin_page {
     position: relative;
     display: grid;
-    gap: 1rem;
+    padding: 0;
+    gap: 0;
     height: 100%;
 }
 
-#admin_page__header {
-    gap: 1rem;
-    align-items: center;
-    grid-template-columns: 1fr auto;
-}
-
 #project_editing_panel {
+    position: relative;
     padding: 1rem;
     height: 100%;
     overflow-y: auto;
@@ -1133,6 +1128,7 @@ ul {
     }
     .icon{
         fill: var(--accent-color);
+        margin-left: 0.5rem;
     }
 }
 .fab{
@@ -1140,9 +1136,9 @@ ul {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.8rem;
-    height: 3rem;
-    width: 3rem;
+    padding: 1rem;
+    height: 3.2rem;
+    width: 3.2rem;
     border-radius: 50%;
     background-color: var(--accent-color);
     box-shadow: 0 0.5rem 0.8remrgba(0, 0, 0, 0.3);
@@ -1277,14 +1273,6 @@ ul {
     .hide-page-on-mobile {
         display: none;
     }
-    #admin_page{
-        gap: 0;
-        padding: 0;
-        grid-template-rows: auto 1fr;
-    }
-    #admin_page__header{
-        padding: 1rem;
-    }
 }
 @media only screen and (min-width: 640px) {
     .hide-on-desktop {
@@ -1355,17 +1343,14 @@ ul {
 
     #admin_page {
         grid-template-columns: 18rem minmax(0, 1fr);
-        grid-template-rows: auto 1fr;
-        grid-template-areas: 'admin-header admin-header' '. .';
+        grid-template-rows: 1fr;
     }
-
-    #admin_page__header {
-        grid-area: admin-header;
+    #admin_page__left{
+        background-color: var(--foreground-color);
     }
     #admin_page__left,
     #project_editing_panel{
         border-radius: 0.5rem;
-        background-color: var(--foreground-color);
         box-shadow: 0 0.5rem 1rem -0.5rem rgba(0, 0, 0, 0.3);
     }
 
