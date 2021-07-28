@@ -204,15 +204,12 @@
                 </section>
             </section>
             <section id="admin_page" class="page hide-completely">
-                <header id="admin_page__header">
-                    <div class="grid">
-                        <h4>Manage projects and intern assignments</h4>
-                        <p>Don't forget to commit changes</p>
-                    </div>
+                <header id="admin_page__header" class="grid">
+                    <p>Don't forget to commit changes</p>
                     <sm-button id="update_project_info_btn" variant="primary" onclick="commitToChanges()"
                         title="commit to changes">Commit</sm-button>
                 </header>
-                <section id="admin_page__left" class="flex direction-column container-card">
+                <section id="admin_page__left" class="flex direction-column">
                     <sm-tab-header target="admin_tabs">
                         <sm-tab>Projects</sm-tab>
                         <sm-tab>Interns</sm-tab>
@@ -251,7 +248,7 @@
                         </section>
                     </sm-tab-panels>
                 </section>
-                <section id="project_editing_panel" class="inner-page container-card hide-on-mobile">
+                <section id="project_editing_panel" class="inner-page hide-on-mobile">
                     <h2 id="editing_panel__title"></h2>
                     <p id="editing_panel__description"></p>
                     <div id="branch_container"></div>
@@ -328,7 +325,7 @@
                     <h4 class="padding intern-option hide-completely">Other projects</h4>
                     <div></div>
                 </div>
-                <section id="right" class="grid gap-0-5 hide-page-on-mobile content-page">
+                <section id="right" class="grid gap-0-5 hide-on-mobile content-page">
                     <header class="flex space-between align-center">
                         <h2></h2>
                         <button id="watch_project_btn" title="add this project to your watch list"
@@ -10234,10 +10231,12 @@
             }
         }
 
+        let lastPage
         function showPage(targetPage, options = {}) {
             const { firstLoad, hashChange } = options
             let pageId
             let searchParams
+            let params
             if (targetPage === '') {
                 pageId = 'dashboard_page'
             }
@@ -10251,16 +10250,17 @@
                 }
             }
             if (!appPages.includes(pageId)) return
-            document.querySelector('.page:not(.hide-completely)')?.classList.add('hide-completely')
-            document.querySelector('.nav-list__item--active')?.classList.remove('nav-list__item--active')
-            const targetListItem = document.querySelector(`.nav-list__item[href="#${pageId}"]`)
-            targetListItem?.classList.add('nav-list__item--active')
-
-            let params
+            
             if (searchParams) {
                 const urlSearchParams = new URLSearchParams('?' + searchParams);
                 params = Object.fromEntries(urlSearchParams.entries());
             }
+            if(pageId !== lastPage){
+                document.querySelector('.page:not(.hide-completely)')?.classList.add('hide-completely')
+            }
+            document.querySelector('.nav-list__item--active')?.classList.remove('nav-list__item--active')
+            const targetListItem = document.querySelector(`.nav-list__item[href="#${pageId}"]`)
+            targetListItem?.classList.add('nav-list__item--active')
             switch (pageId) {
                 case 'dashboard_page':
                     if (JSON.parse(localStorage.getItem('watchList')).length) {
@@ -10280,8 +10280,11 @@
                 case 'project_explorer':
                     if(params){
                         showProjectInfo(params.projectId)
+                        getRef('left').classList.add('hide-on-mobile')
+                        getRef('right').classList.remove('hide-on-mobile')
                     }else{
-
+                        getRef('left').classList.remove('hide-on-mobile')
+                        getRef('right').classList.add('hide-on-mobile')
                     }
                     break;
                 case 'admin_page':
@@ -10296,6 +10299,7 @@
                     break;
             }
             getRef(pageId).classList.remove('hide-completely')
+            lastPage = pageId
         }
 
     </script>
@@ -10374,7 +10378,7 @@
             },
             branchBtn(projectCode, branch) {
                 return createElement('button', {
-                    className: 'branch-btn',
+                    className: 'branch-btn uppercase',
                     attributes: { 'data-project-code': projectCode },
                     textContent: branch
                 });
@@ -10558,15 +10562,9 @@
 
         // opens a popup containing various project information
         function showProjectInfo(projectId) {
-            const allProjects = document.getElementById('left').querySelectorAll('.project-card');
+            const allProjects = getRef('left').querySelectorAll('.project-card');
             Array.from(allProjects).find(project => project.classList.contains('project-card--active'))?.classList.remove('project-card--active')
             Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))?.classList.add('project-card--active')
-            if (window.innerWidth < 640) {
-                document.querySelectorAll('.list-container').forEach((item) => {
-                    item.classList.add('hide-page-on-mobile')
-                })
-                getRef('right').classList.remove('hide-page-on-mobile')
-            }
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('right').firstElementChild.children[0].textContent = projectName; // project name
             if (JSON.parse(localStorage.getItem('watchList')).includes(projectId)) {
@@ -10755,15 +10753,6 @@
                 pages.classList.add('hide-completely');
             });
             thisPage.classList.remove('hide-completely');
-        }
-
-        function showListCont(container) {
-            if (window.innerWidth < 640) {
-                document.querySelectorAll('.content-page').forEach((container) => {
-                    container.classList.add('hide-page-on-mobile')
-                })
-                document.getElementById(container).classList.remove('hide-completely', 'hide-page-on-mobile');
-            }
         }
 
         function logout() {

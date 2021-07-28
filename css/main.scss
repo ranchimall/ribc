@@ -24,6 +24,7 @@ body {
         --background-color: 246, 246, 246;
         --foreground-color: white;
         --danger-color: red;
+        scrollbar-width: thin;
     }
 
     color: rgba(var(--text-color), 1);
@@ -728,6 +729,7 @@ ul {
     font-size: 1rem;
     margin-top: 0.5rem;
     text-transform: capitalize;
+    max-width: 65ch;
 }
 
 .update__sender {
@@ -803,6 +805,9 @@ ul {
     border-radius: 0.2rem;
     margin: 0.5rem 0.5rem 0.5rem 0;
     user-select: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
 }
 
 .active-branch {
@@ -911,7 +916,11 @@ ul {
     }
 }
 
-.temp-task {}
+.temp-task {
+    .cancel-task-button{
+        margin-right: 0.5rem;
+    }
+}
 
 #branch_container {
     display: flex;
@@ -1062,10 +1071,9 @@ ul {
 }
 
 #admin_page__header {
-    display: grid;
-    gap: 0 1rem;
-    grid-template-columns: 1fr auto;
+    gap: 1rem;
     align-items: center;
+    grid-template-columns: 1fr auto;
 }
 
 #project_editing_panel {
@@ -1191,6 +1199,7 @@ ul {
     #admin_page{
         gap: 0;
         padding: 0;
+        grid-template-rows: auto 1fr;
     }
     #admin_page__header{
         padding: 1rem;
@@ -1256,7 +1265,7 @@ ul {
     }
 
     #dashboard_page {
-        grid-template-columns: 3fr 1fr;
+        grid-template-columns: 3fr 18rem;
     }
 
     #dashboard_page #status_map_container {
@@ -1271,6 +1280,12 @@ ul {
 
     #admin_page__header {
         grid-area: admin-header;
+    }
+    #admin_page__left,
+    #project_editing_panel{
+        border-radius: 0.5rem;
+        background-color: var(--foreground-color);
+        box-shadow: 0 0.5rem 1rem -0.5rem rgba(0, 0, 0, 0.3);
     }
 
     #edit_data_fig {
