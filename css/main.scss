@@ -377,7 +377,7 @@ ul {
     gap: 1rem;
     align-items: center;
     position: sticky;
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1rem;
     background: var(--foreground-color);
     z-index: 1;
 }
@@ -564,15 +564,6 @@ ul {
     display: block;
 }
 
-.hide-on-mobile,
-.hide-page-on-mobile {
-    display: none;
-}
-
-.hide-on-desktop {
-    display: initial;
-}
-
 .no-transformations {
     -webkit-transform: none !important;
     transform: none !important;
@@ -670,9 +661,6 @@ ul {
     display: grid;
     position: relative;
     padding: 1rem;
-    b {
-        font-weight: 500;
-    }
     sm-button{
         --padding: 0.5rem 0.8rem;
     }
@@ -832,15 +820,15 @@ ul {
     grid-template-areas: 'status title options'
         'status interns interns'
         'status description description';
+    align-content: flex-start;
     padding: 1rem;
     gap: 0.5rem;
-    align-items: center;
     border-radius: 0.5rem;
     background: rgba(var(--text-color), 0.02);
     sm-checkbox {
         grid-area: status;
         align-self: flex-start;
-        padding: 0.5rem 0.5rem 0.5rem 0;
+        padding: 0.2rem 0.5rem 0.5rem 0;
     }
     h4 {
         font-weight: 500;
@@ -1195,17 +1183,22 @@ ul {
 }
 // 
 
+@media only screen and (max-width: 640px) {
+    .hide-on-mobile,
+    .hide-page-on-mobile {
+        display: none;
+    }
+    #admin_page{
+        gap: 0;
+        padding: 0;
+    }
+    #admin_page__header{
+        padding: 1rem;
+    }
+}
 @media only screen and (min-width: 640px) {
     .hide-on-desktop {
         display: none !important;
-    }
-
-    .hide-on-mobile {
-        display: flex;
-    }
-
-    .hide-page-on-mobile {
-        display: grid;
     }
 
     sm-popup {
@@ -1342,6 +1335,20 @@ ul {
         height: 100%;
         overflow-y: auto;
         grid-area: updates;
+    }
+    #all_interns_list{
+        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(14rem ,1fr));
+        .intern-card{
+            gap: 1rem 0.5rem;
+            padding: 1.5rem;
+            grid-template-columns: 1fr;
+            border-radius: 0.5rem;
+            background-color: var(--foreground-color);
+            &__initials{
+                grid-column: 1/3;
+            }
+        }
     }
 }
 

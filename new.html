@@ -168,7 +168,7 @@
                                 <path
                                     d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" />
                             </svg>
-                            <h3>Leaderboard</h3>
+                            <h4>Leaderboard</h4>
                             <a id="all_interns_btn" href="#all_interns_page" class="button">All</a>
                         </div>
                         <div id="best_interns"></div>
@@ -251,7 +251,7 @@
                         </section>
                     </sm-tab-panels>
                 </section>
-                <div id="project_editing_panel" class="inner-page container-card">
+                <section id="project_editing_panel" class="inner-page container-card hide-on-mobile">
                     <h2 id="editing_panel__title"></h2>
                     <p id="editing_panel__description"></p>
                     <div id="branch_container"></div>
@@ -294,7 +294,7 @@
                             Delete
                         </li>
                     </ul>
-                </div>
+                </section>
             </section>
             <section id="updates_page" class="page hide-completely">
 <!--                 <sm-input id="updates_page__search" placeholder="Search interns, projects">
@@ -317,10 +317,11 @@
                     <h4 class="empty-state">No related updates</h4>
                 </section>
             </section>
-            <section id="all_interns_page" class="page hide-completely container-card">
-                <ul id="all_interns_list" class="grid gap-1"></ul>
+            <section id="all_interns_page" class="page hide-completely">
+                <h2>Interns</h2>
+                <ul id="all_interns_list" class="grid"></ul>
             </section>
-            <section id="project_explorer" class="page hide-completely container-card">
+            <section id="project_explorer" class="page hide-completely">
                 <div id="left" class="list-container">
                     <h4 class="padding intern-option hide-completely">My projects</h4>
                     <div></div>
@@ -351,13 +352,13 @@
         <h4 class="admin-options hide-completely">Update Rating</h4>
         <div id="update_intern_score">
             <svg class="icon gold-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/></svg>
-            <h4 id="intern_info__score">Points</h4>
-            <sm-button class="admin-options hide-completely" title="increase intern score"
-                onclick="changeScore(1)">
+            <h4 id="intern_info__score"></h4>
+            <sm-button id="reduce_score_button" class="admin-options hide-completely" title="increase intern score"
+                onclick="changeScore(-1)">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11h14v2H5z"/></svg>
             </sm-button>
-            <sm-button class="admin-options hide-completely" title="decrease intern score"
-                onclick="changeScore(-1)">
+            <sm-button id="increase_score_button" class="admin-options hide-completely" title="decrease intern score"
+                onclick="changeScore(1)">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></svg>
             </sm-button>
         </div>
@@ -10267,11 +10268,14 @@
                     }
                     break;
                 case 'updates_page':
+                    renderInternUpdates()
                     if(!getRef('updates_page__project_selector').children.length){
-                        renderInternUpdates()
                         renderProjectSelectorOptions()
                         renderInternSelectorOptions()
                     }
+                    break;
+                case 'all_interns_page':
+                    // renderAllInterns()
                     break;
                 case 'project_explorer':
                     if(params){
@@ -10283,6 +10287,11 @@
                 case 'admin_page':
                     if (params) {
                         editProjectInfo(params.projectId)
+                        getRef('admin_page__left').classList.add('hide-on-mobile')
+                        getRef('project_editing_panel').classList.remove('hide-on-mobile')
+                    }else{
+                        getRef('admin_page__left').classList.remove('hide-on-mobile')
+                        getRef('project_editing_panel').classList.add('hide-on-mobile')
                     }
                     break;
             }
@@ -10541,6 +10550,9 @@
             getRef('intern_info').children[0].textContent = intern.children[1].textContent; // intern name
             getRef('intern_info__flo_id').value = currentIntern = intern.dataset.internId; // intern 
             getRef('intern_info__score').textContent = intern.children[2].textContent; // points earned by intern
+            if(parseInt(intern.children[2].textContent) === 1){
+                getRef('reduce_score_button').disabled = true;
+            }
             showPopup('intern_info');
         }
 
@@ -10718,9 +10730,12 @@
         function commitToChanges() {
             getConfirmation("Do you want to commit to changes?").then((result) => {
                 if (result) {
-                    RIBC.manage.updateObjects()
-                    notify('Changes saved.', 'success')
-                    renderAllElements()
+                    RIBC.manage.updateObjects().then(res => {
+                        notify('Changes saved.', 'success')
+                        renderAllElements()
+                    }).catch(err => {
+                        console.error(err)
+                    })
                 }
             })
         }
@@ -10779,25 +10794,29 @@
 
         function populateIntens() {
             allInternsList = RIBC.getInternList();
-            let internsPopup = document.getElementById('interns_list_container');
             for (intern in allInternsList) {
-                frag.appendChild(render.internCard(allInternsList[intern], intern, RIBC.getInternRating(intern)))
+                frag.append(render.internCard(allInternsList[intern], intern, RIBC.getInternRating(intern)))
             }
-            internsPopup.innerHTML = ''
-            internsPopup.appendChild(frag)
+            getRef('interns_list_container').innerHTML = ''
+            getRef('all_interns_list').innerHTML = ''
+            const fragClone = frag.cloneNode(true)
+            getRef('interns_list_container').append(frag)
+            getRef('all_interns_list').append(fragClone)
         }
 
         function changeScore(scoreUpdate) {
             let score = parseInt(getRef('intern_info__score').textContent)
-            if (score === 1 && scoreUpdate === -1) {
-                parent.children[3].disabled = true;
-                return;
-            }
             score += scoreUpdate;
             getRef('intern_info__score').textContent = score
+            document.querySelectorAll(`[data-intern-id="${currentIntern}"]`).forEach(internCard => {
+                internCard.querySelector('.intern-card__score').textContent = score
+            })
             if (score > 0) {
-                parent.children[3].disabled = false;
+                getRef('reduce_score_button').disabled = false;
                 RIBC.manage.updateInternRating(currentIntern, scoreUpdate)
+            }
+            if (score === 1 && scoreUpdate === -1) {
+                getRef('reduce_score_button').disabled = true;
             }
         }
 
