@@ -865,9 +865,12 @@ ul {
   flex-direction: column;
 }
 
-#intern_list_popup #interns_list_container {
-  min-height: 50vh;
-  max-height: 50vh;
+#intern_search_field {
+  margin-bottom: 1rem;
+}
+
+#intern_list_container {
+  height: 100%;
   overflow-y: auto;
 }
 
@@ -949,18 +952,18 @@ ul {
   border-radius: 0.5rem;
 }
 
-#right {
+#project_explorer__right {
   align-items: flex-start;
   align-content: flex-start;
   padding: 1rem;
 }
 
-#right div:first-of-type h2 {
+#project_explorer__right div:first-of-type h2 {
   flex: 1;
   margin: 0.4rem 0;
 }
 
-#right div:first-of-type button {
+#project_explorer__right div:first-of-type button {
   border: 1px solid rgba(var(--text-color), 0.06);
 }
 
@@ -981,6 +984,10 @@ ul {
   padding: 1rem;
   height: 100%;
   overflow-y: auto;
+}
+
+#editing_panel__title {
+  margin-bottom: 1rem;
 }
 
 .fab-actions {
@@ -1239,7 +1246,7 @@ ul {
   }
 
   #dashboard_page {
-    grid-template-columns: 3fr 18rem;
+    grid-template-columns: 3fr 24rem;
   }
 
   #dashboard_page #status_map_container {
@@ -1291,7 +1298,7 @@ ul {
     font-size: 0.9rem;
   }
 
-  #project_explorer #right {
+  #project_explorer #project_explorer__right {
     grid-area: right;
     height: 100%;
     overflow-y: auto;
@@ -1340,6 +1347,10 @@ ul {
   }
   #all_interns_list .intern-card__initials {
     grid-column: 1/3;
+  }
+
+  #intern_list_popup {
+    --height: 80vh;
   }
 }
 @media only screen and (min-width: 1280px) {

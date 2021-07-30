@@ -296,7 +296,8 @@
                 </section>
             </section>
             <section id="updates_page" class="page hide-completely">
-                <section id="update_filters_wrapper" class="grid">
+                <sm-button class="hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</sm-button>
+                <section id="update_filters_wrapper" class="grid hide-on-mobile">
                     <h4>Filter</h4>
                     <div class="grid gap-0-5">
                         <h5 class="uppercase">By Projects</h5>
@@ -330,17 +331,16 @@
                     <h4 class="padding intern-option hide-completely">Other projects</h4>
                     <div></div>
                 </div>
-                <section id="right" class="grid gap-0-5 hide-on-mobile content-page">
+                <section id="project_explorer__right" class="grid gap-0-5 hide-on-mobile">
                     <header class="flex space-between align-center">
-                        <h2></h2>
-                        <button id="watch_project_btn" title="add this project to your watch list"
+                        <h2 id="project_explorer__project_title"></h2>
+                        <sm-button id="watch_project_btn" title="add this project to your watch list"
                             onclick="watchThisProject(this)">
                             Watch
-                        </button>
+                        </sm-button>
                     </header>
-                    <p class="admin_project_description"></p>
-                    <div id="explorer_branch_container">
-                    </div>
+                    <p class="project_explorer__project_description"></p>
+                    <div id="explorer_branch_container"></div>
                     <h4></h4>
                     <div id="explorer_task_list"></div>
                 </section>
@@ -384,7 +384,7 @@
                     d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
             </svg>
         </sm-input>
-        <ul id="interns_list_container" class="observe-empty-state"></ul>
+        <ul id="intern_list_container" class="observe-empty-state"></ul>
         <h4 class="empty-state">No intern found</h4>
     </sm-popup>
 
@@ -10095,6 +10095,9 @@
 
         //Function for displaying toast notifications. pass in error for mode param if you want to show an error.
         function notify(message, mode, options = {}) {
+            if(mode === 'error'){
+                console.error(message)
+            }
             const { pinned = false, sound = false } = options
             let icon
             switch (mode) {
@@ -10269,10 +10272,10 @@
                     if(params){
                         showProjectInfo(params.projectId)
                         getRef('left').classList.add('hide-on-mobile')
-                        getRef('right').classList.remove('hide-on-mobile')
+                        getRef('project_explorer__right').classList.remove('hide-on-mobile')
                     }else{
                         getRef('left').classList.remove('hide-on-mobile')
-                        getRef('right').classList.add('hide-on-mobile')
+                        getRef('project_explorer__right').classList.add('hide-on-mobile')
                     }
                     break;
                 case 'admin_page':
@@ -10514,7 +10517,7 @@
             return internInfo;
         }
 
-        let i = 0, allInternsList = [], newInternList = [],
+        let allInternsList = [], highPerformingInterns = [],
             frag = document.createDocumentFragment(), watchList = [], currentIntern, dashboardProject, currentTaskId,
             typeOfUser = 'general';
 
@@ -10564,20 +10567,20 @@
             Array.from(allProjects).find(project => project.classList.contains('project-card--active'))?.classList.remove('project-card--active')
             Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))?.classList.add('project-card--active')
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
-            getRef('right').firstElementChild.children[0].textContent = projectName; // project name
+            getRef('project_explorer__project_title').textContent = projectName; // project name
             if (JSON.parse(localStorage.getItem('watchList')).includes(projectId)) {
-                getRef('right').firstElementChild.children[1].textContent = 'watching';
+                getRef('watch_project_btn').textContent = 'watching';
             }
             else {
-                getRef('right').firstElementChild.children[1].textContent = 'Watch';
+                getRef('watch_project_btn').textContent = 'Watch';
             }
-            getRef('right').children[1].textContent = projectDescription;
-            getRef('right').children[2].innerHTML = ``;
+            getRef('project_explorer__project_description').textContent = projectDescription;
+            getRef('explorer_branch_container').innerHTML = ``;
             RIBC.getProjectBranches(projectId).forEach((branch) => {
                 frag.appendChild(render.branchBtn(projectId, branch))
             })
-            getRef('right').children[2].appendChild(frag);
-            getRef('right').children[2].children[0].click()
+            getRef('explorer_branch_container').append(frag);
+            getRef('explorer_branch_container').children[0].click()
         }
 
         let currentBranch = 'mainLine',
@@ -10763,7 +10766,7 @@
             })
         }
 
-        document.getElementById('interns_list_container').addEventListener('click', (event) => {
+        document.getElementById('intern_list_container').addEventListener('click', (event) => {
             if (event.target.closest('.intern-card')) {
                 let floid = event.target.closest('.intern-card').dataset.internId;
                 if (RIBC.manage.assignInternToTask(floid, currentProject, currentBranch, currentTask.id)) {
@@ -10782,7 +10785,7 @@
 
         function renderAllInterns() {
             getRef('all_interns_list').innerHTML = ''
-            getRef('all_interns_list').append(filterInterns(''))
+            getRef('all_interns_list').append(filterInterns('', {sortByRating: true}))
         }
 
         function changeScore(scoreUpdate) {
@@ -11022,7 +11025,7 @@
                     if (localStorage.getItem('requests') === null)
                         localStorage.setItem('requests', JSON.stringify(allRequests))
                     btn.textContent = 'Applied'
-                    getRef(btn).disabled = true
+                    btn.disabled = true
                     RIBC.applyForTask(btn.dataset.projectCode, btn.dataset.branch, btn.dataset.taskNo)
                         .then((result) => {
                             notify('', 'Applied sucessfully.')
@@ -11076,6 +11079,10 @@
                 }, 0);
             }
         }
+
+        function toggleFilter(){
+            getRef('update_filters_wrapper').classList.toggle('hide-on-mobile')
+        }
         // Event listeners
 
         document.getElementById('best_interns').addEventListener('click', (event) => {
@@ -11098,19 +11105,16 @@
         document.addEventListener('popupopened', e => {
             switch(e.detail.popup.id){
                 case 'intern_list_popup':
-                    allInternsList = RIBC.getInternList();
-                    for (intern in allInternsList) {
-                        frag.append(render.internCard(allInternsList[intern], intern, RIBC.getInternRating(intern)))
-                    }
-                    getRef('interns_list_container').innerHTML = ''
-                    getRef('interns_list_container').append(frag)
+                    getRef('intern_list_container').innerHTML = ''
+                    getRef('intern_list_container').append(filterInterns(''))
                 break;
             }
         })
         document.addEventListener('popupclosed', e => {
             switch(e.detail.popup.id){
                 case 'intern_list_popup':
-                    getRef('interns_list_container').innerHTML = ''
+                    getRef('intern_list_container').innerHTML = ''
+                    getRef('intern_search_field').value = ''
                 break;
             }
         })
@@ -11126,11 +11130,15 @@
 
 
             allInternsList = RIBC.getInternList();
-            newInternList = [];
+            highPerformingInterns = [];
             for (let intern in allInternsList) {
-                newInternList.push([intern, allInternsList[intern], RIBC.getInternRating(intern)])
+                highPerformingInterns.push({
+                    floId: intern,
+                    internName: allInternsList[intern],
+                    rating: RIBC.getInternRating(intern)
+                })
             }
-            newInternList.sort((a, b) => a[2] - b[2]);
+            highPerformingInterns.sort((a, b) => b.rating - a.rating);
 
             getRef('watch_project_btn').classList.remove('hide-completely')
 
@@ -11287,9 +11295,9 @@
 
             document.getElementById('best_interns').innerHTML = ``;
             let limit = 4;
-            newInternList.reverse()
             for (let p = 0; p < limit; p++) {
-                frag.appendChild(render.internCard(newInternList[p][1], newInternList[p][0], newInternList[p][2], 'best_interns'))
+                const {internName, floId, rating} = highPerformingInterns[p]
+                frag.append(render.internCard(internName, floId, rating))
             }
             document.getElementById('best_interns').appendChild(frag)
 
@@ -11370,42 +11378,50 @@
 
             console.log(typeOfUser)
         }
-        function filterInterns(searchKey){
-                const allInterns = RIBC.getInternList()
-                const arrayOfInterns = []
-                for (const intern in allInterns) {
-                    arrayOfInterns.push({
-                        floId: intern,
-                        internName: allInternsList[intern]
-                    })
-                }
-                arrayOfInterns.sort((a,b) => a.internName.toLowerCase().localeCompare(b.internName.toLowerCase()))
-                if(searchKey === ''){
-                    arrayOfInterns.forEach(({internName, floId}) => {
+        function filterInterns(searchKey, options = {}){
+            const {sortByRating = false} = options
+            const allInterns = RIBC.getInternList()
+            const arrayOfInterns = []
+            for (const intern in allInterns) {
+                arrayOfInterns.push({
+                    floId: intern,
+                    internName: allInternsList[intern]
+                })
+            }
+            arrayOfInterns.sort((a,b) => a.internName.toLowerCase().localeCompare(b.internName.toLowerCase()))
+            if(searchKey === ''){
+                if(sortByRating){
+                    highPerformingInterns.forEach(({internName, floId}) => {
                         frag.append(render.internCard(internName, floId, RIBC.getInternRating(floId)))
                     })
                 }else{
-                    const options = {
-                        keys: ['internName'],
-                        threshold: 0.2
-                    }
-                    const fuse = new Fuse(arrayOfInterns, options)
-                    fuse.search(searchKey).map(v => v.item).forEach(({internName, floId}) => {
+                    arrayOfInterns.forEach(({internName, floId}) => {
                         frag.append(render.internCard(internName, floId, RIBC.getInternRating(floId)))
                     })
+
                 }
-                return frag
+            }else{
+                const options = {
+                    keys: ['internName'],
+                    threshold: 0.2
+                }
+                const fuse = new Fuse(arrayOfInterns, options)
+                fuse.search(searchKey).map(v => v.item).forEach(({internName, floId}) => {
+                    frag.append(render.internCard(internName, floId, RIBC.getInternRating(floId)))
+                })
             }
-            const  searchInternPopup = debounce((e) => {
-                getRef('interns_list_container').innerHTML = ''
-                getRef('interns_list_container').append(filterInterns(e.target.value.trim()))
-            }, 150)
-            const  searchInternPage = debounce((e) => {
-                getRef('all_interns_list').innerHTML = ''
-                getRef('all_interns_list').append(filterInterns(e.target.value.trim()))
-            }, 150)
-            getRef('intern_search_field').addEventListener('input', searchInternPopup)
-            getRef('interns_page__search').addEventListener('input', searchInternPage)
+            return frag
+        }
+        const  searchInternPopup = debounce((e) => {
+            getRef('intern_list_container').innerHTML = ''
+            getRef('intern_list_container').append(filterInterns(e.target.value.trim()))
+        }, 150)
+        const  searchInternPage = debounce((e) => {
+            getRef('all_interns_list').innerHTML = ''
+            getRef('all_interns_list').append(filterInterns(e.target.value.trim(), {sortByRating: true}))
+        }, 150)
+        getRef('intern_search_field').addEventListener('input', searchInternPopup)
+        getRef('interns_page__search').addEventListener('input', searchInternPage)
     </script>
 </body>
 
