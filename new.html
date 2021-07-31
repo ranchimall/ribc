@@ -40,6 +40,7 @@
             generalVC: {}
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.0/dist/purify.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script>
 </head>
 
@@ -152,7 +153,8 @@
                             </svg>
                         </button>
                     </div>
-                    <div id="status_map"></div>
+                    <div id="status_map" class="observe-empty-state"></div>
+                    <h4 class="empty-state">No project added to watch list.</h4>
                 </div>
                 <section id="intern_view" class="hide-completely intern-option">
                     <h2>My tasks</h2>
@@ -190,6 +192,7 @@
             <section id="settings_page" class="page hide-completely">
                 <section class="grid gap-0-5">
                     <h2 id="username" class="capitalize"></h2>
+                    <div id="user_role"></div>
                     <sm-copy id="user_flo_id"></sm-copy>
                     <sm-button id="logout" variant="primary" class="justify-self-start"
                         onclick="logout()">
@@ -294,6 +297,7 @@
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
                     </button>
                 </section>
+                <div id="fab_backdrop" onclick="toggleFab()"></div>
             </section>
             <section id="updates_page" class="page hide-completely">
                 <sm-button class="hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</sm-button>
@@ -339,7 +343,7 @@
                             Watch
                         </sm-button>
                     </header>
-                    <p class="project_explorer__project_description"></p>
+                    <p id="project_explorer__project_description"></p>
                     <div id="explorer_branch_container"></div>
                     <h4></h4>
                     <div id="explorer_task_list"></div>
@@ -589,7 +593,7 @@
     </template>
     <template id="task_list_item_template">
         <li class="task-list-item">
-            <sm-checkbox></sm-checkbox>
+            <sm-checkbox title="Mark this task as completed"></sm-checkbox>
             <h4 class="title capitalize"></h4>
             <button class="task-option">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -9979,7 +9983,7 @@
             if (textContent)
                 elem.textContent = textContent
             if (innerHTML)
-                elem.innerHTML = innerHTML
+                elem.innerHTML = DOMPurify.sanitize(innerHTML)
             return elem
         }
 
@@ -10298,7 +10302,6 @@
 
     </script>
     <script id="UI_functions">
-
         // Method object for creating various UI elements
         const render = {
             projectCard(projectName, projectCode, isAdmin = false) { // creates cards containing project information
@@ -10392,9 +10395,9 @@
                 return thisIntern;
             },
             taskListItem(taskNo) {
-                let card = getRef('task_list_item_template').content.cloneNode(true),
-                    assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo),
-                    frag = document.createDocumentFragment()
+                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo)
+                const card = getRef('task_list_item_template').content.cloneNode(true)
+                const frag = document.createDocumentFragment()
                 const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, taskNo)
                 if (RIBC.getTaskStatus(currentProject, currentBranch, taskNo) !== 'incomplete') {
                     card.querySelector('sm-checkbox').setAttribute('checked', '')
@@ -10429,10 +10432,10 @@
                 timeline.textContent = 'Timeline';
                 mapBody.id = `${projectCode}_map_body`
                 RIBC.getProjectBranches(projectCode).forEach((branch) => {
-                    frag.appendChild(render.branchBtn(projectCode, branch))
+                    frag.append(render.branchBtn(projectCode, branch))
                 })
-                branchContainer.appendChild(frag);
-                header.appendChild(title)
+                branchContainer.append(frag);
+                header.append(title)
                 card.append(header, para, branchContainer, timeline, mapBody)
                 mapItems.push(card, card.id, branchContainer.id, mapBody.id)
                 return mapItems;
@@ -10466,21 +10469,21 @@
             internTaskCard(taskObj) {
                 const { uniqueId, projectId, projectName, projectBranch, task } = taskObj
                 const { taskTitle, taskDescription } = RIBC.getTaskDetails(projectId, projectBranch, task)
-                const card = document.createElement('li')
-                card.className = "task-card"
-                card.dataset.uniqueId = uniqueId
-                card.innerHTML = `
-                    <div class="task__header">
-                        <h5 class="task__project-title">${projectName}</h5>
-                        <h5 class="task__title">${taskTitle}</h5>
-                        <sm-button class="send-update-button">
-                            <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
-                            Post
-                        </sm-button>
-                    </div>
-                    <p class="task__description">${taskDescription}</p>
-                `
-                return card
+                return createElement('li', {
+                    className: "task-card",
+                    attributes: {uniqueId},
+                    innerHTML: `
+                        <div class="task__header">
+                            <h5 class="task__project-title">${projectName}</h5>
+                            <h5 class="task__title">${taskTitle}</h5>
+                            <sm-button class="send-update-button">
+                                <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
+                                Post
+                            </sm-button>
+                        </div>
+                        <p class="task__description">${taskDescription}</p>
+                    `
+                })
             },
         }
 
@@ -10518,7 +10521,7 @@
         }
 
         let allInternsList = [], highPerformingInterns = [],
-            frag = document.createDocumentFragment(), watchList = [], currentIntern, dashboardProject, currentTaskId,
+            watchList = [], currentIntern, dashboardProject, currentTaskId,
             typeOfUser = 'general';
 
         // Adds interns to the database **Only SubAdmins can add interns
@@ -10563,6 +10566,7 @@
 
         // opens a popup containing various project information
         function showProjectInfo(projectId) {
+            const frag = document.createDocumentFragment();
             const allProjects = getRef('left').querySelectorAll('.project-card');
             Array.from(allProjects).find(project => project.classList.contains('project-card--active'))?.classList.remove('project-card--active')
             Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))?.classList.add('project-card--active')
@@ -10577,7 +10581,7 @@
             getRef('project_explorer__project_description').textContent = projectDescription;
             getRef('explorer_branch_container').innerHTML = ``;
             RIBC.getProjectBranches(projectId).forEach((branch) => {
-                frag.appendChild(render.branchBtn(projectId, branch))
+                frag.append(render.branchBtn(projectId, branch))
             })
             getRef('explorer_branch_container').append(frag);
             getRef('explorer_branch_container').children[0].click()
@@ -10611,26 +10615,25 @@
         function showTasksOfBranch(btn, destination, taskListContainer) {
             currentProject = btn.dataset.projectCode;
             currentBranch = btn.textContent;
+            const frag = document.createDocumentFragment();
             let content = RIBC.getProjectMap(currentProject)[currentBranch],
                 taskList = document.getElementById(taskListContainer),
-                frag = document.createDocumentFragment(),
                 allbranches = document.getElementById(destination).querySelectorAll('.branch-btn');
+            console.log(content)
             taskList.innerHTML = '';
             allbranches.forEach((branchBtn) => {
                 branchBtn.classList.remove('active-branch')
             })
             btn.classList.add('active-branch')
             if (!content[1] && !taskListContainer === 'task_list') {
-                taskList.textContent = "No tasks added yet, Please explore other projects :)"
-            }
-            else {
+                taskList.textContent = "No tasks added yet, Please explore other projects"
+            }else {
                 if (taskListContainer === 'task_list') {
                     showInnerPage('project_editing_panel')
                     content.slice(4).forEach((taskNo) => {
                         frag.appendChild(render.taskListItem(taskNo))
                     })
-                }
-                else {
+                }else {
                     content.slice(4).forEach((taskNo) => {
                         frag.appendChild(render.taskCard(currentProject, currentBranch, taskNo))
                     })
@@ -10820,6 +10823,7 @@
         
         function renderProjectSelectorOptions() {
             // Render All the projects inside updates page
+            const frag = document.createDocumentFragment();
             getRef('updates_page__project_selector').innerHTML = ``;
             const stripOption = createElement('sm-option', {
                 textContent: 'All',
@@ -10837,6 +10841,7 @@
         }
         function renderInternSelectorOptions() {
             // Render All the projects inside updates page
+            const frag = document.createDocumentFragment();
             getRef('updates_page__intern_selector').innerHTML = ``;
             const stripOption = createElement('sm-option', {
                 textContent: 'All',
@@ -10892,6 +10897,7 @@
         })
         function renderInternUpdates(options = {}) {
             let {updates, lazyLoad = false} = options
+            const frag = document.createDocumentFragment();
             if(!updates){
                 updates = RIBC.getInternUpdates();
             }
@@ -10925,21 +10931,15 @@
             const {lazyLoad = false} = options
             const selectedProject = getRef('updates_page__project_selector').value
             const selectedintern = getRef('updates_page__intern_selector').value
-            if(selectedProject === 'all' && selectedintern === 'all'){
-                renderInternUpdates({lazyLoad})
-            }else if(selectedProject !== 'all' && selectedintern === 'all'){
+            let matchedUpdates
+            if(selectedProject !== 'all'){
                 const projectName = RIBC.getProjectDetails(selectedProject).projectName
-                const matchedUpdates = await getUpdatesByProject(projectName)
-                renderInternUpdates({updates: matchedUpdates, lazyLoad})
-            }else if(selectedProject === 'all' && selectedintern !== 'all'){
-                const matchedUpdates = await getUpdatesByIntern(selectedintern)
-                renderInternUpdates({updates: matchedUpdates, lazyLoad})
-            }else{
-                const projectName = RIBC.getProjectDetails(selectedProject).projectName
-                let matchedUpdates = await getUpdatesByProject(projectName)
-                matchedUpdates = await getUpdatesByIntern(selectedintern, matchedUpdates)
-                renderInternUpdates({updates: matchedUpdates, lazyLoad})
+                matchedUpdates = await getUpdatesByProject(projectName)
             }
+            if(selectedintern !== 'all'){
+                matchedUpdates = await getUpdatesByIntern(selectedintern, matchedUpdates)
+            }
+            renderInternUpdates({updates: matchedUpdates, lazyLoad})
         }, 100)
 
         function clearFilter(){
@@ -10962,9 +10962,6 @@
             else {
                 watchList.splice(watchList.indexOf(currentProject), 1)
                 thisBtn.textContent = 'Watch'
-                if (watchList.length === 0) {
-                    document.getElementById('status_map').innerHTML = '<h3>No project added to watch list.</h3>'
-                }
                 localStorage.setItem('watchList', JSON.stringify(watchList))
                 notify(`${RIBC.getProjectDetails(currentProject).projectName} removed from your watch list.`)
             }
@@ -11123,8 +11120,8 @@
 
         function renderAllElements() {
 
-            let frag = document.createDocumentFragment(),
-                allProjectsList = RIBC.getProjectList();
+            const frag = document.createDocumentFragment()
+            let allProjectsList = RIBC.getProjectList();
             //creates cards for highest performing interns
             //sort interns earned points
 
@@ -11375,11 +11372,13 @@
             let greetings = getInternDetails(myFloID)[0] !== undefined ? `Hi, ${getInternDetails(myFloID)[0].split(':')[1]}` : `Hi, there!`
             getRef('username').textContent = greetings;
             getRef('user_flo_id').value = myFloID;
+            getRef('user_role').textContent = typeOfUser;
 
             console.log(typeOfUser)
         }
         function filterInterns(searchKey, options = {}){
             const {sortByRating = false} = options
+            const frag = document.createDocumentFragment();
             const allInterns = RIBC.getInternList()
             const arrayOfInterns = []
             for (const intern in allInterns) {
