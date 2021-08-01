@@ -232,7 +232,7 @@
                     <p id="editing_panel__description"></p>
                     <div id="branch_container"></div>
                     <h4>Tasks</h4>
-                    <ul id="task_list" class="grid gap-1"></ul>
+                    <ul id="task_list" class="grid gap-1 observe-empty-state"></ul>
                     <sm-button id="add_task" title="show element to add new task"
                         onclick="addPlaceholderTask()">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -251,7 +251,7 @@
                             </svg>
                             Assign an intern
                         </li>
-                        <li onclick="addNewBranch()" tabindex="0" class="interact">
+                        <li onclick="showNewBranchPopup()" tabindex="0" class="interact">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                 height="24">
                                 <path fill="none" d="M0 0h24v24H0z" />
@@ -346,7 +346,8 @@
                     <p id="project_explorer__project_description"></p>
                     <div id="explorer_branch_container"></div>
                     <h4></h4>
-                    <div id="explorer_task_list"></div>
+                    <div id="explorer_task_list" class="observe-empty-state"></div>
+                    <h4 class="empty-state">No tasks are added to this projects</h4>
                 </section>
             </section>
         </article>
@@ -439,7 +440,7 @@
             </sm-button>
         </sm-form>
     </sm-popup>
-    <sm-popup id="create_branch">
+    <sm-popup id="create_branch_popup">
         <header slot="header" class="popup__header">
             <button class="popup__header__close" onclick="hidePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -452,7 +453,7 @@
         </header>
         <sm-form>
             <sm-input id="branch_start_point" placeholder="Start point" type="number" required></sm-input>
-            <sm-input id="branch_merge_point" placeholder="Merge point" type="number" required></sm-input>
+            <sm-input id="branch_merge_point" placeholder="Merge point" type="number"></sm-input>
             <sm-button id="create_branch_btn" variant="primary">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -604,6 +605,7 @@
             </button>
             <div class="assigned-interns"></div>
             <p class="task-description"></p>
+            <div class="task__branch_container"></div>
         </li>
     </template>
     <template id="intern_card_template">
@@ -628,7 +630,17 @@
                 </div>
                 <div class="assigned-interns"></div>
                 <p class="timeline-task__description"></p>
+                <div class="task__branch_container"></div>
             </div>
+        </div>
+    </template>
+    <template id="project_map_template">
+        <div class="project_map_card">
+            <h2 class="project-map__title"></h2>
+            <p class="project-map__description"></p>
+            <div class="project__branch_container"></div>
+            <h4>Timeline</h4>
+            <div class="project-map__timeline"></div>
         </div>
     </template>
 
@@ -9983,7 +9995,7 @@
             if (textContent)
                 elem.textContent = textContent
             if (innerHTML)
-                elem.innerHTML = DOMPurify.sanitize(innerHTML)
+                elem.innerHTML = innerHTML
             return elem
         }
 
@@ -10227,6 +10239,10 @@
         }
 
         let lastPage
+        let lastParams = {
+            projectId: '',
+            branch: ''
+        }
         function showPage(targetPage, options = {}) {
             const { firstLoad, hashChange } = options
             let pageId
@@ -10261,6 +10277,20 @@
                     if (JSON.parse(localStorage.getItem('watchList')).length) {
                         showProjectMap(JSON.parse(localStorage.getItem('watchList'))[0], 'status_map')
                     }
+                    if(params){
+                        const {projectId, branch} = params
+                        if(!RIBC.getInternList()[myFloID] || floGlobals.subAdmins.includes(myFloID)){
+                            const branchDetails = {
+                                destination: 'status_map',
+                                taskListContainer: `${projectId}_map_body`,
+                                projectId,
+                                branch
+                            }
+                            showTasksOfBranch(branchDetails) 
+                        }
+                    }else{
+
+                    }
                     break;
                 case 'updates_page':
                     renderInternUpdates()
@@ -10274,7 +10304,19 @@
                     break;
                 case 'project_explorer':
                     if(params){
-                        showProjectInfo(params.projectId)
+                        const {projectId, branch} = params
+                        if(lastParams.projectId !== projectId){
+                            showProjectInfo(projectId)
+                        }
+                        if(params.branch){
+                            const branchDetails = {
+                                destination: 'project_explorer',
+                                taskListContainer: 'explorer_task_list',
+                                projectId,
+                                branch
+                            }
+                            showTasksOfBranch(branchDetails) 
+                        }
                         getRef('left').classList.add('hide-on-mobile')
                         getRef('project_explorer__right').classList.remove('hide-on-mobile')
                     }else{
@@ -10284,7 +10326,17 @@
                     break;
                 case 'admin_page':
                     if (params) {
-                        editProjectInfo(params.projectId)
+                        const {projectId, branch} = params
+                        editProjectInfo(projectId)
+                        if(params.branch){
+                            const branchDetails = {
+                                destination: 'project_editing_panel',
+                                taskListContainer: 'task_list',
+                                projectId,
+                                branch
+                            }
+                            showTasksOfBranch(branchDetails) 
+                        }
                         getRef('admin_page__left').classList.add('hide-on-mobile')
                         getRef('project_editing_panel').classList.remove('hide-on-mobile')
                     }else{
@@ -10298,6 +10350,7 @@
             }
             getRef(pageId).classList.remove('hide-completely')
             lastPage = pageId
+            lastParams
         }
 
     </script>
@@ -10310,7 +10363,7 @@
                     className: 'project-card flex align-center interact',
                     attributes: {
                         'title': "Project information",
-                        href: `#${page}?projectId=${projectCode}`
+                        href: `#${page}?projectId=${projectCode}&branch=mainLine`
                     },
                     textContent: projectName
                 });
@@ -10351,6 +10404,19 @@
                 const {taskTitle, taskDescription} = RIBC.getTaskDetails(currentProject, currentBranch, taskNo)
                 card.querySelector('.timeline-task__title').textContent = taskTitle;
                 card.querySelector('.timeline-task__description').textContent = taskDescription;
+                const branches = getAllBranches(currentProject)
+                for(const branch of branches){
+                    const {branchName, parantBranch, startPoint, endPoint} = branch
+                    if(parantBranch === currentBranch && startPoint === taskNo){
+                        card.querySelector('.task__branch_container').append(
+                            render.branchBtn({
+                                projectId: currentProject,
+                                branch: branchName,
+                                page: 'project_explorer'
+                            })
+                        )
+                    }
+                }
                 return card;
             },
             internCard(internName, internFLOID, internPoints) {
@@ -10373,10 +10439,11 @@
                 card.querySelector('.update__message').textContent = description
                 return card;
             },
-            branchBtn(projectCode, branch) {
-                return createElement('button', {
-                    className: 'branch-btn uppercase',
-                    attributes: { 'data-project-code': projectCode },
+            branchBtn(obj = {}) {
+                const {projectId, branch, page} = obj
+                return createElement('a', {
+                    className: 'branch-button uppercase',
+                    attributes: { href: `#${page}?projectId=${projectId}&branch=${branch}`},
                     textContent: branch
                 });
             },
@@ -10411,34 +10478,37 @@
                     })
                     card.querySelector('.assigned-interns').appendChild(frag)
                 }
+                const branches = getAllBranches(currentProject)
+                for(const branch of branches){
+                    const {branchName, parantBranch, startPoint, endPoint} = branch
+                    if(parantBranch === currentBranch && startPoint === taskNo){
+                        card.querySelector('.task__branch_container').append(
+                            render.branchBtn({
+                                projectId: currentProject,
+                                branch: branchName,
+                                page: 'admin_page'
+                            })
+                        )
+                    }
+                }
                 return card;
             },
-            projectMapCard: function (projectCode) {
-                let card = document.createElement('div'),
-                    header = document.createElement('div'),
-                    title = document.createElement('h2'),
-                    para = document.createElement('p'),
-                    branchContainer = document.createElement('div'),
-                    timeline = document.createElement('h4')
-                mapBody = document.createElement('div'),
-                    frag = document.createDocumentFragment(),
-                    projectDetails = RIBC.getProjectDetails(projectCode),
-                    mapItems = [];
-                card.id = `${projectCode}_map`;
-                currentProject = projectCode;
-                branchContainer.id = `${projectCode}_branch_container`;
-                title.textContent = projectDetails.projectName;
-                para.textContent = projectDetails.projectDescription;
-                timeline.textContent = 'Timeline';
-                mapBody.id = `${projectCode}_map_body`
+            projectMapCard(projectCode, page) {
+                const card = getRef('project_map_template').content.cloneNode(true)
+                const frag = document.createDocumentFragment()
+                const {projectName, projectDescription} = RIBC.getProjectDetails(projectCode)
+                card.firstElementChild.id = `${projectCode}_map`;
+                card.querySelector('.project-map__title').textContent = projectName
+                card.querySelector('.project-map__description').textContent = projectDescription
+                card.querySelector('.project__branch_container').id = `${projectCode}_branch_container`;
                 RIBC.getProjectBranches(projectCode).forEach((branch) => {
-                    frag.append(render.branchBtn(projectCode, branch))
+                    frag.append(render.branchBtn({projectId: projectCode, branch, page}))
                 })
-                branchContainer.append(frag);
-                header.append(title)
-                card.append(header, para, branchContainer, timeline, mapBody)
-                mapItems.push(card, card.id, branchContainer.id, mapBody.id)
-                return mapItems;
+                card.querySelector('.project__branch_container').append(frag);
+                card.querySelector('.project-map__timeline').id = `${projectCode}_map_body`
+                currentProject = projectCode;
+                // mapItems.push(card, card.id, branchContainer.id, mapBody.id)
+                return card;
             },
             requestCard(floId, projectCode, branch, taskNo) {
                 let name;
@@ -10521,7 +10591,7 @@
         }
 
         let allInternsList = [], highPerformingInterns = [],
-            watchList = [], currentIntern, dashboardProject, currentTaskId,
+            watchList = [], currentIntern, currentTaskId,
             typeOfUser = 'general';
 
         // Adds interns to the database **Only SubAdmins can add interns
@@ -10581,10 +10651,9 @@
             getRef('project_explorer__project_description').textContent = projectDescription;
             getRef('explorer_branch_container').innerHTML = ``;
             RIBC.getProjectBranches(projectId).forEach((branch) => {
-                frag.append(render.branchBtn(projectId, branch))
+                frag.append(render.branchBtn({projectId, branch, page: 'project_explorer'}))
             })
             getRef('explorer_branch_container').append(frag);
-            getRef('explorer_branch_container').children[0].click()
         }
 
         let currentBranch = 'mainLine',
@@ -10593,12 +10662,12 @@
             lastProject;
         function editProjectInfo(projectId) {
             const allProjects = getRef('admin_page__project_list').querySelectorAll('.project-card');
-            const branchList = document.querySelectorAll('.branch-btn');
+            const branchList = document.querySelectorAll('.branch-button');
             const frag = document.createDocumentFragment();
             Array.from(allProjects).find(project => project.classList.contains('project-card--active'))?.classList.remove('project-card--active')
             Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))?.classList.add('project-card--active')
             getRef('branch_container').innerHTML = '',
-                getRef('task_list').innerHTML = '';
+            getRef('task_list').innerHTML = '';
             currentProject = projectId;
             branchList.forEach((branch) => {
                 branch.classList.remove('active-branch')
@@ -10607,39 +10676,61 @@
             getRef('editing_panel__title').textContent = projectName;
             getRef('editing_panel__description').textContent = projectDescription;
             RIBC.getProjectBranches(currentProject).forEach((branch) => {
-                frag.appendChild(render.branchBtn(currentProject, branch))
+                frag.append(render.branchBtn({projectId: currentProject, branch, page: 'admin_page'}))
             })
             getRef('branch_container').appendChild(frag)
-            getRef('branch_container').firstElementChild.click()
         }
-        function showTasksOfBranch(btn, destination, taskListContainer) {
-            currentProject = btn.dataset.projectCode;
-            currentBranch = btn.textContent;
+        function showTasksOfBranch(obj = {}) {
+            const {destination, taskListContainer, projectId, branch} = obj
+            currentProject = projectId;
+            currentBranch = branch;
             const frag = document.createDocumentFragment();
             let content = RIBC.getProjectMap(currentProject)[currentBranch],
                 taskList = document.getElementById(taskListContainer),
-                allbranches = document.getElementById(destination).querySelectorAll('.branch-btn');
-            console.log(content)
+                allbranches = document.getElementById(destination).querySelectorAll('.branch-button');
             taskList.innerHTML = '';
             allbranches.forEach((branchBtn) => {
                 branchBtn.classList.remove('active-branch')
             })
-            btn.classList.add('active-branch')
-            if (!content[1] && !taskListContainer === 'task_list') {
+            // document.getElementById(destination).querySelector(`'.branch-button[href="#${}"]`).classList.add('active-branch')
+            if (content[1] && !taskListContainer === 'task_list') {
                 taskList.textContent = "No tasks added yet, Please explore other projects"
             }else {
                 if (taskListContainer === 'task_list') {
                     showInnerPage('project_editing_panel')
                     content.slice(4).forEach((taskNo) => {
-                        frag.appendChild(render.taskListItem(taskNo))
+                        frag.append(render.taskListItem(taskNo))
                     })
                 }else {
                     content.slice(4).forEach((taskNo) => {
-                        frag.appendChild(render.taskCard(currentProject, currentBranch, taskNo))
+                        frag.append(render.taskCard(currentProject, currentBranch, taskNo))
                     })
                 }
                 taskList.appendChild(frag);
             }
+        }
+        function getAllBranches(projectId){
+            const projectMap = RIBC.getProjectMap(projectId)
+            const projectBranches = RIBC.getProjectBranches(projectId)
+            const branchPoints = []
+            projectBranches.forEach((branch, index) => {
+                if(index > 0){
+                    branchPoints.push({
+                        branchName: branch,
+                        parantBranch: projectMap[branch][0],
+                        startPoint: projectMap[branch][2],
+                        endPoint: projectMap[branch][3]
+                    })
+                }
+            })
+            return branchPoints
+        }
+        function showProjectMap(projectCode, container) {
+            if (projectCode === undefined) return;
+            const tempCard = render.projectMapCard(projectCode, 'dashboard_page');
+            getRef(container).innerHTML = ``;
+            currentProject = projectCode;
+            getRef(container).append(tempCard)
         }
         getRef('task_list').addEventListener('click', (e) => {
             if (e.target.closest('.task-list-item')) {
@@ -10807,18 +10898,19 @@
             }
         }
 
-        function addNewBranch() {
-            showPopup('create_branch')
-            let startPoint = document.getElementById('branch_start_point'),
-                mergePoint = document.getElementById('branch_merge_point'),
-                branchName = '';
-            startPoint.value = parseInt(currentTask.id);
-            document.getElementById('create_branch_btn').onclick = () => {
-                branchName = RIBC.manage.addBranch(currentProject, currentBranch, startPoint, parseInt(mergePoint.value));
-                notify(`Branch added ${branchName}`, 'success')
-                getRef('branch_container').append(render.branchBtn(currentProject, branchName))
-                hidePopup()
-            }
+        function showNewBranchPopup() {
+            showPopup('create_branch_popup')
+            const startPoint = parseInt(currentTask.id)
+            getRef('branch_start_point').value = startPoint;
+        }
+        getRef('create_branch_btn').onclick = () => {
+            const startPoint = parseInt(currentTask.id)
+            const userMergePoint = getRef('branch_merge_point').value.trim()
+            const mergePoint = (userMergePoint === '') ? startPoint : parseInt(userMergePoint) 
+            const branchName = RIBC.manage.addBranch(currentProject, currentBranch, startPoint, mergePoint);
+            notify(`Branch added ${branchName}`, 'success')
+            getRef('branch_container').append(render.branchBtn({projectId: currentProject, branch: branchName, page: 'admin_page'}))
+            hidePopup()
         }
         
         function renderProjectSelectorOptions() {
@@ -10967,21 +11059,6 @@
             }
             changeProject(0)
         }
-
-        function showProjectMap(projectCode, container) {
-            if (projectCode === undefined) return;
-            let tempCard = render.projectMapCard(projectCode),
-                containerCard = document.getElementById(container);
-            containerCard.innerHTML = ``;
-            currentProject = projectCode;
-            containerCard.appendChild(tempCard[0])
-            document.getElementById(tempCard[2]).addEventListener('click', (event) => {
-                if (event.target.closest('.branch-btn')) {
-                    showTasksOfBranch(event.target.closest('.branch-btn'), tempCard[1], tempCard[3], '')
-                }
-            })
-            document.getElementById(tempCard[2]).firstElementChild.click()
-        }
         let index = 0;
         function changeProject(change) {
             let list = JSON.parse(localStorage.getItem('watchList')),
@@ -11011,8 +11088,8 @@
                 else
                     getRef('next_proj').disabled = false
             }
-            dashboardProject = list[index]
-            showProjectMap(dashboardProject, 'status_map')
+            showProjectMap(list[index], 'status_map')
+            window.location.hash = `#dashboard_page?projectId=${list[index]}&branch=mainLine`
         }
 
         let allRequests = [];
@@ -11315,11 +11392,6 @@
 
             if (localStorage.getItem('watchList') === null)
                 localStorage.setItem('watchList', JSON.stringify(watchList))
-            document.getElementById('branch_container').addEventListener('click', (event) => {
-                if (event.target.closest('.branch-btn')) {
-                    showTasksOfBranch(event.target.closest('.branch-btn'), 'project_editing_panel', 'task_list')
-                }
-            })
     
             getRef('post_update_btn').addEventListener('click', () => {
                 const { projectId, projectName, projectBranch, task } = internAssignedTasks[currentTaskId]
@@ -11342,10 +11414,10 @@
 
             getRef('project_explorer').children[0].children[1].innerHTML = ``;
             getRef('project_explorer').children[0].children[3].innerHTML = ``;
-            if (Object.keys(allInternsList).includes(myFloID) && !floGlobals.subAdmins.includes(myFloID)) {
-                for (i = 0; i < assignedProjectsList.length; i++) {
-                    frag.appendChild(render.projectCard(RIBC.getProjectDetails(assignedProjectsList[i]).projectName, assignedProjectsList[i]))
-                }
+            if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
+                assignedProjectsList.forEach((project) => {
+                    frag.append(render.projectCard(RIBC.getProjectDetails(project).projectName, project))
+                })
                 getRef('project_explorer').children[0].children[1].appendChild(frag)
                 allProjectsList = allProjectsList.filter(val => !assignedProjectsList.includes(val));
             }
@@ -11354,9 +11426,7 @@
             }
             getRef('project_explorer').children[0].children[3].appendChild(frag)
 
-            getRef('project_explorer').children[1].addEventListener('click', (event) => {
-                if (event.target.closest('.branch-btn'))
-                    showTasksOfBranch(event.target.closest('.branch-btn'), 'project_explorer', 'explorer_task_list')
+            getRef('explorer_task_list').addEventListener('click', (event) => {
                 if (event.target.closest('.apply-button')) {
                     requestForTask(event.target.closest('.apply-button'))
                 }
