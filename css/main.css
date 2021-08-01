@@ -751,8 +751,8 @@ ul {
 
 .active-branch {
   opacity: 1;
-  color: var(--accent-color);
-  background: rgba(var(--text-color), 0.04);
+  color: white;
+  background: var(--accent-color);
 }
 
 #task_list {
@@ -959,55 +959,29 @@ ul {
   width: 4rem;
 }
 
-#status_map_container {
+#project_watching_section {
   position: relative;
   overflow: hidden;
 }
 
-#status_map_container #status_map {
-  position: relative;
-  padding: 0 1rem 1rem 1rem;
-}
-
-#status_map_container #status_map h2 {
-  margin: 0.4rem 0;
-  text-transform: capitalize;
-}
-
-.watching {
-  position: relative;
-  display: flex;
-  padding: 1rem;
-  align-items: center;
-}
-
-.watching h4 {
-  flex: 1;
-  font-weight: 500;
-}
-
-.watching button {
-  padding: 0.5rem;
-  border-radius: 0.5rem;
+#project_explorer {
+  padding: 0;
 }
 
 #project_explorer__right {
+  gap: 1rem;
   align-items: flex-start;
   align-content: flex-start;
   padding: 1rem;
 }
 
-#project_explorer__right div:first-of-type h2 {
-  flex: 1;
-  margin: 0.4rem 0;
+#explorer_branch_container {
+  margin-top: 1.5rem;
 }
 
-#project_explorer__right div:first-of-type button {
-  border: 1px solid rgba(var(--text-color), 0.06);
-}
-
-#project_explorer {
-  padding: 0;
+#watch_project_button {
+  margin-left: 1rem;
+  text-transform: capitalize;
 }
 
 #admin_page {
@@ -1227,6 +1201,7 @@ ul {
 #admin_page__left .list-container {
   height: 100%;
   overflow-y: auto;
+  padding-bottom: 2rem;
 }
 #admin_page__left .empty-state {
   padding: 1rem;
@@ -1253,6 +1228,44 @@ ul {
   border: solid var(--accent-color) thin;
 }
 
+#project_watching_section {
+  display: grid;
+  gap: 1rem;
+}
+
+#project_watchlist {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+
+.watchlist_project_card {
+  color: inherit;
+  display: grid;
+  border-radius: 0.5rem;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: rgba(var(--text-color), 0.04);
+}
+.watchlist_project_card .project__title {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.progress-bar {
+  display: flex;
+  height: 0.5rem;
+  background-color: rgba(var(--text-color), 0.2);
+  border-radius: 1rem;
+  overflow: hidden;
+  align-self: flex-end;
+}
+.progress-bar .progress-value {
+  background-color: var(--accent-color);
+  transition: width 0.3s;
+}
+
 @media only screen and (max-width: 640px) {
   .hide-on-mobile,
 .hide-page-on-mobile {
@@ -1261,6 +1274,10 @@ ul {
 
   #project_editing_panel {
     padding: 1rem;
+  }
+
+  .list-container {
+    padding-bottom: 5rem;
   }
 }
 @media only screen and (min-width: 640px) {
@@ -1314,10 +1331,10 @@ ul {
   }
 
   #dashboard_page {
-    grid-template-columns: 3fr 20rem;
+    grid-template-columns: 3fr 18rem;
   }
 
-  #dashboard_page #status_map_container {
+  #dashboard_page #project_watching_section {
     align-self: flex-start;
   }
 
@@ -1434,6 +1451,10 @@ ul {
 
   #settings_page {
     padding: 1rem 2rem;
+  }
+
+  .watchlist_project_card {
+    padding: 1.5rem;
   }
 }
 @media only screen and (min-width: 1280px) {
