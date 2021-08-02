@@ -762,15 +762,22 @@ ul {
 }
 
 .branch-button {
+    display: flex;
     border-radius: 0;
     padding: 0.5rem;
     border-radius: 0.2rem;
     margin: 0.5rem 0.5rem 0.5rem 0;
+    text-transform: capitalize;
+    justify-self: start;
+    align-items: center;
     user-select: none;
     font-size: 0.85rem;
     font-weight: 500;
-    letter-spacing: 0.05em;
     background-color: rgba(var(--text-color), 0.06);
+    .icon{
+        height: 1.2rem;
+        width: 1.2rem;
+    }
 }
 
 .active-branch {
@@ -780,7 +787,7 @@ ul {
 }
 
 #task_list{
-    padding: 1.5rem 0;
+    padding-bottom: 1.5rem;
 }
 .task-list-item {
     display: grid;
@@ -924,11 +931,13 @@ ul {
         margin-right: 0.5rem;
     }
 }
-
+#editing_panel__description{
+    margin-bottom: 2rem;
+}
 #branch_container {
     display: flex;
     flex-flow: row wrap;
-    margin: 1rem 0;
+    margin: 0.5rem 0 1rem 0;
 }
 
 #intern_list_popup {
@@ -1248,7 +1257,7 @@ ul {
 } 
 #user_role{
     justify-self: start;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
