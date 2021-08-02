@@ -2051,6 +2051,7 @@
         }
         getRef('task_list').addEventListener('change', (e) => {
             if (e.target.closest('sm-checkbox')) {
+                currentTask = e.target.closest('.task-list-item');
                 const taskStatus = e.target.closest('sm-checkbox').checked ? 'completed' : 'incomplete'
                 RIBC.manage.putTaskStatus(taskStatus, currentProject, currentBranch, currentTask.id)
             }
