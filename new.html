@@ -361,6 +361,10 @@
                         <h5 class="uppercase">By Intern</h5>
                         <sm-select id="updates_page__intern_selector"></sm-select>
                     </div>
+                    <label class="grid gap-0-5">
+                        <h5 class="uppercase">By date</h5>
+                        <input type="date" id="updates_page__date_selector" aria-label="Filter updates by date" min="2020-01-01">
+                    </label>
                     <sm-button onclick="clearFilter()">Clear</sm-button>
                 </section>
                 <section id="updates_wrapper">
@@ -403,22 +407,37 @@
         </article>
     </main>
 
-    <sm-popup id="intern_info">
-        <h3>Intern name</h3>
-        <sm-copy id="intern_info__flo_id"></sm-copy>
-        <h4 class="admin-options hide-completely">Update Rating</h4>
-        <div id="update_intern_score">
-            <svg class="icon gold-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/></svg>
-            <h4 id="intern_info__score"></h4>
-            <sm-button id="reduce_score_button" class="admin-options hide-completely" title="increase intern score"
-                onclick="changeScore(-1)">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11h14v2H5z"/></svg>
-            </sm-button>
-            <sm-button id="increase_score_button" class="admin-options hide-completely" title="decrease intern score"
-                onclick="changeScore(1)">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></svg>
-            </sm-button>
-        </div>
+    <sm-popup id="intern_info_popup">
+        <header slot="header" class="popup__header">
+            <button class="popup__header__close" onclick="hidePopup()">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path
+                        d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                </svg>
+            </button>
+        </header>
+        <section class="grid gap-1">
+            <div id="intern_info__initials" class="intern-card__initials"></div>
+            <h3 id="intern_info__name">Intern name</h3>
+            <sm-copy id="intern_info__flo_id"></sm-copy>
+            <div id="update_intern_score" class="flex align-center space-between">
+                <div class="flex">
+                    <svg class="icon gold-fill button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"/></svg>
+                    <h4 id="intern_info__score"></h4>
+                </div>
+                <div class="flex admin-options hide-completely">
+                    <sm-button id="reduce_score_button" title="increase intern score"
+                        onclick="changeScore(-1)">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11h14v2H5z"/></svg>
+                    </sm-button>
+                    <sm-button id="increase_score_button" title="decrease intern score"
+                        onclick="changeScore(1)">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></svg>
+                    </sm-button>
+                </div>
+            </div>
+        </section>
     </sm-popup>
 
     <sm-popup id="intern_list_popup">
@@ -1649,10 +1668,10 @@
                     card.firstElementChild.classList.add('completed-task')
                 }
                 if (assignedInterns || typeOfUser === 'general') {
-                    getInternDetails(assignedInterns).forEach((intern) => {
-                        frag.append(render.assignedInternCard(intern));
+                    assignedInterns.forEach((internFloId) => {
+                        frag.append(render.assignedInternCard(internFloId));
                     })
-                    card.querySelector('.assigned-interns').appendChild(frag)
+                    card.querySelector('.assigned-interns').append(frag)
                 }
                 else {
                     if(typeOfUser === 'intern'){
@@ -1694,7 +1713,7 @@
             internCard(internName, internFLOID, internPoints) {
                 // creates cards containing intern information
                 const card = getRef('intern_card_template').content.cloneNode(true)
-                setAttributes(card.firstElementChild, { 'data-intern-id': internFLOID, 'title': 'Intern Information' })
+                setAttributes(card.firstElementChild, { 'data-intern-flo-id': internFLOID, 'title': 'Intern Information' })
                 card.querySelector('.intern-card__initials').style.backgroundColor = getInternColor(internFLOID)
                 card.querySelector('.intern-card__initials').textContent = internName.split(' ').map(v => v.charAt(0)).join('');
                 card.querySelector('.intern-card__name').textContent = internName;
@@ -1720,19 +1739,21 @@
                     innerHTML
                 });
             },
-            assignedInternCard(intern, options) {
-                const thisIntern = createElement('span', {
+            assignedInternCard(internFloId, options) {
+                const internCard = createElement('span', {
                     className: 'assigned-intern',
-                    attributes: { 'data-floid': intern.split(':', 1) },
-                    textContent: intern.split(':')[1]
+                    attributes: { 'data-flo-id': internFloId },
+                    textContent: RIBC.getInternList()[internFloId]
                 });
+                console.log(internFloId, RIBC.getInternList()[internFloId])
                 if (options === 'yes') {
-                    let closeBtn = createElement('button', {
-                        innerHTML: `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>`
-                    });
-                    thisIntern.append(closeBtn)
+                    internCard.append(
+                        createElement('button', {
+                            innerHTML: `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>`
+                        })
+                    )
                 }
-                return thisIntern;
+                return internCard;
             },
             taskListItem(taskNo) {
                 const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo)
@@ -1746,10 +1767,10 @@
                 card.querySelector('.title').textContent = `${taskNo}. ${taskTitle}`;
                 card.querySelector('.task-description').textContent = taskDescription;
                 if (assignedInterns) {
-                    getInternDetails(assignedInterns).forEach((intern) => {
-                        frag.appendChild(render.assignedInternCard(intern, 'yes'));
+                    assignedInterns.forEach((internFloId) => {
+                        frag.appendChild(render.assignedInternCard(internFloId, 'yes'));
                     })
-                    card.querySelector('.assigned-interns').appendChild(frag)
+                    card.querySelector('.assigned-interns').append(frag)
                 }
                 const branches = getAllBranches(currentProject)
                 for(const branch of branches){
@@ -1784,14 +1805,11 @@
                 return card;
             },
             requestCard(floId, projectCode, branch, taskNo) {
-                let name;
-                name = floId;
-                if (getInternDetails(floId).length !== 0)
-                    name = getInternDetails(floId)[0].split(':')[1];
+                const internName = RIBC.getInternList()[floId];
                 return createElement('li', {
                     className: 'request-card',
                     innerHTML: `<p class="request-card__description">
-                                    <b class="capitalize">${name}</b> applied for 
+                                    <b class="capitalize">${internName}</b> applied for 
                                     <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, taskNo).taskTitle}</b> from 
                                     <b class="capitalize">${branch}</b> of
                                     <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
@@ -1876,23 +1894,6 @@
             }
         }
 
-        function getInternDetails(floId) {
-            let internInfo = [];
-            if (Array.isArray(floId))
-                floId.forEach((id) => {
-                    Object.keys(allInternsList).forEach((key) => {
-                        if (id === key)
-                            internInfo.push(`${key}:${allInternsList[key]}`)
-                    })
-                })
-            else
-                Object.keys(allInternsList).forEach((key) => {
-                    if (floId === key)
-                        internInfo.push(`${key}:${allInternsList[key]}`)
-                })
-            return internInfo;
-        }
-
         let allInternsList = [], highPerformingInterns = [],
             watchList = [], currentIntern, currentTaskId,
             typeOfUser = 'general';
@@ -1927,14 +1928,17 @@
         }
 
         // opens a popup containing various intern information
-        function showInternInfo(intern) {
-            getRef('intern_info').children[0].textContent = intern.children[1].textContent; // intern name
-            getRef('intern_info__flo_id').value = currentIntern = intern.dataset.internId; // intern 
-            getRef('intern_info__score').textContent = intern.children[2].textContent; // points earned by intern
-            if(parseInt(intern.children[2].textContent) === 1){
+        function showInternInfo(internFloId) {
+            const internName = RIBC.getInternList()[internFloId]
+            getRef('intern_info__initials').textContent = internName.split(' ').map(v => v.charAt(0)).join('');
+            getRef('intern_info__initials').style.backgroundColor = getInternColor(internFloId)
+            getRef('intern_info__name').textContent = internName;
+            getRef('intern_info__flo_id').value = currentIntern = internFloId; 
+            getRef('intern_info__score').textContent = RIBC.getInternRating(internFloId); // points earned by intern
+            if(RIBC.getInternRating(internFloId) === 1){
                 getRef('reduce_score_button').disabled = true;
             }
-            showPopup('intern_info');
+            showPopup('intern_info_popup');
         }
 
         // opens a popup containing various project information
@@ -2041,13 +2045,6 @@
                 }
             })
             return branchPoints
-        }
-        function showProjectMap(projectCode, container) {
-            if (projectCode === undefined) return;
-            const tempCard = render.projectMapCard(projectCode, 'dashboard_page');
-            getRef(container).innerHTML = ``;
-            currentProject = projectCode;
-            getRef(container).append(tempCard)
         }
         getRef('task_list').addEventListener('change', (e) => {
             if (e.target.closest('sm-checkbox')) {
@@ -2182,13 +2179,15 @@
 
         document.getElementById('intern_list_container').addEventListener('click', (event) => {
             if (event.target.closest('.intern-card')) {
-                let floid = event.target.closest('.intern-card').dataset.internId;
-                if (RIBC.manage.assignInternToTask(floid, currentProject, currentBranch, currentTask.id)) {
-                    notify(`${event.target.closest('.intern-card').children[1].textContent} assigned to ${RIBC.getProjectDetails(currentProject).projectName}`)
-                    currentTask.querySelector('.assigned-interns').append(render.assignedInternCard(getInternDetails(floid)[0], 'yes'))
-                }
-                else
+                const floId = event.target.closest('.intern-card').dataset.internFloId;
+                const internName = RIBC.getInternList()[floId]
+                const {projectName} = RIBC.getProjectDetails(currentProject)
+                if (RIBC.manage.assignInternToTask(floId, currentProject, currentBranch, currentTask.id)) {
+                    notify(`${internName} assigned to ${projectName}`)
+                    currentTask.querySelector('.assigned-interns').append(render.assignedInternCard(floId, 'yes'))
+                }else{
                     notify('intern already assigned', 'error')
+                }
                 hidePopup()
             }
         })
@@ -2206,7 +2205,7 @@
             let score = parseInt(getRef('intern_info__score').textContent)
             score += scoreUpdate;
             getRef('intern_info__score').textContent = score
-            document.querySelectorAll(`[data-intern-id="${currentIntern}"]`).forEach(internCard => {
+            document.querySelectorAll(`[data-intern-flo-id="${currentIntern}"]`).forEach(internCard => {
                 internCard.querySelector('.intern-card__score').textContent = score
             })
             if (score > 0) {
@@ -2294,6 +2293,24 @@
             const fuse = new Fuse(allUpdates, options)
             return fuse.search(floId).map(v => v.item)
         }
+        async function getUpdatesByDate(date, allUpdates) {
+            if(!allUpdates){
+                allUpdates = RIBC.getInternUpdates()
+            }
+            const filteredUpdates = []
+            const dateStart = new Date(`${date} 00:00:00`).getTime()
+            const dateEnd = new Date(`${date} 23:59:59`).getTime()
+            let isFromDate = false
+            for(const update of allUpdates){
+                if(update.time > dateStart && update.time < dateEnd){
+                    filteredUpdates.push(update)
+                    isFromDate = true
+                }else if(isFromDate){
+                    break
+                }
+            }
+            return filteredUpdates
+        }
 
         let updateStartIndex = 0
         let updateEndIndex = 0
@@ -2326,7 +2343,7 @@
                 const element = updates[index];
                 const { floID, time, update: { topic, description } } = element
                 const updateObj = {
-                    internName: getInternDetails(floID)[0].split(':')[1],
+                    internName: RIBC.getInternList()[floID],
                     time: parseInt(time),
                     topic,
                     description
@@ -2334,7 +2351,7 @@
                 frag.append(render.updateCard(updateObj))
             }
             getRef('all_updates_list').append(frag)
-            if(getRef('all_updates_list').lastElementChild){
+            if(updateEndIndex !== updates.length && getRef('all_updates_list').lastElementChild){
                 intersectionObserver.observe(getRef('all_updates_list').lastElementChild)
             }
         }
@@ -2343,6 +2360,7 @@
             const {lazyLoad = false} = options
             const selectedProject = getRef('updates_page__project_selector').value
             const selectedintern = getRef('updates_page__intern_selector').value
+            const selectedDate = getRef('updates_page__date_selector').value
             let matchedUpdates
             if(selectedProject !== 'all'){
                 const projectName = RIBC.getProjectDetails(selectedProject).projectName
@@ -2351,16 +2369,21 @@
             if(selectedintern !== 'all'){
                 matchedUpdates = await getUpdatesByIntern(selectedintern, matchedUpdates)
             }
+            if(selectedDate){
+                matchedUpdates = await getUpdatesByDate(selectedDate, matchedUpdates)
+            }
             renderInternUpdates({updates: matchedUpdates, lazyLoad})
         }, 100)
 
         function clearFilter(){
             getRef('updates_page__project_selector').reset()
             getRef('updates_page__intern_selector').reset()
+            getRef('updates_page__date_selector').value = ''
         }
 
         getRef('updates_page__project_selector').addEventListener('change', renderFilteredUpdates)
         getRef('updates_page__intern_selector').addEventListener('change', renderFilteredUpdates)
+        getRef('updates_page__date_selector').addEventListener('change', renderFilteredUpdates)
         
         getRef('watch_project_button').addEventListener('mouseenter', e => {
             if(e.target.textContent === 'watching'){
@@ -2456,15 +2479,15 @@
 
         document.getElementById('best_interns').addEventListener('click', (event) => {
             if (event.target.closest('.intern-card'))
-                showInternInfo(event.target.closest('.intern-card'))
+                showInternInfo(event.target.closest('.intern-card').dataset.internFloId)
         })
         document.getElementById('all_interns_page').addEventListener('click', (event) => {
             if (event.target.closest('.intern-card'))
-                showInternInfo(event.target.closest('.intern-card'))
+                showInternInfo(event.target.closest('.intern-card').dataset.internFloId)
         })
         document.getElementById('admin_page__intern_list').addEventListener('click', (event) => {
             if (event.target.closest('.intern-card'))
-                showInternInfo(event.target.closest('.intern-card'))
+                showInternInfo(event.target.closest('.intern-card').dataset.internFloId)
         })
         document.addEventListener('popupopened', e => {
             switch(e.detail.popup.id){
@@ -2718,7 +2741,7 @@
                     requestForTask(event.target.closest('.apply-button'))
                 }
             })
-            let greetings = getInternDetails(myFloID)[0] !== undefined ? `Hi, ${getInternDetails(myFloID)[0].split(':')[1]}` : `Hi, there!`
+            const greetings = RIBC.getInternList()[myFloID] !== undefined ? `Hi, ${RIBC.getInternList()[myFloID]}` : `Hi, there!`
             getRef('username').textContent = greetings;
             getRef('user_flo_id').value = myFloID;
             getRef('user_role').textContent = typeOfUser;

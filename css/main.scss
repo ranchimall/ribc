@@ -42,6 +42,9 @@ body[data-theme='dark'] {
         --foreground-color: rgb(20, 20, 20);
         --danger-color: rgb(255, 106, 106);
     }
+    ::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
 }
 
 p {
@@ -721,40 +724,43 @@ ul {
     font-weight: 500;
 }
 
-#intern_info {
-    flex-direction: column;
+#intern_info_popup {
+    .grid{
+        & > *{
+            justify-self: center;
+        }
+    }
+    #update_intern_score{
+        width: 100%;
+        margin-top: 1rem;
+    }
 }
-
-#intern_info div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
+#intern_info__initials{
     margin-bottom: 1rem;
+    position: relative;
+    height: 3rem;
+    width: 3rem;
+    font-size: 1.3rem;
+    &::before{
+        content: '';
+        position: absolute;
+        background-color: inherit;
+        border-radius: inherit;
+        height: calc(100% + 1.5rem);
+        width: calc(100% + 1.5rem);
+        opacity: 0.3;
+        z-index: -1;
+    }
 }
-
-#intern_info div span {
-    flex: 1;
-    word-break: break-all;
-    font-size: 0.9rem;
+#intern_info__name{
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
 }
-
-#intern_info .gold-fill {
+.gold-fill {
     fill: #FF5722;
 }
-
-#intern_info #update_intern_score h4 {
-    margin: 0;
-    font-size: 2rem;
-}
-
-#intern_info h3 {
-    text-transform: capitalize;
-}
-
-#intern_info h4,
-#intern_info h5 {
-    margin-top: 0.5rem;
+#intern_info__score{
+    font-size: 1.5rem;
 }
 
 #project_info {
@@ -875,6 +881,7 @@ ul {
 .assigned-interns {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 1rem;
 }
 
 .assigned-interns .assigned-intern {
@@ -1247,6 +1254,19 @@ ul {
 }
 #update_filters_wrapper{
     gap: 1.5rem;
+}
+input[type="date"]{
+    padding: 0.5rem;
+    border: rgba(var(--text-color), 0.2) solid thin;
+    border-radius: 0.3rem;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background-color: rgba(var(--text-color), 0.06);
+    &:focus{
+        outline: none;
+        box-shadow: 0 0 0 0.1rem var(--accent-color);
+    }
 }
 .search__icon{
     height: 1.2rem;
