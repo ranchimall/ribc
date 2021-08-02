@@ -749,7 +749,6 @@ ul {
   user-select: none;
   font-size: 0.85rem;
   font-weight: 500;
-  background-color: rgba(var(--text-color), 0.06);
 }
 .branch-button .icon {
   height: 1.2rem;
@@ -819,10 +818,6 @@ ul {
   border-width: 0.15rem;
   border-color: rgba(var(--text-color), 0.6);
   border-radius: 0 0 0 0.2rem;
-}
-.task__branch_container .branch-button + .branch-button {
-  display: flex;
-  align-items: center;
 }
 .task__branch_container .branch-button + .branch-button::before {
   top: calc(-50% - 1.5rem );

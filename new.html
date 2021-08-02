@@ -280,7 +280,7 @@
                     <h2 id="editing_panel__title"></h2>
                     <p id="editing_panel__description"></p>
                     <h4>Tasks</h4>  
-                    <div id="branch_container"></div>
+                    <!-- <div id="branch_container"></div> -->
                     <ul id="task_list" class="grid gap-1 observe-empty-state"></ul>
                     <h4 class="empty-state">No tasks added yet, tasks will appear here after adding them.</h4>
                     <sm-button id="add_task" title="show element to add new task"
@@ -394,7 +394,7 @@
                         </sm-button>
                     </header>
                     <p id="project_explorer__project_description"></p>
-                    <div id="explorer_branch_container"></div>
+                    <!-- <div id="explorer_branch_container"></div> -->
                     <h4></h4>
                     <div id="explorer_task_list" class="observe-empty-state"></div>
                     <h4 class="empty-state">No tasks are added to this projects</h4>
@@ -1951,11 +1951,11 @@
                 getRef('watch_project_button').textContent = 'Watch';
             }
             getRef('project_explorer__project_description').textContent = projectDescription;
-            getRef('explorer_branch_container').innerHTML = ``;
-            RIBC.getProjectBranches(projectId).forEach((branch) => {
-                frag.append(render.branchButton({projectId, branch, page: 'project_explorer'}))
-            })
-            getRef('explorer_branch_container').append(frag);
+            // getRef('explorer_branch_container').innerHTML = ``;
+            // RIBC.getProjectBranches(projectId).forEach((branch) => {
+            //     frag.append(render.branchButton({projectId, branch, page: 'project_explorer'}))
+            // })
+            // getRef('explorer_branch_container').append(frag);
         }
 
         let currentBranch = 'mainLine',
@@ -1968,19 +1968,19 @@
             const frag = document.createDocumentFragment();
             Array.from(allProjects).find(project => project.classList.contains('project-card--active'))?.classList.remove('project-card--active')
             Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))?.classList.add('project-card--active')
-            getRef('branch_container').innerHTML = '',
+            // getRef('branch_container').innerHTML = '',
             getRef('task_list').innerHTML = '';
             currentProject = projectId;
-            branchList.forEach((branch) => {
-                branch.classList.remove('active-branch')
-            })
+            // branchList.forEach((branch) => {
+            //     branch.classList.remove('active-branch')
+            // })
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('editing_panel__title').textContent = projectName;
             getRef('editing_panel__description').textContent = projectDescription;
-            RIBC.getProjectBranches(currentProject).forEach((branch) => {
-                frag.append(render.branchButton({projectId: currentProject, branch, page: 'admin_page'}))
-            })
-            getRef('branch_container').appendChild(frag)
+            // RIBC.getProjectBranches(currentProject).forEach((branch) => {
+            //     frag.append(render.branchButton({projectId: currentProject, branch, page: 'admin_page'}))
+            // })
+            // getRef('branch_container').appendChild(frag)
         }
         function showTasksOfBranch(obj = {}) {
             const {destination, taskListContainer, projectId, branch, pageId} = obj
@@ -1988,13 +1988,13 @@
             currentBranch = branch;
             const frag = document.createDocumentFragment();
             let branchTasks = RIBC.getProjectMap(currentProject)[currentBranch],
-                taskList = document.getElementById(taskListContainer),
-                allbranches = document.getElementById(destination).querySelectorAll('.branch-button');
+                taskList = document.getElementById(taskListContainer)
+                // allbranches = document.getElementById(destination).querySelectorAll('.branch-button');
             taskList.innerHTML = '';
-            allbranches.forEach((branchButton) => {
-                branchButton.classList.remove('active-branch')
-            })
-            document.getElementById(destination).querySelector(`.branch-button[href="#${pageId}?projectId=${projectId}&branch=${branch}"]`).classList.add('active-branch')
+            // allbranches.forEach((branchButton) => {
+            //     branchButton.classList.remove('active-branch')
+            // })
+            // document.getElementById(destination).querySelector(`.branch-button[href="#${pageId}?projectId=${projectId}&branch=${branch}"]`).classList.add('active-branch')
             if (branchTasks[1] && !taskListContainer === 'task_list') {
                 taskList.textContent = "No tasks added yet, Please explore other projects"
             }else {
@@ -2228,7 +2228,7 @@
             const mergePoint = (userMergePoint === '') ? startPoint : parseInt(userMergePoint) 
             const branchName = RIBC.manage.addBranch(currentProject, currentBranch, startPoint, mergePoint);
             notify(`Branch added ${branchName}`, 'success')
-            getRef('branch_container').append(render.branchButton({projectId: currentProject, branch: branchName, page: 'admin_page'}))
+            currentTask.querySelector('.task__branch_container').append(render.branchButton({projectId: currentProject, branch: branchName, page: 'admin_page'}))
             hidePopup()
         }
         

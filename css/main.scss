@@ -773,7 +773,6 @@ ul {
     user-select: none;
     font-size: 0.85rem;
     font-weight: 500;
-    background-color: rgba(var(--text-color), 0.06);
     .icon{
         height: 1.2rem;
         width: 1.2rem;
@@ -848,8 +847,6 @@ ul {
         }
     }
     .branch-button + .branch-button{
-        display: flex;
-        align-items: center;
         &::before{
             top: calc(-50% - 1.5rem );
             height: calc(100% + 1.5rem);
