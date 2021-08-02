@@ -1814,7 +1814,7 @@
                 const { taskTitle, taskDescription } = RIBC.getTaskDetails(projectId, projectBranch, task)
                 return createElement('li', {
                     className: "task-card",
-                    attributes: {uniqueId},
+                    attributes: {'data-unique-id': uniqueId},
                     innerHTML: `
                         <div class="task__header">
                             <h5 class="task__project-title">${projectName}</h5>
