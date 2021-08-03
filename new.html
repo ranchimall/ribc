@@ -2183,7 +2183,6 @@
                 if (result) {
                     RIBC.manage.updateObjects().then(res => {
                         notify('Changes commited.', 'success')
-                        renderAllElements()
                     }).catch(err => {
                         console.error(err)
                     })
