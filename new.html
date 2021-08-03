@@ -2077,9 +2077,9 @@
                 const taskDetails = {}
                 if(e.target.closest('.task-description')){
                     taskDetails['taskTitle'] = taskTitle
-                    taskDetails['taskDescription'] = DOMPurify.sanitize(e.target.textContent.trim())
+                    taskDetails['taskDescription'] = DOMPurify.sanitize(e.target.innerText.trim())
                 }else if(e.target.closest('.task-title')){
-                    taskDetails['taskTitle'] = DOMPurify.sanitize(e.target.textContent.trim())
+                    taskDetails['taskTitle'] = DOMPurify.sanitize(e.target.innerText.trim())
                     taskDetails['taskDescription'] = taskDescription
                 }
                 RIBC.manage.editTaskDetails(taskDetails, currentProject, currentBranch, currentTask.dataset.taskId)
