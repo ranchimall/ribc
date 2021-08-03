@@ -1320,7 +1320,13 @@ input[type="date"]{
         transition: width 0.3s;
     }
 }
-
+#username{
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+#logout{
+    margin-top: 1.5rem;
+}
 @media only screen and (max-width: 640px) {
     .hide-on-mobile,
     .hide-page-on-mobile {
@@ -1401,13 +1407,16 @@ input[type="date"]{
     }
 
     #admin_page {
-        padding: 1rem 0 1rem 1rem;
+        padding: 1rem 0;
         gap: 1rem;
         grid-template-columns: 18rem minmax(0, 1fr);
         grid-template-rows: 1fr;
     }
     #admin_page__left{
         background-color: var(--foreground-color);
+    }
+    #project_editing_panel{
+        padding-right: 1rem;
     }
     #admin_page__left,
     #project_editing_panel{
@@ -1504,7 +1513,7 @@ input[type="date"]{
     #settings_page {
         height: 100%;
         align-items: flex-start;
-        padding: 1rem 2rem;
+        padding: 2rem;
     }
     .watchlist_project_card{
         padding: 1.5rem;

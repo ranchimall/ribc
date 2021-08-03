@@ -670,7 +670,7 @@
 
             //floDapps.addStartUpFunction('Sample', Promised Function)
             //floDapps.setAppObjectStores({sampleObs1:{}, sampleObs2:{options{autoIncrement:true, keyPath:'SampleKey'}, Indexes:{sampleIndex:{}}}})
-            floDapps.setCustomPrivKeyInput(myInput)
+            floDapps.setCustomPrivKeyInput(customSignIn)
             floDapps.launchStartUp().then(result => {
                 loader('show')
                 console.log(result)
@@ -2083,7 +2083,7 @@
                     taskDetails['taskDescription'] = taskDescription
                 }
                 RIBC.manage.editTaskDetails(taskDetails, currentProject, currentBranch, currentTask.dataset.taskId)
-                notify('Changes saved', 'success')
+                notify('Changes saved locally, commit the changes to make them permanent', 'success')
             }
         })
         getRef('task_list').addEventListener('dblclick', (e) => {
@@ -2182,7 +2182,7 @@
             getConfirmation("Do you want to commit to changes?").then((result) => {
                 if (result) {
                     RIBC.manage.updateObjects().then(res => {
-                        notify('Changes saved.', 'success')
+                        notify('Changes commited.', 'success')
                         renderAllElements()
                     }).catch(err => {
                         console.error(err)
@@ -2482,7 +2482,7 @@
                 getRef('loading_page').classList.add('hide-completely')
             }
         }
-        function myInput() {
+        function customSignIn() {
             return new Promise((resolve, reject) => {
                 loader('hide')
                 getRef('sign_in_page').classList.remove('hide-completely');
@@ -2494,6 +2494,7 @@
                     resolve(getRef('private_key_input').value.trim())
                     getRef('private_key_input').value = ''
                     loader('show')
+                    window.location.hash = '#dashboard_page'
                     getRef('sign_in_page').classList.add('hide-completely');
                 }
             })
