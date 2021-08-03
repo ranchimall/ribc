@@ -292,6 +292,14 @@
                         Add task
                     </sm-button>
                     <ul id="task_context" class="hide-completely">
+                        <li id="assign_intern" tabindex="0" class="interact" onclick="toggleEditing('title')">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M15.728 9.686l-1.414-1.414L5 17.586V19h1.414l9.314-9.314zm1.414-1.414l1.414-1.414-1.414-1.414-1.414 1.414 1.414 1.414zM7.242 21H3v-4.243L16.435 3.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 21z"/></svg>
+                            Edit title
+                        </li>
+                        <li id="assign_intern" tabindex="0" class="interact" onclick="toggleEditing()">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M15.728 9.686l-1.414-1.414L5 17.586V19h1.414l9.314-9.314zm1.414-1.414l1.414-1.414-1.414-1.414-1.414 1.414 1.414 1.414zM7.242 21H3v-4.243L16.435 3.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 21z"/></svg>
+                            Edit description
+                        </li>
                         <li id="assign_intern" tabindex="0" class="interact" onclick="showPopup('intern_list_popup')">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                 height="24">
@@ -383,7 +391,7 @@
                 <h4 class="empty-state">No intern found</h4>
             </section>
             <section id="project_explorer" class="page hide-completely">
-                <div id="left" class="list-container">
+                <div id="project_explorer__left" class="list-container">
                     <h4 class="padding intern-option hide-completely">My projects</h4>
                     <div></div>
                     <h4 class="padding intern-option hide-completely">Other projects</h4>
@@ -597,7 +605,7 @@
     <template id="task_list_item_template">
         <li class="task-list-item">
             <sm-checkbox title="Mark this task as completed"></sm-checkbox>
-            <h4 class="title capitalize"></h4>
+            <h4 class="task-title capitalize"></h4>
             <button class="task-option">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -1604,10 +1612,10 @@
                             }
                             showTasksOfBranch(branchDetails) 
                         }
-                        getRef('left').classList.add('hide-on-mobile')
+                        getRef('project_explorer__left').classList.add('hide-on-mobile')
                         getRef('project_explorer__right').classList.remove('hide-on-mobile')
                     }else{
-                        getRef('left').classList.remove('hide-on-mobile')
+                        getRef('project_explorer__left').classList.remove('hide-on-mobile')
                         getRef('project_explorer__right').classList.add('hide-on-mobile')
                     }
                     break;
@@ -1756,15 +1764,15 @@
                 return internCard;
             },
             taskListItem(taskNo) {
-                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo)
                 const card = getRef('task_list_item_template').content.cloneNode(true)
+                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo)
                 const frag = document.createDocumentFragment()
                 const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, taskNo)
                 if (RIBC.getTaskStatus(currentProject, currentBranch, taskNo) !== 'incomplete') {
                     card.querySelector('sm-checkbox').setAttribute('checked', '')
                 }
-                card.firstElementChild.setAttribute('id', taskNo)
-                card.querySelector('.title').textContent = `${taskNo}. ${taskTitle}`;
+                card.firstElementChild.dataset.taskId = taskNo
+                card.querySelector('.task-title').textContent = taskTitle;
                 card.querySelector('.task-description').textContent = taskDescription;
                 if (assignedInterns) {
                     assignedInterns.forEach((internFloId) => {
@@ -1944,7 +1952,7 @@
         // opens a popup containing various project information
         function showProjectInfo(projectId) {
             const frag = document.createDocumentFragment();
-            const allProjects = getRef('left').querySelectorAll('.project-card');
+            const allProjects = getRef('project_explorer__left').querySelectorAll('.project-card');
             Array.from(allProjects).find(project => project.classList.contains('project-card--active'))?.classList.remove('project-card--active')
             Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))?.classList.add('project-card--active')
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
@@ -2046,11 +2054,43 @@
             })
             return branchPoints
         }
+        function toggleEditing(target){
+            if(target === 'title'){
+                currentTask.querySelector('.task-title').contentEditable = true
+                currentTask.querySelector('.task-title').focus()
+            }else{
+                currentTask.querySelector('.task-description').contentEditable = true
+                currentTask.querySelector('.task-description').focus()
+            }
+        }
         getRef('task_list').addEventListener('change', (e) => {
             if (e.target.closest('sm-checkbox')) {
                 currentTask = e.target.closest('.task-list-item');
                 const taskStatus = e.target.closest('sm-checkbox').checked ? 'completed' : 'incomplete'
-                RIBC.manage.putTaskStatus(taskStatus, currentProject, currentBranch, currentTask.id)
+                RIBC.manage.putTaskStatus(taskStatus, currentProject, currentBranch, currentTask.dataset.taskId)
+            }
+        })
+        getRef('task_list').addEventListener('focusout', (e) => {
+            if(e.target.isContentEditable){
+                e.target.contentEditable = false
+                const {taskTitle, taskDescription} = RIBC.getTaskDetails(currentProject, currentBranch, currentTask.dataset.taskId)
+                const taskDetails = {}
+                if(e.target.closest('.task-description')){
+                    taskDetails['taskTitle'] = taskTitle
+                    taskDetails['taskDescription'] = DOMPurify.sanitize(e.target.textContent.trim())
+                }else if(e.target.closest('.task-title')){
+                    taskDetails['taskTitle'] = DOMPurify.sanitize(e.target.textContent.trim())
+                    taskDetails['taskDescription'] = taskDescription
+                }
+                RIBC.manage.editTaskDetails(taskDetails, currentProject, currentBranch, currentTask.dataset.taskId)
+                notify('Changes saved', 'success')
+            }
+        })
+        getRef('task_list').addEventListener('dblclick', (e) => {
+            if(e.target.closest('.task-description') && !e.target.isContentEditable){
+                toggleEditing()
+            }else if(e.target.closest('.task-title') && !e.target.isContentEditable){
+                toggleEditing('title')
             }
         })
         getRef('task_list').addEventListener('click', (e) => {
@@ -2100,7 +2140,7 @@
             else if (e.target.closest('.assigned-intern button')) {
                 getConfirmation('Do you want to unassign this intern from this task?').then((result) => {
                     if (result) {
-                        RIBC.manage.unassignInternFromTask(e.target.closest('.assigned-intern').dataset.floid, currentProject, currentBranch, currentTask.id)
+                        RIBC.manage.unassignInternFromTask(e.target.closest('.assigned-intern').dataset.floid, currentProject, currentBranch, currentTask.dataset.taskId)
                         e.target.closest('.assigned-intern').remove()
                         notify('Intern removed from the task')
                     }
@@ -2153,7 +2193,7 @@
         function removeThisTask() {
             getConfirmation("Are you sure to delete this task?").then((result) => {
                 if (result) {
-                    RIBC.manage.deleteTaskInMap(currentProject, currentBranch, currentTask.id)
+                    RIBC.manage.deleteTaskInMap(currentProject, currentBranch, currentTask.dataset.taskId)
                     currentTask.remove();
                 }
             })
@@ -2182,7 +2222,7 @@
                 const floId = event.target.closest('.intern-card').dataset.internFloId;
                 const internName = RIBC.getInternList()[floId]
                 const {projectName} = RIBC.getProjectDetails(currentProject)
-                if (RIBC.manage.assignInternToTask(floId, currentProject, currentBranch, currentTask.id)) {
+                if (RIBC.manage.assignInternToTask(floId, currentProject, currentBranch, currentTask.dataset.taskId)) {
                     notify(`${internName} assigned to ${projectName}`)
                     currentTask.querySelector('.assigned-interns').append(render.assignedInternCard(floId, 'yes'))
                 }else{
@@ -2219,11 +2259,11 @@
 
         function showNewBranchPopup() {
             showPopup('create_branch_popup')
-            const startPoint = parseInt(currentTask.id)
+            const startPoint = parseInt(currentTask.dataset.taskId)
             getRef('branch_start_point').value = startPoint;
         }
         getRef('create_branch_btn').onclick = () => {
-            const startPoint = parseInt(currentTask.id)
+            const startPoint = parseInt(currentTask.dataset.taskId)
             const userMergePoint = getRef('branch_merge_point').value.trim()
             const mergePoint = (userMergePoint === '') ? startPoint : parseInt(userMergePoint) 
             const branchName = RIBC.manage.addBranch(currentProject, currentBranch, startPoint, mergePoint);
@@ -2379,6 +2419,7 @@
             getRef('updates_page__project_selector').reset()
             getRef('updates_page__intern_selector').reset()
             getRef('updates_page__date_selector').value = ''
+            renderFilteredUpdates()
         }
 
         getRef('updates_page__project_selector').addEventListener('change', renderFilteredUpdates)
@@ -2457,6 +2498,12 @@
                 }
             })
         }
+
+        getRef('admin_fab__options').addEventListener('click', e => {
+            if(e.target.closest('.fab-actions__item')){
+                toggleFab()
+            }
+        })
 
         function toggleFab() {
             if(getRef('admin_fab').hasAttribute('open')){

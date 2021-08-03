@@ -549,7 +549,7 @@ ul {
     opacity: 1;
   }
 }
-.title {
+.task-title {
   font-weight: 500;
 }
 
@@ -744,11 +744,11 @@ ul {
 }
 
 .branch-button {
+  margin-bottom: 0.5rem;
   display: flex;
   border-radius: 0;
   padding: 0.5rem;
   border-radius: 0.2rem;
-  margin: 0.5rem 0.5rem 0.5rem 0;
   text-transform: capitalize;
   justify-self: start;
   align-items: center;
@@ -768,7 +768,7 @@ ul {
 }
 
 #task_list {
-  padding-bottom: 1.5rem;
+  padding: 1rem 0 1.5rem 0;
 }
 
 .task-list-item {
@@ -790,7 +790,7 @@ ul {
   font-weight: 500;
   margin: 0;
 }
-.task-list-item .title {
+.task-list-item .task-title {
   grid-area: title;
   line-height: 1.6;
 }
@@ -808,6 +808,7 @@ ul {
   background-color: transparent;
   padding: 0;
   padding-left: 2rem;
+  margin: 0.5rem 0;
 }
 .task__branch_container .branch-button::before {
   position: absolute;
@@ -1226,6 +1227,8 @@ ul {
 }
 
 input[type=date] {
+  display: flex;
+  width: 100%;
   padding: 0.5rem;
   border: rgba(var(--text-color), 0.2) solid thin;
   border-radius: 0.3rem;
@@ -1322,6 +1325,7 @@ input[type=date]:focus {
 
   #main_nav {
     padding: 0.5rem;
+    background-color: rgba(var(--background-color), 1);
     flex-direction: column;
   }
   #main_nav theme-toggle {
@@ -1349,6 +1353,10 @@ input[type=date]:focus {
 
   .project-card--active {
     background-color: rgba(var(--text-color), 0.1);
+  }
+
+  .page {
+    background-color: var(--foreground-color);
   }
 
   #sign_in {
@@ -1393,7 +1401,7 @@ input[type=date]:focus {
     grid-template-areas: "left right";
   }
 
-  #project_explorer #left {
+  #project_explorer__left {
     grid-area: left;
     height: 100%;
     overflow-y: auto;
@@ -1402,14 +1410,14 @@ input[type=date]:focus {
     background-color: rgba(var(--background-color), 1);
   }
 
-  #project_explorer #left h4 {
+  #project_explorer__left h4 {
     margin-top: 0;
     margin-bottom: 0.5rem;
     color: var(--accent-color);
     font-size: 0.9rem;
   }
 
-  #project_explorer #project_explorer__right {
+  #project_explorer__right {
     grid-area: right;
     height: 100%;
     overflow-y: auto;
@@ -1477,6 +1485,8 @@ input[type=date]:focus {
   }
 
   #settings_page {
+    height: 100%;
+    align-items: flex-start;
     padding: 1rem 2rem;
   }
 

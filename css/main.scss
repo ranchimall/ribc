@@ -572,7 +572,7 @@ ul {
     }
 }
 
-.title {
+.task-title {
     font-weight: 500;
 }
 
@@ -768,11 +768,11 @@ ul {
 }
 
 .branch-button {
+    margin-bottom: 0.5rem;
     display: flex;
     border-radius: 0;
     padding: 0.5rem;
     border-radius: 0.2rem;
-    margin: 0.5rem 0.5rem 0.5rem 0;
     text-transform: capitalize;
     justify-self: start;
     align-items: center;
@@ -792,7 +792,7 @@ ul {
 }
 
 #task_list{
-    padding-bottom: 1.5rem;
+    padding: 1rem 0 1.5rem 0;
 }
 .task-list-item {
     display: grid;
@@ -816,7 +816,7 @@ ul {
         margin: 0;
     }
     
-    .title {
+    .task-title {
         grid-area: title;
         line-height: 1.6;
     }
@@ -835,6 +835,7 @@ ul {
         background-color: transparent;
         padding: 0;
         padding-left: 2rem;
+        margin: 0.5rem 0;
         &::before{
             position: absolute;
             content: '';
@@ -1256,6 +1257,8 @@ ul {
     gap: 1.5rem;
 }
 input[type="date"]{
+    display: flex;
+    width: 100%;
     padding: 0.5rem;
     border: rgba(var(--text-color), 0.2) solid thin;
     border-radius: 0.3rem;
@@ -1345,6 +1348,7 @@ input[type="date"]{
 
     #main_nav {
         padding: 0.5rem;
+        background-color: rgba(var(--background-color), 1);
         flex-direction: column;
         theme-toggle{
             margin: 1rem;
@@ -1377,6 +1381,9 @@ input[type="date"]{
         &--active{
             background-color: rgba(var(--text-color), 0.1);
         }
+    }
+    .page{
+        background-color: var(--foreground-color);
     }
     
     #sign_in {
@@ -1418,7 +1425,7 @@ input[type="date"]{
         grid-template-columns: 16rem 3fr;
         grid-template-areas: 'left right';
     }
-    #project_explorer #left {
+    #project_explorer__left {
         grid-area: left;
         height: 100%;
         overflow-y: auto;
@@ -1427,14 +1434,14 @@ input[type="date"]{
         background-color: rgba(var(--background-color), 1);
     }
 
-    #project_explorer #left h4 {
+    #project_explorer__left h4 {
         margin-top: 0;
         margin-bottom: 0.5rem;
         color: var(--accent-color);
         font-size: 0.9rem;
     }
 
-    #project_explorer #project_explorer__right {
+    #project_explorer__right {
         grid-area: right;
         height: 100%;
         overflow-y: auto;
@@ -1495,6 +1502,8 @@ input[type="date"]{
         --height: 80vh;
     }
     #settings_page {
+        height: 100%;
+        align-items: flex-start;
         padding: 1rem 2rem;
     }
     .watchlist_project_card{
