@@ -1405,6 +1405,9 @@ input[type="date"]{
     #dashboard_page #project_watching_section {
         align-self: flex-start;
     }
+    #all_interns_page__header{
+        grid-template-columns: 1fr auto;
+    }
 
     #admin_page {
         padding: 1rem 0;

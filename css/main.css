@@ -1382,6 +1382,10 @@ input[type=date]:focus {
     align-self: flex-start;
   }
 
+  #all_interns_page__header {
+    grid-template-columns: 1fr auto;
+  }
+
   #admin_page {
     padding: 1rem 0;
     gap: 1rem;
