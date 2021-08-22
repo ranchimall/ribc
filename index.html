@@ -2208,9 +2208,9 @@
         }
 
         function logout() {
-            getConfirmation("Do you want to sign out?").then((result) => {
+            getConfirmation("Do you want to sign out?").then(async (result) => {
                 if (result) {
-                    floDapps.clearCredentials()
+                    await floDapps.clearCredentials()
                     onLoadStartUp()
                 }
             })
