@@ -1,5 +1,6 @@
 (function() {
     const Ribc = window.RIBC = {};
+    const Admin = Ribc.admin = {};
 
     Ribc.init = function(isSubAdmin = false) {
         return new Promise((resolve, reject) => {
@@ -29,21 +30,21 @@
 
     function refreshGeneralData(isSubAdmin) {
         return new Promise((resolve, reject) => {
-            var generalDataList = ["InternUpdates"]
-            var subAdminOnlyList = []
-
-            if (isSubAdmin) {
-                generalDataList.push("TaskRequests", "InternRequests")
-                subAdminOnlyList.push("RequestStatus")
-            }
-            var promises = []
+            var generalDataList = ["InternUpdates"],
+                subAdminOnlyList = [],
+                selfOnlyList = [];
+            (isSubAdmin ? generalDataList : selfOnlyList).push("TaskRequests", "InternRequests");
+            let promises = [];
             for (let data of generalDataList)
                 promises.push(floCloudAPI.requestGeneralData(data))
             for (let data of subAdminOnlyList)
                 promises.push(floCloudAPI.requestGeneralData(data, {
                     senderID: floGlobals.subAdmins
                 }));
-
+            for (let data of selfOnlyList)
+                promises.push(floCloudAPI.requestGeneralData(data, {
+                    senderID: floDapps.user.id
+                }));
             Promise.all(promises)
                 .then(results => resolve('General Data Refreshed Successfully'))
                 .catch(error => reject(error))
@@ -69,7 +70,8 @@
             return {
                 floID: data.sender,
                 update: data.message,
-                time: data.vectorClock.split('_')[0]
+                time: data.vectorClock.split('_')[0],
+                note: data.note
             }
         })
         internUpdates = internUpdates.filter(data => data.floID in _.internList)
@@ -78,6 +80,14 @@
             internUpdates = internUpdates.slice(0, count)
         return internUpdates;
     }
+
+    Admin.commentInternUpdate = (vectorClock, comment) => new Promise((resolve, reject) => {
+        if (!(vectorClock in floGlobals.generalDataset("InternUpdates")))
+            return reject("Intern update not found");
+        floCloudAPI.noteApplicationData(vectorClock, comment)
+            .then(result => resolve(result))
+            .catch(error => reject(error))
+    });
 
     Ribc.applyForTask = (projectCode, branch, task, comments = '') => new Promise((resolve, reject) => {
         floCloudAPI.sendGeneralData([projectCode, branch, task, comments], "TaskRequests")
@@ -95,8 +105,6 @@
     Ribc.getInternRating = (floID) => _.internRating[floID];
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
 
-    const Admin = Ribc.admin = {};
-
     Admin.updateObjects = () => new Promise((resolve, reject) => {
         floCloudAPI.updateObjectData("RIBC")
             .then(result => resolve(result))
@@ -112,54 +120,46 @@
     Admin.addProjectDetails = function(projectCode, details) {
         if (!(projectCode in _.projectMap))
             return "Project not Found!";
-        _.projectDetails[projectCode] = details
+        if (projectCode in _.projectDetails && typeof projectCode === 'object' && typeof details === 'object')
+            for (let d in details)
+                _.projectDetails[projectCode][d] = details[d];
+        else
+            _.projectDetails[projectCode] = details;
         return "added project details for " + projectCode;
-    }
-
-    Admin.setRequestStatus = (vectorClock, status) => new Promise((resolve, reject) => {
-        floCloudAPI.sendGeneralData({
-            vectorClock,
-            status
-        }, "RequestStatus").then(result => resolve(result)).catch(error => reject(error))
-    });
-
-    const getRequestStatus = Admin.getRequestStatus = function(vectorClock = null) {
-        let requestStatus = Object.values(floGlobals.generalDataset("RequestStatus"));
-        if (vectorClock) {
-            for (let data of requestStatus) {
-                if (data.message.vectorClock === vectorClock)
-                    return data.message.status
-            }
-            return false
-        } else {
-            let applicationStatus = {};
-            for (let data of requestStatus)
-                applicationStatus[data.message.vectorClock] = data.message.status
-            return applicationStatus
-        }
     }
 
     Admin.getInternRequests = function(ignoreProcessed = true) {
         var internRequests = Object.values(floGlobals.generalDataset("InternRequests")).map(data => {
             return {
-                floID: data.sender,
+                floID: data.senderID,
                 vectorClock: data.vectorClock,
                 name: data.message[0],
-                comments: data.message[1]
+                comments: data.message[1],
+                status: data.note
             }
         })
         //filter existing interns
         internRequests = internRequests.filter(data => !(data.floID in _.internList))
         //filter processed requests
-        var applicationStatus = getRequestStatus()
         if (ignoreProcessed)
-            internRequests = internRequests.filter(data => !(data.vectorClock in applicationStatus))
-        else
-            internRequests.forEach(data => data.status = applicationStatus[data.vectorClock])
+            internRequests = internRequests.filter(data => !data.status);
         return internRequests;
     }
 
-    Admin.addIntern = function(floID, internName) {
+    Admin.processInternRequest = function(vectorClock, accept = true) {
+        let request = floGlobals.generalDataset("InternRequests")[vectorClock];
+        if (!request)
+            return "Request not found";
+        var status;
+        if (accept && addIntern(request.senderID, request.message[0]))
+            status = "Accepted";
+        else
+            status = "Rejected";
+        floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
+        return status;
+    }
+
+    const addIntern = Admin.addIntern = function(floID, internName) {
         if (floID in _.internList)
             return false
         _.internList[floID] = internName
@@ -177,27 +177,37 @@
     Admin.getTaskRequests = function(ignoreProcessed = true) {
         var taskRequests = Object.values(floGlobals.generalDataset("TaskRequests")).map(data => {
             return {
-                floID: data.sender,
+                floID: data.senderID,
                 vectorClock: data.vectorClock,
                 projectCode: data.message[0],
                 branch: data.message[1],
                 task: data.message[2],
-                comments: data.message[3]
+                comments: data.message[3],
+                status: data.note
             }
         })
         //filter only intern requests
         taskRequests = taskRequests.filter(data => data.floID in _.internList)
         //filter processed requests
-        var applicationStatus = getRequestStatus()
         if (ignoreProcessed)
-            taskRequests = taskRequests.filter(data => !(data.vectorClock in applicationStatus))
-        else
-            taskRequests.forEach(data => data.status = applicationStatus[data.vectorClock])
+            taskRequests = taskRequests.filter(data => !data.status)
         return taskRequests
     }
 
+    Admin.processTaskRequest = function(vectorClock, accept = true) {
+        let request = floGlobals.generalDataset("TaskRequests")[vectorClock];
+        if (!request)
+            return "Request not found";
+        var status;
+        if (accept && assignInternToTask(request.senderID, request.message[0], request.message[1], request.message[2]))
+            status = "Accepted";
+        else
+            status = "Rejected";
+        floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
+        return status;
+    }
 
-    Admin.assignInternToTask = function(floID, projectCode, branch, taskNumber) {
+    const assignInternToTask = Admin.assignInternToTask = function(floID, projectCode, branch, taskNumber) {
         var index = projectCode + "_" + branch + "_" + taskNumber
         if (!Array.isArray(_.internsAssigned[index]))
             _.internsAssigned[index] = []
