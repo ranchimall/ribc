@@ -25,12 +25,13 @@
     <script src="scripts/compactIDB.js"></script>
     <script src="scripts/floCloudAPI.js"></script>
     <script src="scripts/floDapps.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.0/dist/purify.min.js" defer></script>
+    <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.0/dist/purify.min.js" defer></script>
     <script src="scripts/ribc.js"></script>
     <script id="onLoadStartUp">
         function onLoadStartUp() {
-           floDapps.setCustomPrivKeyInput(customSignIn);
+            floDapps.setCustomPrivKeyInput(customSignIn);
             floDapps.launchStartUp().then(result => {
                 loader('show')
                 console.log(result)
@@ -48,10 +49,6 @@
 
 <body onload="onLoadStartUp()">
     <sm-notifications id="notification_drawer"></sm-notifications>
-    <audio id="notification_sound">
-        <source src="https://rmservices.duckdns.org/files/notification-sound.mp3" type="audio/mpeg">
-        <source src="https://rmservices.duckdns.org/files/notification-sound.ogg" type="audio/ogg">
-    </audio>
     <sm-popup id="confirmation_popup">
         <h4 id="confirm_title"></h4>
         <p id="confirm_message"></p>
@@ -127,7 +124,7 @@
             </svg>
         </footer>
     </section>
-    <article id="sign_in_page" class="hide-completely">
+    <article id="sign_in_page" class="hidden">
         <h2>Sign In</h2>
         <p>Welcome to RIBC.</p>
         <sm-form id="sign_in_form" class="grid gap-1">
@@ -194,7 +191,7 @@
                     Updates
                 </span>
             </a>
-            <a id="admin_page_btn" href="#admin_page" class="admin-options nav-list__item interact"
+            <a id="admin_page_btn" href="#admin_page" class="admin-option nav-list__item interact"
                 title="open admin panel">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
@@ -238,7 +235,7 @@
                     <div id="project_watchlist" class="observe-empty-state"></div>
                     <h4 class="empty-state">No project added to watchlist.</h4>
                 </section>
-                <section id="intern_view" class="hide-completely intern-option">
+                <section id="intern_view" class="hidden intern-option">
                     <h2>My tasks</h2>
                     <ul id="assigned_task_list"></ul>
                 </section>
@@ -271,7 +268,7 @@
                     </div>
                 </section>
             </section>
-            <section id="settings_page" class="page hide-completely">
+            <section id="settings_page" class="page hidden">
                 <section class="grid gap-0-5">
                     <h2 id="username" class="capitalize"></h2>
                     <div id="user_role"></div>
@@ -287,8 +284,8 @@
                     </sm-button>
                 </section>
             </section>
-            <section id="admin_page" class="page hide-completely">
-                <section id="admin_page__left" class="flex direction-column">
+            <section id="admin_page" class="page hidden">
+                <section id="admin_page__left" class="flex flex-direction-column">
                     <sm-tab-header target="admin_tabs">
                         <sm-tab>Projects</sm-tab>
                         <sm-tab>Interns</sm-tab>
@@ -309,11 +306,25 @@
                         </section>
                     </sm-tab-panels>
                 </section>
-                <section id="project_editing_panel" class="inner-page hide-on-mobile">
-                    <h2 id="editing_panel__title"></h2>
-                    <p id="editing_panel__description"></p>
+                <section id="project_editing_panel" class="inner-page hide-on-mobile hidden">
+                    <div id="project_details_wrapper" class="grid gap-1 margin-bottom-2">
+                        <div class="flex gap-0-5 flex-wrap align-items-start">
+                            <h2 id="editing_panel__title" data-editable></h2>
+                            <button class="button button--small  admin-option" title="Edit this title"
+                                onclick="makeEditable(this.previousElementSibling)">
+                                Edit
+                            </button>
+                        </div>
+                        <div class="flex gap-0-5 flex-wrap align-items-start">
+                            <p id="editing_panel__description" data-editable></p>
+                            <button class="button button--small admin-option" title="Edit this description"
+                                onclick="makeEditable(this.previousElementSibling)">
+                                Edit
+                            </button>
+                        </div>
+                    </div>
                     <h4>Tasks</h4>
-                    <!-- <div id="branch_container"></div> -->
+                    <div id="branch_container"></div>
                     <ul id="task_list" class="grid gap-1 observe-empty-state"></ul>
                     <h4 class="empty-state">No tasks added yet, tasks will appear here after adding them.</h4>
                     <sm-button id="add_task" title="show element to add new task" onclick="addPlaceholderTask()">
@@ -323,7 +334,7 @@
                         </svg>
                         Add task
                     </sm-button>
-                    <ul id="task_context" class="hide-completely">
+                    <ul id="task_context" class="hidden">
                         <li id="assign_intern" tabindex="0" class="interact" onclick="toggleEditing('title')">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                 height="24">
@@ -342,7 +353,7 @@
                             </svg>
                             Edit description
                         </li>
-                        <li id="assign_intern" tabindex="0" class="interact" onclick="showPopup('intern_list_popup')">
+                        <li id="assign_intern" tabindex="0" class="interact" onclick="openPopup('intern_list_popup')">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                 height="24">
                                 <path fill="none" d="M0 0h24v24H0z" />
@@ -372,8 +383,8 @@
                     </ul>
                 </section>
                 <section id="admin_fab" class="fab-actions">
-                    <ul id="admin_fab__options" class="grid gap-0-5 hide-completely">
-                        <li class="fab-actions__item interact" onclick="showPopup('add_project_popup')">
+                    <ul id="admin_fab__options" class="grid gap-0-5 hidden">
+                        <li class="fab-actions__item interact" onclick="openPopup('add_project_popup')">
                             <span class="fab-actions__item-name">
                                 Add project
                             </span>
@@ -384,7 +395,7 @@
                                     d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 5v14h16V7h-8.414l-2-2H4zm7 7V9h2v3h3v2h-3v3h-2v-3H8v-2h3z" />
                             </svg>
                         </li>
-                        <li class="fab-actions__item interact" onclick="showPopup('add_intern_popup')">
+                        <li class="fab-actions__item interact" onclick="openPopup('add_intern_popup')">
                             <span class="fab-actions__item-name">
                                 Add intern
                             </span>
@@ -421,7 +432,7 @@
                 </section>
                 <div id="fab_backdrop" onclick="toggleFab()"></div>
             </section>
-            <section id="updates_page" class="page hide-completely">
+            <section id="updates_page" class="page hidden">
                 <sm-button class="hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</sm-button>
                 <section id="update_filters_wrapper" class="grid hide-on-mobile">
                     <h4>Filter</h4>
@@ -445,7 +456,7 @@
                     <h4 class="empty-state">No related updates</h4>
                 </section>
             </section>
-            <section id="all_interns_page" class="page hide-completely">
+            <section id="all_interns_page" class="page hidden">
                 <div id="all_interns_page__header" class="grid gap-0-5">
                     <h2>Interns</h2>
                     <sm-input id="interns_page__search" placeholder="Search">
@@ -460,11 +471,11 @@
                 <ul id="all_interns_list" class="grid observe-empty-state"></ul>
                 <h4 class="empty-state">No intern found</h4>
             </section>
-            <section id="project_explorer" class="page hide-completely">
+            <section id="project_explorer" class="page hidden">
                 <div id="project_explorer__left" class="list-container">
-                    <h4 class="padding intern-option hide-completely">My projects</h4>
+                    <h4 class="padding intern-option hidden">My projects</h4>
                     <div></div>
-                    <h4 class="padding intern-option hide-completely">Other projects</h4>
+                    <h4 class="padding intern-option hidden">Other projects</h4>
                     <div></div>
                 </div>
                 <section id="project_explorer__right" class="grid hide-on-mobile">
@@ -476,7 +487,7 @@
                         </sm-button>
                     </header>
                     <p id="project_explorer__project_description"></p>
-                    <!-- <div id="explorer_branch_container"></div> -->
+                    <div id="explorer_branch_container" class="flex align-center flex-wrap gap-0-3"></div>
                     <h4></h4>
                     <div id="explorer_task_list" class="observe-empty-state"></div>
                     <h4 class="empty-state">No tasks are added to this projects</h4>
@@ -487,7 +498,7 @@
 
     <sm-popup id="intern_info_popup">
         <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="hidePopup()">
+            <button class="popup__header__close" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path
@@ -509,7 +520,7 @@
                     </svg>
                     <h4 id="intern_info__score"></h4>
                 </div>
-                <div class="flex admin-options hide-completely">
+                <div class="flex admin-option hidden">
                     <sm-button id="reduce_score_button" title="increase intern score" onclick="changeScore(-1)">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
@@ -529,7 +540,7 @@
 
     <sm-popup id="intern_list_popup">
         <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="hidePopup()">
+            <button class="popup__header__close" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path
@@ -551,7 +562,7 @@
 
     <sm-popup id="add_project_popup">
         <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="hidePopup()">
+            <button class="popup__header__close" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path
@@ -561,8 +572,8 @@
             <h3>Add new project</h3>
         </header>
         <sm-form>
-            <sm-input id="project_name_field" placeholder="Name" required></sm-input>
-            <sm-textarea id="project_description_field" placeholder="Description" required></sm-textarea>
+            <sm-input id="project_name_field" placeholder="Name" autofocus required></sm-input>
+            <sm-textarea id="project_description_field" placeholder="Description" rows="4" required></sm-textarea>
             <sm-button variant="primary" onclick="addProjectToList()" disabled>
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -574,7 +585,7 @@
     </sm-popup>
     <sm-popup id="add_intern_popup">
         <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="hidePopup()">
+            <button class="popup__header__close" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path
@@ -598,7 +609,7 @@
     </sm-popup>
     <sm-popup id="create_branch_popup">
         <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="hidePopup()">
+            <button class="popup__header__close" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path
@@ -621,7 +632,7 @@
     </sm-popup>
     <sm-popup id="post_update_popup">
         <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="hidePopup()">
+            <button class="popup__header__close" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path
@@ -684,7 +695,7 @@
     <template id="task_list_item_template">
         <li class="task-list-item">
             <sm-checkbox title="Mark this task as completed"></sm-checkbox>
-            <h4 class="task-title capitalize"></h4>
+            <h4 class="task-title capitalize" data-editable></h4>
             <button class="task-option">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -693,7 +704,7 @@
                 </svg>
             </button>
             <div class="assigned-interns"></div>
-            <p class="task-description"></p>
+            <p class="task-description" data-editable></p>
             <div class="task__branch_container"></div>
         </li>
     </template>
@@ -752,33 +763,34 @@
             <h5 class="project__complete-percent"></h5>
         </a>
     </template>
+    <script>
+        /*jshint esversion: 8 */
+        /**
+          * @yaireo/relative-time - javascript function to transform timestamp or date to local relative-time
+          *
+          * @version v1.0.0
+          * @homepage https://github.com/yairEO/relative-time
+          */
+
+        !function (e, t) { var o = o || {}; "function" == typeof o && o.amd ? o([], t) : "object" == typeof exports && "object" == typeof module ? module.exports = t() : "object" == typeof exports ? exports.RelativeTime = t() : e.RelativeTime = t() }(this, (function () { const e = { year: 31536e6, month: 2628e6, day: 864e5, hour: 36e5, minute: 6e4, second: 1e3 }, t = "en", o = { numeric: "auto" }; function n(e) { e = { locale: (e = e || {}).locale || t, options: { ...o, ...e.options } }, this.rtf = new Intl.RelativeTimeFormat(e.locale, e.options) } return n.prototype = { from(t, o) { const n = t - (o || new Date); for (let t in e) if (Math.abs(n) > e[t] || "second" == t) return this.rtf.format(Math.round(n / e[t]), t) } }, n }));
+
+        const relativeTime = new RelativeTime({ style: 'narrow' });
+    </script>
     <script id="default_ui_library">
         // Global variables
         const appPages = ['dashboard_page', 'admin_page', 'settings_page', 'project_explorer', 'updates_page', 'all_interns_page'];
-        const domRefs = {};
-        let timerId;
-        let zIndex = 10;
-        const currentYear = new Date().getFullYear();
-
+        const { html, render: renderElem } = uhtml;
+        const domRefs = {}
         //Checks for internet connection status
         if (!navigator.onLine)
-            notify(
-                "There seems to be a problem connecting to the internet, Please check you internet connection.",
-                "error",
-                { sound: true }
-            );
-        window.addEventListener("offline", () => {
-            notify(
-                "There seems to be a problem connecting to the internet, Please check you internet connection.",
-                "error",
-                { pinned: true, sound: true }
-            );
-        });
-        window.addEventListener("online", () => {
-            getRef("notification_drawer").clearAll();
-            notify("We are back online.", "success");
-        });
-
+            notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error', '', true)
+        window.addEventListener('offline', () => {
+            notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error', true, true)
+        })
+        window.addEventListener('online', () => {
+            getRef('notification_drawer').clearAll()
+            notify('We are back online.', 'success')
+        })
         // Use instead of document.getElementById
         function getRef(elementId) {
             if (!domRefs.hasOwnProperty(elementId)) {
@@ -800,7 +812,7 @@
         }
 
         // returns dom with specified element
-        function createElement(tagName, options) {
+        function createElement(tagName, options = {}) {
             const { className, textContent, innerHTML, attributes = {} } = options
             const elem = document.createElement(tagName)
             for (let attribute in attributes) {
@@ -826,61 +838,27 @@
             };
         }
 
-        // Limits the rate of function execution
-        function throttle(func, delay) {
-            // If setTimeout is already scheduled, no need to do anything
-            if (timerId) {
-                return;
-            }
-
-            // Schedule a setTimeout after delay seconds
-            timerId = setTimeout(function () {
-                func();
-
-                // Once setTimeout function execution is finished, timerId = undefined so that in
-                // the next scroll event function execution can be scheduled by the setTimeout
-                timerId = undefined;
-            }, delay);
-        }
-
-        class Stack {
-            constructor() {
-                this.items = [];
-            }
-            push(element) {
-                this.items.push(element);
-            }
-            pop() {
-                if (this.items.length == 0)
-                    return "Underflow";
-                return this.items.pop();
-            }
-            peek() {
-                return this.items[this.items.length - 1];
-            }
-        }
-
-        let popupStack = new Stack()
-
+        let zIndex = 50
         // function required for popups or modals to appear
-        function showPopup(popupId, pinned) {
+        function openPopup(popupId, pinned) {
             zIndex++
             getRef(popupId).setAttribute('style', `z-index: ${zIndex}`)
-            popupStack = getRef(popupId).show({ pinned, popupStack })
+            getRef(popupId).show({ pinned })
             return getRef(popupId);
         }
 
-        // hides the popup or modal 
-        function hidePopup() {
+        // hides the popup or modal
+        function closePopup() {
             if (popupStack.peek() === undefined)
                 return;
             popupStack.peek().popup.hide()
         }
 
+
         // displays a popup for asking permission. Use this instead of JS confirm
         const getConfirmation = (title, message, cancelText = 'Cancel', confirmText = 'OK') => {
             return new Promise(resolve => {
-                showPopup('confirmation_popup', true)
+                openPopup('confirmation_popup', true)
                 getRef('confirm_title').textContent = title;
                 getRef('confirm_message').textContent = message;
                 let cancelButton = getRef('confirmation_popup').children[2].children[0],
@@ -888,73 +866,42 @@
                 submitButton.textContent = confirmText
                 cancelButton.textContent = cancelText
                 submitButton.onclick = () => {
-                    hidePopup()
+                    closePopup()
                     resolve(true);
                 }
                 cancelButton.onclick = () => {
-                    hidePopup()
+                    closePopup()
                     resolve(false);
-                }
-            })
-        }
-
-        // displays a popup for asking user input. Use this instead of JS prompt
-        async function getPromptInput(title, message = '', isPassword = true, cancelText = 'Cancel', confirmText = 'OK') {
-            showPopup('prompt_popup', true)
-            getRef('prompt_title').textContent = title;
-            let input = getRef('prompt_input');
-            input.setAttribute("placeholder", message)
-            let buttons = getRef('prompt_popup').querySelectorAll("sm-button");
-            if (isPassword)
-                input.setAttribute("type", "text")
-            else
-                input.setAttribute("type", "password")
-            input.focusIn()
-            buttons[0].textContent = cancelText;
-            buttons[1].textContent = confirmText;
-            return new Promise((resolve, reject) => {
-                buttons[0].onclick = () => {
-                    hidePopup()
-                    return;
-                }
-                buttons[1].onclick = () => {
-                    let value = input.value;
-                    hidePopup()
-                    resolve(value)
                 }
             })
         }
 
         //Function for displaying toast notifications. pass in error for mode param if you want to show an error.
         function notify(message, mode, options = {}) {
-            if (mode === 'error') {
-                console.error(message)
-            }
-            const { pinned = false, sound = false } = options
             let icon
             switch (mode) {
                 case 'success':
-                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>`
+                    icon = `<svg class="icon icon--success" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>`
                     break;
                 case 'error':
-                    icon = `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/></svg>`
+                    icon = `<svg class="icon icon--error" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-7v2h2v-2h-2zm0-8v6h2V7h-2z"/></svg>`
+                    options.pinned = true
                     break;
             }
-            getRef("notification_drawer").push(message, { pinned, icon });
-            if (navigator.onLine && sound) {
-                getRef("notification_sound").currentTime = 0;
-                getRef("notification_sound").play();
+            getRef("notification_drawer").push(message, { icon, ...options });
+            if (mode === 'error') {
+                console.error(message)
             }
         }
 
         window.addEventListener('hashchange', e => showPage(window.location.hash))
         window.addEventListener("load", () => {
-            document.body.classList.remove('hide-completely')
+            document.body.classList.remove('hidden')
             document.querySelectorAll('sm-input[data-flo-id]').forEach(input => input.customValidation = floCrypto.validateAddr)
             document.querySelectorAll('sm-input[data-private-key]').forEach(input => input.customValidation = floCrypto.getPubKeyHex)
             document.addEventListener('keyup', (e) => {
                 if (e.code === 'Escape') {
-                    hidePopup()
+                    closePopup()
                 }
             })
             document.addEventListener("pointerdown", (e) => {
@@ -979,12 +926,12 @@
             const rippleAnimation = circle.animate(
                 [
                     {
-                        transform: "scale(3)",
+                        transform: "scale(4)",
                         opacity: 0,
                     },
                 ],
                 {
-                    duration: 1000,
+                    duration: 600,
                     fill: "forwards",
                     easing: "ease-out",
                 }
@@ -1024,33 +971,43 @@
             return selectedColors[Math.floor(Math.random() * selectedColors.length)];
         }
 
-        function getFormatedTime(time, relative) {
+        function getFormattedTime(timestamp, format) {
             try {
-                if (String(time).indexOf("_")) time = String(time).split("_")[0];
-                const intTime = parseInt(time);
-                if (String(intTime).length < 13) time *= 1000;
-                let timeFrag = new Date(intTime).toString().split(" "),
-                    day = timeFrag[0],
-                    month = timeFrag[1],
-                    date = timeFrag[2],
-                    year = timeFrag[3],
-                    minutes = new Date(intTime).getMinutes(),
-                    hours = new Date(intTime).getHours(),
-                    currentTime = new Date().toString().split(" ");
+                if (String(timestamp).length < 13)
+                    timestamp *= 1000
+                let [day, month, date, year] = new Date(timestamp).toString().split(' '),
+                    minutes = new Date(timestamp).getMinutes(),
+                    hours = new Date(timestamp).getHours(),
+                    currentTime = new Date().toString().split(' ')
 
-                minutes = minutes < 10 ? `0${minutes}` : minutes;
+                minutes = minutes < 10 ? `0${minutes}` : minutes
                 let finalHours = ``;
-                if (hours > 12) finalHours = `${hours - 12}:${minutes}`;
-                else if (hours === 0) finalHours = `12:${minutes}`;
-                else finalHours = `${hours}:${minutes}`;
+                if (hours > 12)
+                    finalHours = `${hours - 12}:${minutes}`
+                else if (hours === 0)
+                    finalHours = `12:${minutes}`
+                else
+                    finalHours = `${hours}:${minutes}`
 
-                finalHours = hours >= 12 ? `${finalHours} PM` : `${finalHours} AM`;
-                if (relative) {
-                    return `${date} ${month} ${year}`;
-                } else return `${finalHours} ${month} ${date} ${year}`;
+                finalHours = hours >= 12 ? `${finalHours} PM` : `${finalHours} AM`
+                switch (format) {
+                    case 'date-only':
+                        return `${month} ${date}, ${year}`;
+                        break;
+                    case 'time-only':
+                        return finalHours;
+                    case 'relative':
+                        // check if timestamp is older than a day
+                        if (Date.now() - new Date(timestamp) < 60 * 60 * 24 * 1000)
+                            return `${finalHours}`;
+                        else
+                            return relativeTime.from(timestamp)
+                    default:
+                        return `${month} ${date}, ${year} at ${finalHours}`;
+                }
             } catch (e) {
                 console.error(e);
-                return time;
+                return timestamp;
             }
         }
 
@@ -1082,8 +1039,8 @@
                 const urlSearchParams = new URLSearchParams('?' + searchParams);
                 params = Object.fromEntries(urlSearchParams.entries());
             }
-            if (pageId !== lastPage && document.querySelector('.page:not(.hide-completely)')) {
-                document.querySelector('.page:not(.hide-completely)').classList.add('hide-completely')
+            if (pageId !== lastPage && document.querySelector('.page:not(.hidden)')) {
+                document.querySelector('.page:not(.hidden)').classList.add('hidden')
             }
             if (document.querySelector('.nav-list__item--active'))
                 document.querySelector('.nav-list__item--active').classList.remove('nav-list__item--active')
@@ -1162,11 +1119,127 @@
             if (pageId !== 'dashboard_page') {
                 getRef('project_watchlist').innerHTML = ''
             }
-            getRef(pageId).classList.remove('hide-completely')
+            getRef(pageId).classList.remove('hidden')
             lastPage = pageId
             lastParams
         }
+        // class based lazy loading
+        class LazyLoader {
+            constructor(container, elementsToRender, renderFn, options = {}) {
+                const { batchSize = 10, freshRender, bottomFirst = false, domUpdated } = options
 
+                this.elementsToRender = elementsToRender
+                this.arrayOfElements = (typeof elementsToRender === 'function') ? this.elementsToRender() : elementsToRender || []
+                this.renderFn = renderFn
+                this.intersectionObserver
+
+                this.batchSize = batchSize
+                this.freshRender = freshRender
+                this.domUpdated = domUpdated
+                this.bottomFirst = bottomFirst
+
+                this.shouldLazyLoad = false
+                this.lastScrollTop = 0
+                this.lastScrollHeight = 0
+
+                this.lazyContainer = document.querySelector(container)
+
+                this.update = this.update.bind(this)
+                this.render = this.render.bind(this)
+                this.init = this.init.bind(this)
+                this.clear = this.clear.bind(this)
+            }
+            get elements() {
+                return this.arrayOfElements
+            }
+            init() {
+                this.intersectionObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            observer.disconnect()
+                            this.render({ lazyLoad: true })
+                        }
+                    })
+                }, {
+                    root: this.lazyContainer
+                })
+                this.mutationObserver = new MutationObserver(mutationList => {
+                    mutationList.forEach(mutation => {
+                        if (mutation.type === 'childList') {
+                            if (mutation.addedNodes.length) {
+                                if (this.bottomFirst) {
+                                    if (this.lazyContainer.firstElementChild)
+                                        this.intersectionObserver.observe(this.lazyContainer.firstElementChild)
+                                } else {
+                                    if (this.lazyContainer.lastElementChild)
+                                        this.intersectionObserver.observe(this.lazyContainer.lastElementChild)
+                                }
+                            }
+                        }
+                    })
+                })
+                this.mutationObserver.observe(this.lazyContainer, {
+                    childList: true,
+                })
+                this.render()
+            }
+            update(elementsToRender) {
+                this.arrayOfElements = (typeof elementsToRender === 'function') ? this.elementsToRender() : elementsToRender || []
+            }
+            render(options = {}) {
+                let { lazyLoad = false } = options
+                this.shouldLazyLoad = lazyLoad
+                const frag = document.createDocumentFragment();
+                if (lazyLoad) {
+                    if (this.bottomFirst) {
+                        this.updateEndIndex = this.updateStartIndex
+                        this.updateStartIndex = this.updateEndIndex - this.batchSize
+                    } else {
+                        this.updateStartIndex = this.updateEndIndex
+                        this.updateEndIndex = this.updateEndIndex + this.batchSize
+                    }
+                } else {
+                    this.intersectionObserver.disconnect()
+                    if (this.bottomFirst) {
+                        this.updateEndIndex = this.arrayOfElements.length
+                        this.updateStartIndex = this.updateEndIndex - this.batchSize - 1
+                    } else {
+                        this.updateStartIndex = 0
+                        this.updateEndIndex = this.batchSize
+                    }
+                    this.lazyContainer.innerHTML = ``;
+                }
+                this.lastScrollHeight = this.lazyContainer.scrollHeight
+                this.lastScrollTop = this.lazyContainer.scrollTop
+                this.arrayOfElements.slice(this.updateStartIndex, this.updateEndIndex).forEach((element, index) => {
+                    frag.append(this.renderFn(element))
+                })
+                if (this.bottomFirst) {
+                    this.lazyContainer.prepend(frag)
+                    // scroll anchoring for reverse scrolling
+                    this.lastScrollTop += this.lazyContainer.scrollHeight - this.lastScrollHeight
+                    this.lazyContainer.scrollTo({ top: this.lastScrollTop })
+                    this.lastScrollHeight = this.lazyContainer.scrollHeight
+                } else {
+                    this.lazyContainer.append(frag)
+                }
+                if (!lazyLoad && this.bottomFirst) {
+                    this.lazyContainer.scrollTop = this.lazyContainer.scrollHeight
+                }
+                // Callback to be called if elements are updated or rendered for first time
+                if (!lazyLoad && this.freshRender)
+                    this.freshRender()
+            }
+            clear() {
+                this.intersectionObserver.disconnect()
+                this.mutationObserver.disconnect()
+                this.lazyContainer.innerHTML = ``;
+            }
+            reset() {
+                this.arrayOfElements = (typeof this.elementsToRender === 'function') ? this.elementsToRender() : this.elementsToRender || []
+                this.render()
+            }
+        }
     </script>
     <script id="UI_functions">
         // Method object for creating various UI elements
@@ -1184,17 +1257,16 @@
             },
             taskCard(currentProject, currentBranch, taskNo) {
                 const card = getRef('timeline_task_card').content.cloneNode(true),
-                    assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo),
-                    frag = document.createDocumentFragment();
+                    assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo)
 
                 if (RIBC.getTaskStatus(currentProject, currentBranch, taskNo) === 'completed') {
                     card.firstElementChild.classList.add('completed-task')
                 }
                 if (assignedInterns || typeOfUser === 'general') {
-                    assignedInterns.forEach((internFloId) => {
-                        frag.append(render.assignedInternCard(internFloId));
+                    renderElem(card.querySelector('.assigned-interns'), html`${assignedInterns.map((internFloId) => {
+                        return render.assignedInternCard(internFloId);
                     })
-                    card.querySelector('.assigned-interns').append(frag)
+                        }`)
                 }
                 else {
                     if (typeOfUser === 'intern') {
@@ -1220,8 +1292,8 @@
                 card.querySelector('.timeline-task__description').textContent = taskDescription;
                 const branches = getAllBranches(currentProject)
                 for (const branch of branches) {
-                    const { branchName, parantBranch, startPoint, endPoint } = branch
-                    if (parantBranch === currentBranch && startPoint === taskNo) {
+                    const { branchName, parentBranch, startPoint, endPoint } = branch
+                    if (parentBranch === currentBranch && startPoint === taskNo) {
                         card.querySelector('.task__branch_container').append(
                             render.branchButton({
                                 projectId: currentProject,
@@ -1255,27 +1327,25 @@
             },
             branchButton(obj = {}) {
                 const { projectId, branch, page, innerHTML } = obj
-                return createElement('a', {
-                    className: 'branch-button',
-                    attributes: { href: `#${page}?projectId=${projectId}&branch=${branch}` },
-                    textContent: branch,
-                    innerHTML
-                });
+                return html.node`
+                    <a class="branch-button" href=${`#${page}?projectId=${projectId}&branch=${branch}`}>
+                       ${innerHTML ? html`${innerHTML}` : branch}
+                    </a>
+                `;
             },
             assignedInternCard(internFloId, options) {
-                const internCard = createElement('span', {
-                    className: 'assigned-intern',
-                    attributes: { 'data-flo-id': internFloId },
-                    textContent: RIBC.getInternList()[internFloId]
-                });
-                console.log(internFloId, RIBC.getInternList()[internFloId])
-                if (options === 'yes') {
-                    internCard.append(
-                        createElement('button', {
-                            innerHTML: `<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>`
-                        })
-                    )
+                let optionsButton
+                if (options) {
+                    optionsButton = html` <button>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+                        </button> `;
                 }
+                return html`
+                    <span class="assigned-intern" data-flo-id="${internFloId}">
+                        ${RIBC.getInternList()[internFloId]}
+                        ${optionsButton}
+                    </span>
+                `
                 return internCard;
             },
             taskListItem(taskNo) {
@@ -1290,15 +1360,16 @@
                 card.querySelector('.task-title').textContent = taskTitle;
                 card.querySelector('.task-description').textContent = taskDescription;
                 if (assignedInterns) {
-                    assignedInterns.forEach((internFloId) => {
-                        frag.appendChild(render.assignedInternCard(internFloId, 'yes'));
+                    const assignedInternsCards = assignedInterns.filter(v => v).map((internFloId) => {
+                        return render.assignedInternCard(internFloId, true);
                     })
-                    card.querySelector('.assigned-interns').append(frag)
+                    console.log(assignedInterns)
+                    renderElem(card.querySelector('.assigned-interns'), html`${assignedInternsCards}`)
                 }
                 const branches = getAllBranches(currentProject)
                 for (const branch of branches) {
-                    const { branchName, parantBranch, startPoint, endPoint } = branch
-                    if (parantBranch === currentBranch && startPoint === taskNo) {
+                    const { branchName, parentBranch, startPoint, endPoint } = branch
+                    if (parentBranch === currentBranch && startPoint === taskNo) {
                         card.querySelector('.task__branch_container').append(
                             render.branchButton({
                                 projectId: currentProject,
@@ -1427,7 +1498,7 @@
                 internFLOID = getRef('intern_flo_id_field').value.trim();
             if (RIBC.admin.addIntern(internFLOID, internName)) {
                 getRef('admin_page__intern_list').append(render.internCard(internName, internFLOID, '1'))
-                hidePopup();
+                closePopup();
                 notify(`${internName} added as an intern.`, 'success')
             }
         }
@@ -1447,8 +1518,34 @@
             RIBC.admin.createProject(projectCode)
             RIBC.admin.addProjectDetails(projectCode, { projectName, projectDescription })
             getRef('admin_page__project_list').prepend(render.projectCard(projectName, projectCode, true))
-            hidePopup();
+            closePopup();
         }
+
+        function makeEditable(elem) {
+            floGlobals.tempEditableContent = DOMPurify.sanitize(elem.innerText.trim())
+            elem.contentEditable = true
+            elem.focus()
+            document.execCommand('selectAll', false, null);
+        }
+
+        getRef('project_details_wrapper').addEventListener('dblclick', e => {
+            if (e.target.closest('[data-editable]') && !e.target.closest('[data-editable]').isContentEditable) {
+                makeEditable(e.target.closest('[data-editable]'))
+            }
+        })
+        getRef('project_details_wrapper').addEventListener('focusout', (e) => {
+            if (e.target.isContentEditable) {
+                e.target.contentEditable = false
+                if (e.target.innerText.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerText.trim())) {
+                    const newTitle = DOMPurify.sanitize(getRef('editing_panel__title').innerText.trim())
+                    const newDescription = DOMPurify.sanitize(getRef('editing_panel__description').innerText.trim())
+                    const res = RIBC.admin.addProjectDetails(currentProject, { projectName: newTitle, projectDescription: newDescription })
+                    notify('Changes saved locally, commit the changes to make them permanent', 'success')
+                } else {
+                    e.target.innerText = floGlobals.tempEditableContent
+                }
+            }
+        })
 
         // opens a popup containing various intern information
         function showInternInfo(internFloId) {
@@ -1461,7 +1558,7 @@
             if (RIBC.getInternRating(internFloId) === 1) {
                 getRef('reduce_score_button').disabled = true;
             }
-            showPopup('intern_info_popup');
+            openPopup('intern_info_popup');
         }
 
         // opens a popup containing various project information
@@ -1480,11 +1577,11 @@
                 getRef('watch_project_button').textContent = 'Watch';
             }
             getRef('project_explorer__project_description').textContent = projectDescription;
-            // getRef('explorer_branch_container').innerHTML = ``;
-            // RIBC.getProjectBranches(projectId).forEach((branch) => {
-            //     frag.append(render.branchButton({projectId, branch, page: 'project_explorer'}))
-            // })
-            // getRef('explorer_branch_container').append(frag);
+            getRef('explorer_branch_container').innerHTML = ``;
+            RIBC.getProjectBranches(projectId).forEach((branch) => {
+                frag.append(render.branchButton({ projectId, branch, page: 'project_explorer' }))
+            })
+            getRef('explorer_branch_container').append(frag);
         }
 
         let currentBranch = 'mainLine',
@@ -1499,19 +1596,19 @@
             const targetProject = Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))
             if (targetProject)
                 targetProject.classList.add('project-card--active')
-            // getRef('branch_container').innerHTML = '',
+            getRef('branch_container').innerHTML = '';
             getRef('task_list').innerHTML = '';
             currentProject = projectId;
-            // branchList.forEach((branch) => {
-            //     branch.classList.remove('active-branch')
-            // })
+            branchList.forEach((branch) => {
+                branch.classList.remove('active-branch')
+            })
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('editing_panel__title').textContent = projectName;
             getRef('editing_panel__description').textContent = projectDescription;
-            // RIBC.getProjectBranches(currentProject).forEach((branch) => {
-            //     frag.append(render.branchButton({projectId: currentProject, branch, page: 'admin_page'}))
-            // })
-            // getRef('branch_container').appendChild(frag)
+            RIBC.getProjectBranches(currentProject).forEach((branch) => {
+                frag.append(render.branchButton({ projectId: currentProject, branch, page: 'admin_page' }))
+            })
+            getRef('branch_container').appendChild(frag)
         }
         function showTasksOfBranch(obj = {}) {
             const { destination, taskListContainer, projectId, branch, pageId } = obj
@@ -1520,12 +1617,12 @@
             const frag = document.createDocumentFragment();
             let branchTasks = RIBC.getProjectMap(currentProject)[currentBranch],
                 taskList = document.getElementById(taskListContainer)
-            // allbranches = document.getElementById(destination).querySelectorAll('.branch-button');
+            allBranches = document.getElementById(destination).querySelectorAll('.branch-button');
             taskList.innerHTML = '';
-            // allbranches.forEach((branchButton) => {
-            //     branchButton.classList.remove('active-branch')
-            // })
-            // document.getElementById(destination).querySelector(`.branch-button[href="#${pageId}?projectId=${projectId}&branch=${branch}"]`).classList.add('active-branch')
+            allBranches.forEach((branchButton) => {
+                branchButton.classList.remove('active-branch')
+            })
+            document.getElementById(destination).querySelector(`.branch-button[href="#${pageId}?projectId=${projectId}&branch=${branch}"]`).classList.add('active-branch')
             if (branchTasks[1] && !taskListContainer === 'task_list') {
                 taskList.textContent = "No tasks added yet, Please explore other projects"
             } else {
@@ -1541,13 +1638,13 @@
                 }
                 if (branch !== 'mainLine') {
                     const { startPoint } = getAllBranches(projectId).find(({ branchName }) => branchName === branch)
-                    let branchEntryPoint = `
+                    let branchEntryPoint = html`
                         <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z"/></svg>
                         ${branchTasks[0]}
                     `
                     if (startPoint) {
                         const { taskTitle } = RIBC.getTaskDetails(projectId, branchTasks[0], startPoint)
-                        branchEntryPoint = `
+                        branchEntryPoint = html`
                             <svg class="icon button__icon--left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414z"/></svg>
                             ${branchTasks[0]} - ${taskTitle}
                         `
@@ -1563,11 +1660,12 @@
             const branchPoints = []
             projectBranches.forEach((branch, index) => {
                 if (index > 0) {
+                    const [parentBranch, , startPoint, endPoint] = projectMap[branch]
                     branchPoints.push({
                         branchName: branch,
-                        parantBranch: projectMap[branch][0],
-                        startPoint: projectMap[branch][2],
-                        endPoint: projectMap[branch][3]
+                        parentBranch,
+                        startPoint,
+                        endPoint
                     })
                 }
             })
@@ -1575,11 +1673,9 @@
         }
         function toggleEditing(target) {
             if (target === 'title') {
-                currentTask.querySelector('.task-title').contentEditable = true
-                currentTask.querySelector('.task-title').focus()
+                makeEditable(currentTask.querySelector('.task-title'))
             } else {
-                currentTask.querySelector('.task-description').contentEditable = true
-                currentTask.querySelector('.task-description').focus()
+                makeEditable(currentTask.querySelector('.task-description'))
             }
         }
         getRef('task_list').addEventListener('change', (e) => {
@@ -1592,24 +1688,26 @@
         getRef('task_list').addEventListener('focusout', (e) => {
             if (e.target.isContentEditable) {
                 e.target.contentEditable = false
-                const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, currentTask.dataset.taskId)
-                const taskDetails = {}
-                if (e.target.closest('.task-description')) {
-                    taskDetails['taskTitle'] = taskTitle
-                    taskDetails['taskDescription'] = DOMPurify.sanitize(e.target.innerText.trim())
-                } else if (e.target.closest('.task-title')) {
-                    taskDetails['taskTitle'] = DOMPurify.sanitize(e.target.innerText.trim())
-                    taskDetails['taskDescription'] = taskDescription
+                if (e.target.innerText.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerText.trim())) {
+                    const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, currentTask.dataset.taskId)
+                    const taskDetails = {}
+                    if (e.target.closest('.task-description')) {
+                        taskDetails['taskTitle'] = taskTitle
+                        taskDetails['taskDescription'] = DOMPurify.sanitize(e.target.innerText.trim())
+                    } else if (e.target.closest('.task-title')) {
+                        taskDetails['taskTitle'] = DOMPurify.sanitize(e.target.innerText.trim())
+                        taskDetails['taskDescription'] = taskDescription
+                    }
+                    RIBC.admin.editTaskDetails(taskDetails, currentProject, currentBranch, currentTask.dataset.taskId)
+                    notify('Changes saved locally, commit the changes to make them permanent', 'success')
+                } else {
+                    e.target.innerText = floGlobals.tempEditableContent
                 }
-                RIBC.admin.editTaskDetails(taskDetails, currentProject, currentBranch, currentTask.dataset.taskId)
-                notify('Changes saved locally, commit the changes to make them permanent', 'success')
             }
         })
         getRef('task_list').addEventListener('dblclick', (e) => {
-            if (e.target.closest('.task-description') && !e.target.isContentEditable) {
-                toggleEditing()
-            } else if (e.target.closest('.task-title') && !e.target.isContentEditable) {
-                toggleEditing('title')
+            if (e.target.closest('[data-editable]') && !e.target.closest('[data-editable]').isContentEditable) {
+                makeEditable(e.target.closest('[data-editable]'))
             }
         })
         getRef('task_list').addEventListener('click', (e) => {
@@ -1619,7 +1717,7 @@
             if (e.target.closest('.task-option')) {
                 const optionButton = e.target.closest('.task-option')
                 getRef('task_context').setAttribute('style', `top: ${optionButton.offsetTop}px`)
-                getRef('task_context').classList.remove('hide-completely')
+                getRef('task_context').classList.remove('hidden')
                 getRef('task_context').animate([
                     {
                         transform: 'translate(0.5rem, -1rem)',
@@ -1650,7 +1748,7 @@
                                 duration: 200,
                                 easing: 'ease'
                             }).onfinish = () => {
-                                getRef('task_context').classList.add('hide-completely')
+                                getRef('task_context').classList.add('hidden')
                                 document.removeEventListener('click', y);
                             }
                         });
@@ -1659,7 +1757,7 @@
             else if (e.target.closest('.assigned-intern button')) {
                 getConfirmation('Do you want to unassign this intern from this task?').then((result) => {
                     if (result) {
-                        RIBC.admin.unassignInternFromTask(e.target.closest('.assigned-intern').dataset.floid, currentProject, currentBranch, currentTask.dataset.taskId)
+                        RIBC.admin.unassignInternFromTask(e.target.closest('.assigned-intern').dataset.floId, currentProject, currentBranch, currentTask.dataset.taskId)
                         e.target.closest('.assigned-intern').remove()
                         notify('Intern removed from the task')
                     }
@@ -1721,9 +1819,9 @@
             let allPages = document.querySelectorAll('.inner-page'),
                 thisPage = document.getElementById(page)
             allPages.forEach(function (pages) {
-                pages.classList.add('hide-completely');
+                pages.classList.add('hidden');
             });
-            thisPage.classList.remove('hide-completely');
+            thisPage.classList.remove('hidden');
         }
 
         function logout() {
@@ -1742,11 +1840,11 @@
                 const { projectName } = RIBC.getProjectDetails(currentProject)
                 if (RIBC.admin.assignInternToTask(floId, currentProject, currentBranch, currentTask.dataset.taskId)) {
                     notify(`${internName} assigned to ${projectName}`)
-                    currentTask.querySelector('.assigned-interns').append(render.assignedInternCard(floId, 'yes'))
+                    currentTask.querySelector('.assigned-interns').append(html.node`${render.assignedInternCard(floId, true)}`)
                 } else {
                     notify('intern already assigned', 'error')
                 }
-                hidePopup()
+                closePopup()
             }
         })
 
@@ -1776,7 +1874,7 @@
         }
 
         function showNewBranchPopup() {
-            showPopup('create_branch_popup')
+            openPopup('create_branch_popup')
             const startPoint = parseInt(currentTask.dataset.taskId)
             getRef('branch_start_point').value = startPoint;
         }
@@ -1787,7 +1885,7 @@
             const branchName = RIBC.admin.addBranch(currentProject, currentBranch, startPoint, mergePoint);
             notify(`Branch added ${branchName}`, 'success')
             currentTask.querySelector('.task__branch_container').append(render.branchButton({ projectId: currentProject, branch: branchName, page: 'admin_page' }))
-            hidePopup()
+            closePopup()
         }
 
         function renderProjectSelectorOptions() {
@@ -1994,18 +2092,18 @@
 
         function loader(mode) {
             if (mode === 'show') {
-                getRef('loading_page').classList.remove('hide-completely')
+                getRef('loading_page').classList.remove('hidden')
             }
             else {
-                getRef('loading_page').classList.add('hide-completely')
+                getRef('loading_page').classList.add('hidden')
             }
         }
         function customSignIn() {
             return new Promise((resolve, reject) => {
                 loader('hide')
-                getRef('sign_in_page').classList.remove('hide-completely');
+                getRef('sign_in_page').classList.remove('hidden');
                 document.getElementById('guest_btn').onclick = function () {
-                    getRef('sign_in_page').classList.add('hide-completely');
+                    getRef('sign_in_page').classList.add('hidden');
                     reject(null);
                 }
                 document.getElementById('sign_in_button').onclick = function () {
@@ -2013,7 +2111,7 @@
                     getRef('private_key_input').value = ''
                     loader('show')
                     window.location.hash = '#dashboard_page'
-                    getRef('sign_in_page').classList.add('hide-completely');
+                    getRef('sign_in_page').classList.add('hidden');
                 }
             })
         }
@@ -2028,10 +2126,10 @@
             if (getRef('admin_fab').hasAttribute('open')) {
                 getRef('admin_fab').removeAttribute('open')
                 setTimeout(() => {
-                    getRef('admin_fab__options').classList.add('hide-completely')
+                    getRef('admin_fab__options').classList.add('hidden')
                 }, 300);
             } else {
-                getRef('admin_fab__options').classList.remove('hide-completely')
+                getRef('admin_fab__options').classList.remove('hidden')
                 setTimeout(() => {
                     getRef('admin_fab').setAttribute('open', '')
                 }, 0);
@@ -2093,7 +2191,7 @@
             }
             highPerformingInterns.sort((a, b) => b.rating - a.rating);
 
-            getRef('watch_project_button').classList.remove('hide-completely')
+            getRef('watch_project_button').classList.remove('hidden')
 
             // Intern's view
 
@@ -2101,10 +2199,10 @@
             if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
-                    option.classList.remove('hide-completely')
+                    option.classList.remove('hidden')
                 })
-                document.getElementById('project_watching_section').classList.add('hide-completely')
-                getRef('watch_project_button').classList.add('hide-completely')
+                document.getElementById('project_watching_section').classList.add('hidden')
+                getRef('watch_project_button').classList.add('hidden')
 
                 // store all the projects assinged to interns in array
                 for (let i = 0; i < allProjectsList.length; i++) {
@@ -2163,15 +2261,15 @@
                         const { projectId, projectName, projectBranch, task } = internAssignedTasks[currentTaskId]
                         getRef('update_of_project').textContent = projectName
                         getRef('update_of_task').textContent = RIBC.getTaskDetails(projectId, projectBranch, task).taskTitle
-                        showPopup('post_update_popup')
+                        openPopup('post_update_popup')
                     }
                 })
             }
             else {
                 document.querySelectorAll('.intern-option').forEach((option) => {
-                    option.classList.add('hide-completely')
+                    option.classList.add('hidden')
                 })
-                document.getElementById('project_watching_section').classList.remove('hide-completely')
+                document.getElementById('project_watching_section').classList.remove('hidden')
                 document.getElementById('project_list_container').firstElementChild.children[1].textContent = 'Projects'
             }
 
@@ -2223,8 +2321,8 @@
                     }
                 })
 
-                document.querySelectorAll('.admin-options').forEach((option) => {
-                    option.classList.remove('hide-completely')
+                document.querySelectorAll('.admin-option').forEach((option) => {
+                    option.classList.remove('hidden')
                 })
 
                 //show interns
@@ -2241,8 +2339,8 @@
                 getRef('admin_page__project_list').append(frag)
             }
             else {
-                document.querySelectorAll('.admin-options').forEach((option) => {
-                    option.classList.add('hide-completely')
+                document.querySelectorAll('.admin-option').forEach((option) => {
+                    option.classList.add('hidden')
                 })
             }
 
@@ -2277,7 +2375,7 @@
                     RIBC.postInternUpdate({ topic, description })
                         .then((result) => {
                             notify('Update posted', 'success')
-                            hidePopup()
+                            closePopup()
                         })
                         .catch((error) => {
                             notify(error, 'error')
