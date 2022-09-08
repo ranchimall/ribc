@@ -1320,7 +1320,7 @@
                 const { time, internName, topic, description } = update
                 const card = getRef('update_card_template').content.cloneNode(true)
                 card.querySelector('.update__sender').textContent = internName
-                card.querySelector('.update__time').textContent = getFormatedTime(time)
+                card.querySelector('.update__time').textContent = getFormattedTime(time)
                 card.querySelector('.update__topic').textContent = topic
                 card.querySelector('.update__message').textContent = description
                 return card;
@@ -1720,7 +1720,7 @@
                 getRef('task_context').classList.remove('hidden')
                 getRef('task_context').animate([
                     {
-                        transform: 'translate(0.5rem, -1rem)',
+                        transform: 'scaleY(0.95) translateY(-0.5rem)',
                         opacity: '0'
                     },
                     {
@@ -1741,11 +1741,11 @@
                                     opacity: '1'
                                 },
                                 {
-                                    transform: 'translate(0.5rem, -1rem)',
+                                    transform: 'scaleY(0.95) translateY(-0.5rem)',
                                     opacity: '0'
                                 },
                             ], {
-                                duration: 200,
+                                duration: 100,
                                 easing: 'ease'
                             }).onfinish = () => {
                                 getRef('task_context').classList.add('hidden')
@@ -1780,11 +1780,11 @@
                     notify('Please enter description of the task', 'error')
                     return
                 }
-                const taskno = RIBC.admin.addTaskInMap(currentProject, currentBranch)
-                RIBC.admin.editTaskDetails({ taskTitle: titleContent, taskDescription: descriptionContent }, currentProject, currentBranch, taskno)
-                RIBC.admin.putTaskStatus('incomplete', currentProject, currentBranch, taskno)
+                const taskNo = RIBC.admin.addTaskInMap(currentProject, currentBranch)
+                RIBC.admin.editTaskDetails({ taskTitle: titleContent, taskDescription: descriptionContent }, currentProject, currentBranch, taskNo)
+                RIBC.admin.putTaskStatus('incomplete', currentProject, currentBranch, taskNo)
                 card.remove()
-                getRef('task_list').append(render.taskListItem(taskno))
+                getRef('task_list').append(render.taskListItem(taskNo))
                 getRef('add_task').disabled = false
                 notify('Task added to current branch', 'success')
             }
@@ -1799,7 +1799,7 @@
             getConfirmation("Do you want to commit to changes?").then((result) => {
                 if (result) {
                     RIBC.admin.updateObjects().then(res => {
-                        notify('Changes commited.', 'success')
+                        notify('Changes committed.', 'success')
                     }).catch(err => {
                         console.error(err)
                     })
@@ -2127,7 +2127,7 @@
                 getRef('admin_fab').removeAttribute('open')
                 setTimeout(() => {
                     getRef('admin_fab__options').classList.add('hidden')
-                }, 300);
+                }, 200);
             } else {
                 getRef('admin_fab__options').classList.remove('hidden')
                 setTimeout(() => {
