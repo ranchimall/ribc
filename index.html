@@ -16,7 +16,7 @@
         const floGlobals = {
             blockchain: "FLO",
             adminID: "FKAEdnPfjXLHSYwrXQu377ugN4tXU7VGdf", // "FMeiptdJNtYQEtzyYAVNP8fjsDJ1i4EPfE",
-            application: "TEST_MODE" // "RIBC"
+            application: "TEST_MODE" // "InternManagement"
         }
     </script>
     <script src="scripts/lib.js"></script>
@@ -2277,7 +2277,7 @@
             if (floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'admin'
                 getRef('requests_list').innerHTML = ''
-                RIBC.admin.getTaskRequests().forEach((app) => {
+                RIBC.getTaskRequests().forEach((app) => {
                     try {
                         if (!Array.isArray(RIBC.getAssignedInterns(app.projectCode, app.branch, app.task)) && typeof RIBC.getTaskDetails(app.projectCode, app.branch, app.task) !== 'undefined')
                             frag.append(render.requestCard(app.floID, app.projectCode, app.branch, app.task))
