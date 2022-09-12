@@ -191,7 +191,7 @@
                     Updates
                 </span>
             </a>
-            <a id="admin_page_btn" href="#admin_page" class="admin-option nav-list__item interact"
+            <a href="#admin_page" class="admin-option nav-list__item interact open-first-project"
                 title="open admin panel">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
@@ -329,7 +329,13 @@
                     <section id="project_watching_section" class="w-100">
                         <h4>Projects watchlist</h4>
                         <div id="project_watchlist" class="observe-empty-state"></div>
-                        <h4 class="empty-state">No project added to watchlist.</h4>
+                        <div class="empty-state">
+                            <h4>No project added to watchlist. </h4>
+                            <p class="margin-block-0-5">
+                                You can add projects to watchlist by clicking on the 'Watch' button in opened project.
+                            </p>
+                            <a href="#project_explorer" class="button open-first-project">See all projects</a>
+                        </div>
                     </section>
                     <section id="intern_view" class="hidden intern-option">
                         <h2>My tasks</h2>
@@ -359,7 +365,7 @@
                                     d="M6 7V4a1 1 0 0 1 1-1h6.414l2 2H21a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3zm0 2H4v10h12v-2H6V9z" />
                             </svg>
                             <h4>Projects</h4>
-                            <a href="#project_explorer" id="all_projects_btn" class="button">All</a>
+                            <a href="#project_explorer" class="button open-first-project">All</a>
                         </div>
                         <div id="project_list"></div>
                     </div>
@@ -391,7 +397,7 @@
                     </sm-tab-header>
                     <sm-tab-panels id="admin_tabs">
                         <section id="projects_container">
-                            <button class="button button--small margin-left-auto"
+                            <button class="button button--small margin-left-auto margin-block-0-5"
                                 onclick="openPopup('add_project_popup')">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24" width="24" height="24">
@@ -406,7 +412,7 @@
                             <h4 class="empty-state">No project added</h4>
                         </section>
                         <section id="interns_container">
-                            <button class="button button--small margin-left-auto"
+                            <button class="button button--small margin-left-auto margin-block-0-5"
                                 onclick="openPopup('add_intern_popup')">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24" width="24" height="24">
@@ -420,6 +426,10 @@
                             <h4 class="empty-state">No interns added</h4>
                         </section>
                         <section>
+                            <strip-select id="request_type_selector" class="margin-left-auto margin-block-0-5">
+                                <strip-option value="task" selected>Task</strip-option>
+                                <strip-option value="intern">Internship</strip-option>
+                            </strip-select>
                             <ul id="requests_list" class="list-container observe-empty-state"></ul>
                             <h4 class="empty-state">No pending requests</h4>
                         </section>
@@ -454,7 +464,7 @@
                     </div>
                     <h4>Tasks</h4>
                     <div id="branch_container"></div>
-                    <ul id="task_list" class="grid gap-1 observe-empty-state"></ul>
+                    <ul id="task_list" class="grid observe-empty-state"></ul>
                     <h4 class="empty-state">No tasks added yet, tasks will appear here after adding them.</h4>
                     <sm-button id="add_task" title="show element to add new task" onclick="addPlaceholderTask()">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -733,13 +743,15 @@
         <h5 id="update_of_project"></h5>
         <h3 id="update_of_task"></h3>
         <sm-form>
-            <sm-textarea id="update_description" placeholder="Type the update" rows="4" required></sm-textarea>
+            <sm-textarea id="update_description" placeholder="Type the update" rows="4" autofocus required>
+            </sm-textarea>
             <sm-button id="post_update_btn" title="post this update" variant="primary" disabled onclick="postUpdate()">
                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path fill="none" d="M0 0h24v24H0z"></path>
                     <path
-                        d="M1.923 9.37c-.51-.205-.504-.51.034-.689l19.086-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.475.553-.717.07L11 13 1.923 9.37zm4.89-.2l5.636 2.255 3.04 6.082 3.546-12.41L6.812 9.17z" />
+                        d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z">
+                    </path>
                 </svg>
                 Post update
             </sm-button>
@@ -777,17 +789,6 @@
 
 
     <!-- Templates -->
-
-    <template id="update_card_template">
-        <li class="intern-update">
-            <div class="flex align-center space-between">
-                <h5 class="update__sender"></h5>
-                <span class="update__time"></span>
-            </div>
-            <h4 class="update__topic"></h4>
-            <p class="update__message"></p>
-        </li>
-    </template>
     <template id="placeholder_task_card_template">
         <div class="temp-task grid gap-0-5">
             <sm-input class="placeholder-task__title" placeholder="task title"></sm-input>
@@ -1153,8 +1154,8 @@
                 document.querySelector('.page:not(.hidden)').classList.add('hidden')
             }
             if (document.querySelector('.nav-list__item--active'))
-                document.querySelector('.nav-list__item--active').classList.remove('nav-list__item--active')
-            const targetListItem = document.querySelector(`.nav-list__item[href="#${pageId}"]`)
+                document.querySelector('.nav-list__item--active').classList.remove('nav-list__item--active');
+            const targetListItem = [...document.querySelectorAll(`a.nav-list__item`)].find(item => item.href.includes(pageId))
             if (targetListItem)
                 targetListItem.classList.add('nav-list__item--active')
             switch (pageId) {
@@ -1184,7 +1185,7 @@
                         if (lastParams.projectId !== projectId) {
                             showProjectInfo(projectId)
                         }
-                        if (params.branch) {
+                        if (branch) {
                             const branchDetails = {
                                 destination: 'project_explorer',
                                 taskListContainer: 'explorer_task_list',
@@ -1406,7 +1407,7 @@
                 if (assignedInterns) {
                     renderElem(card.querySelector('.assigned-interns'), html`${assignedInterns.map((internFloId) => render.assignedInternCard(internFloId))}`)
                 }
-                if (typeOfUser === 'intern') {
+                if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
                     const applyButton = createElement('sm-button', {
                         textContent: 'Apply',
                         className: 'apply-button',
@@ -1444,7 +1445,7 @@
             internCard(internName, internFloID, internPoints) {
                 const initials = internName.split(' ').map(v => v.charAt(0)).join('');
                 return html`
-                    <li class="intern-card grid align-center interact" data-intern-flo-id=${internFloID} title="Intern Information"}>
+                    <li class="intern-card grid align-center interact" data-intern-flo-id=${internFloID} title="Intern Information">
                         <div class="intern-card__initials" style=${`background-color: ${getInternColor(internFloID)}`}>${initials}</div>
                         <div class="intern-card__name capitalize">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
@@ -1459,13 +1460,29 @@
             },
             // creates cards containing updates provided by interns
             updateCard(update) {
-                const { time, internName, topic, description } = update
-                const card = getRef('update_card_template').content.cloneNode(true)
-                card.querySelector('.update__sender').textContent = internName
-                card.querySelector('.update__time').textContent = getFormattedTime(time)
-                card.querySelector('.update__topic').textContent = topic
-                card.querySelector('.update__message').textContent = description
-                return card;
+                const { time, internName, topic, description, isSubAdmin, floID, note } = update
+                let replyButton
+                if (isSubAdmin && !note) {
+                    replyButton = html`<button class="button button--small init-update-replay margin-left-auto">Reply</button>`
+                }
+                let adminReply
+                if (note) {
+                    adminReply = html`<div class="admin-reply grid">
+                        <h4 class="admin-reply__title">Admin</h4>
+                        <p class="admin-reply__description">${note}</p>
+                    </div>`
+                }
+                return html.node`
+                    <li class="intern-update" data-vector-clock="${`${time}_${floID}`}">
+                        <div class="flex align-center space-between">
+                            <span class="update__sender">${internName}</span>
+                            <span class="update__time">${getFormattedTime(time)}</span>
+                        </div>
+                        <h4 class="update__topic">${topic}</h4>
+                        <p class="update__message">${description}</p>
+                        ${replyButton}
+                        ${adminReply}
+                    </li>`;
             },
             branchButton(obj = {}) {
                 const { projectId, branch, page, innerHTML } = obj
@@ -1521,11 +1538,11 @@
                 }
                 return card;
             },
-            requestCard(details) {
-                const { projectCode, branch, task, floId, vectorClock } = details
-                const internName = RIBC.getInternList()[floId];
+            taskRequestCard(details) {
+                const { projectCode, branch, task, floID, vectorClock } = details
+                const internName = RIBC.getInternList()[floID];
                 return html`
-                    <li class="request-card" .dataset=${{ vectorClock }}>
+                    <li class="request-card" .dataset=${{ vectorClock, type: 'task' }}>
                         <p class="request-card__description">
                             <b class="capitalize">${internName}</b> applied for 
                             <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).taskTitle}</b> from 
@@ -1534,11 +1551,30 @@
                         </p>
                         <div class="flex gap-0-3 margin-left-auto">
                             <button class="button button--small reject-request">
-                                <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
                                 Reject
                             </button>
                             <button class="button button--small accept-request">
-                                <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>
+                                Accept
+                            </button>
+                        </div>
+                    </li>            
+                `;
+            },
+            internshipRequest(details) {
+                const { comments, floID, name, vectorClock } = details
+                return html`
+                    <li class="request-card" .dataset=${{ vectorClock, type: 'internship' }}>
+                        <h4>${name}</h4>
+                        <p class="request-card__description">${comments}</p>
+                        <div class="flex gap-0-3 margin-left-auto">
+                            <button class="button button--small reject-request">
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
+                                Reject
+                            </button>
+                            <button class="button button--small accept-request">
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>
                                 Accept
                             </button>
                         </div>
@@ -1592,6 +1628,21 @@
                 projectCard.querySelector('.progress-value').style.width = `${completePercent}%`
                 projectCard.querySelector('.project__complete-percent').textContent = `${completePercent}% complete`
                 return projectCard
+            },
+            internRequests() {
+                const selectedRequestType = getRef('request_type_selector').value;
+                let requestCards = [];
+                if (selectedRequestType === 'task') {
+                    RIBC.getTaskRequests().forEach((request) => {
+                        const { projectCode, branch, task } = request
+                        if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined')
+                            requestCards.push(render.taskRequestCard(request))
+                    })
+                } else {
+                    requestCards = RIBC.getInternRequests().map((request) => render.internshipRequest(request))
+                }
+                console.log(requestCards)
+                renderElem(getRef('requests_list'), html`${requestCards}`)
             }
         }
 
@@ -1643,7 +1694,7 @@
             const projectCode = `${new Date().getFullYear()}_project_${RIBC.getProjectList() ? (RIBC.getProjectList().length + 1) : '1'}`;
             RIBC.admin.createProject(projectCode)
             RIBC.admin.addProjectDetails(projectCode, { projectName, projectDescription })
-            getRef('admin_page__project_list').prepend(render.projectCard(projectCode, true))
+            getRef('admin_page__project_list').append(render.projectCard(projectCode, true))
             closePopup();
         }
 
@@ -2087,20 +2138,64 @@
                 updateStartIndex = 0
                 updateEndIndex = updates.length > 10 ? 10 : updates.length
             }
+            const isSubAdmin = floGlobals.subAdmins.includes(myFloID);
             for (let index = updateStartIndex; index < updateEndIndex; index++) {
-                const element = updates[index];
-                const { floID, time, update: { projectId, projectBranch, task, topic, description } } = element
+                const { floID, time, note, update: { projectId, projectBranch, task, topic, description } } = updates[index]
                 const updateObj = {
                     internName: RIBC.getInternList()[floID],
                     time: parseInt(time),
                     topic: topic || `${RIBC.getProjectDetails(project).projectName} / ${RIBC.getTaskDetails(projectId, projectBranch, task).taskTitle}`,
-                    description
+                    description,
+                    isSubAdmin,
+                    floID,
+                    note
                 }
                 frag.append(render.updateCard(updateObj))
             }
             getRef('all_updates_list').append(frag)
             if (updateEndIndex !== updates.length && getRef('all_updates_list').lastElementChild) {
                 intersectionObserver.observe(getRef('all_updates_list').lastElementChild)
+            }
+        }
+        delegate(getRef('all_updates_list'), 'click', '.init-update-replay', (e) => {
+            const vectorClock = e.delegateTarget.closest('.intern-update').dataset.vectorClock;
+            e.delegateTarget.after(html.node`
+                <div class="update-replay grid gap-0-5">
+                    <div class="update-replay__input">
+                        <sm-textarea placeholder="Enter your reply here" id="update_reply_textarea" rows="4"></sm-textarea>
+                    </div>
+                    <div class="flex align-center gap-0-3 margin-left-auto">
+                        <button class="update-replay__cancel button button--small" onclick="cancelUpdateReply(this.closest('.update-replay'))">Cancel</button>
+                        <div class="multi-state-button">
+                            <button class="update-replay__submit button button--small button--primary" onclick="submitUpdateReply(this.closest('.update-replay'))">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            `)
+            e.delegateTarget.classList.add('hidden')
+            e.target.closest('.intern-update').querySelector('#update_reply_textarea').focusIn()
+        })
+
+        function cancelUpdateReply(replayBox) {
+            replayBox.previousElementSibling.classList.remove('hidden')
+            replayBox.remove()
+        }
+        function submitUpdateReply(replayBox) {
+            buttonLoader(replayBox.querySelector('.update-replay__submit'), true)
+            const vectorClock = replayBox.previousElementSibling.closest('.intern-update').dataset.vectorClock;
+            const replyText = replayBox.querySelector('#update_reply_textarea').value.trim()
+            if (replyText !== '') {
+                RIBC.admin.commentInternUpdate(vectorClock, replyText).then(res => {
+                    replayBox.previousElementSibling.remove()
+                    replayBox.replaceWith(html.node`
+                        <div class="admin-reply grid">
+                            <h4 class="admin-reply__title">Admin</h4>
+                            <p class="admin-reply__description">${replyText}</p>
+                        </div>`)
+                }).catch(err => {
+                    notify(err, 'error')
+                    buttonLoader(replayBox.querySelector('.update-replay__submit'), false)
+                })
             }
         }
 
@@ -2169,7 +2264,7 @@
                     btn.disabled = true
                     RIBC.applyForTask(btn.dataset.projectCode, btn.dataset.branch, btn.dataset.taskNo)
                         .then((result) => {
-                            notify('', 'Applied successfully.')
+                            notify('Applied successfully.', 'success')
                             allRequests = JSON.parse(localStorage.getItem('requests'))
                             allRequests.push({ projectCode: btn.dataset.projectCode, branch: btn.dataset.branch, taskNo: btn.dataset.taskNo })
                             localStorage.setItem('requests', JSON.stringify(allRequests))
@@ -2243,6 +2338,12 @@
         floGlobals.assignedTasks = {}
 
         function renderAllElements() {
+
+            let sortedProjectList = getSortedProjectList()
+            document.querySelectorAll('.open-first-project').forEach(link => {
+                link.href = `${link.href}?projectId=${sortedProjectList[0]}&branch=mainLine`
+            })
+
             watchList = localStorage.getItem(`${myFloID}_watchlist`) ? localStorage.getItem(`${myFloID}_watchlist`).split(',') : []
             const frag = document.createDocumentFragment()
             let allProjectsList = RIBC.getProjectList();
@@ -2276,15 +2377,13 @@
 
                 // store all the projects assigned to interns in array
 
-                allProjectsList.forEach(projectId => {
+                sortedProjectList.forEach(projectId => {
                     nextProject:
-                    for (branch in RIBC.getProjectMap(projectId)) {
+                    for (const branch in RIBC.getProjectMap(projectId)) {
                         projectTaskNos = RIBC.getProjectMap(projectId)[branch].slice(4);
                         for (let j = 0; j < projectTaskNos.length; j++) {
                             const assignedInterns = RIBC.getAssignedInterns(projectId, branch, projectTaskNos[j])
-                            console.log(assignedInterns)
                             if (Array.isArray(assignedInterns) && assignedInterns.includes(myFloID)) {
-                                console.log('has me')
                                 assignedProjectsList.push(projectId)
                                 break nextProject;
                             }
@@ -2347,13 +2446,6 @@
             // admin view
             if (floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'admin'
-                const requestCards = [];
-                RIBC.getTaskRequests().forEach((request) => {
-                    const { projectCode, branch, task } = request
-                    if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined')
-                        requestCards.push(render.requestCard(request))
-                })
-                renderElem(getRef('requests_list'), html`${requestCards}`)
                 function removeRequest(requestCard) {
                     requestCard.animate([
                         {
@@ -2371,23 +2463,52 @@
                         requestCard.remove()
                     }
                 }
+                render.internRequests()
                 // accept task request
                 delegate(getRef('requests_list'), 'click', '.accept-request', (e) => {
-                    const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
-                    const result = RIBC.admin.processTaskRequest(vectorClock, true)
-                    if (result === 'Accepted') {
-                        notify('Intern assigned.', 'success')
-                        removeRequest(e.delegateTarget.closest('.request-card'))
-                    }
+                    getConfirmation('Are you sure you want to accept this request?', (result) => {
+                        if (result) {
+                            const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
+                            const type = e.delegateTarget.closest('.request-card').dataset.type
+                            let result
+                            if (type === 'task') {
+                                result = RIBC.admin.processTaskRequest(vectorClock, true)
+                                if (result === 'Accepted') {
+                                    notify('Intern assigned.', 'success')
+                                    removeRequest(e.delegateTarget.closest('.request-card'))
+                                }
+                            } else if (type === 'internship') {
+                                result = RIBC.admin.processInternRequest(vectorClock, true)
+                                if (result === 'Accepted') {
+                                    notify('Added intern', 'success')
+                                    removeRequest(e.delegateTarget.closest('.request-card'))
+                                }
+                            }
+                        }
+                    })
                 })
                 // reject task request
                 delegate(getRef('requests_list'), 'click', '.reject-request', (e) => {
-                    const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
-                    const result = RIBC.admin.processTaskRequest(vectorClock, false)
-                    if (result === 'Rejected') {
-                        notify('Request rejected', 'success')
-                        removeRequest(e.delegateTarget.closest('.request-card'))
-                    }
+                    getConfirmation('Are you sure you want to reject this request?').then((result) => {
+                        if (result) {
+                            const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
+                            const type = e.delegateTarget.closest('.request-card').dataset.type
+                            let result
+                            if (type === 'task') {
+                                result = RIBC.admin.processTaskRequest(vectorClock, false)
+                                if (result === 'Rejected') {
+                                    notify('Request rejected', 'success')
+                                    removeRequest(e.delegateTarget.closest('.request-card'))
+                                }
+                            } else if (type === 'internship') {
+                                result = RIBC.admin.processInternRequest(vectorClock, false)
+                                if (result === 'Rejected') {
+                                    notify('Request rejected', 'success')
+                                    removeRequest(e.delegateTarget.closest('.request-card'))
+                                }
+                            }
+                        }
+                    })
                 })
 
                 document.querySelectorAll('.admin-option').forEach((option) => {
@@ -2398,9 +2519,8 @@
                 renderElem(getRef('admin_page__intern_list'), filterInterns(''))
 
                 //show projects
-                renderElem(getRef('admin_page__project_list'), html`${allProjectsList.map(projectCode => render.projectCard(projectCode, true))}`)
-            }
-            else {
+                renderElem(getRef('admin_page__project_list'), html`${getSortedProjectList().map(projectCode => render.projectCard(projectCode, true))}`)
+            } else {
                 document.querySelectorAll('.admin-option').forEach((option) => {
                     option.classList.add('hidden')
                 })
@@ -2426,7 +2546,7 @@
             // displays recent projects
 
             let recentProjects = []
-            if (allInternsList.myFloID && !floGlobals.subAdmins.includes(myFloID)) {
+            if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 recentProjects = assignedProjectsList.map((projectCode) => render.projectCard(projectCode))
             } else {
                 recentProjects = allProjectsList.reverse().slice(0, 4).map((projectCode) => render.projectCard(projectCode))
@@ -2435,9 +2555,9 @@
 
             if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 renderElem(getRef('my_projects'), html`${assignedProjectsList.map((project) => render.projectCard(project))}`)
-                allProjectsList = allProjectsList.filter(val => !assignedProjectsList.includes(val));
+                sortedProjectList = sortedProjectList.filter(val => !assignedProjectsList.includes(val));
             }
-            renderElem(getRef('other_projects'), html`${allProjectsList.map((project) => render.projectCard(project))}`)
+            renderElem(getRef('other_projects'), html`${sortedProjectList.map((project) => render.projectCard(project))}`)
 
             getRef('explorer_task_list').addEventListener('click', (event) => {
                 if (event.target.closest('.apply-button')) {
@@ -2451,6 +2571,8 @@
 
             console.log(typeOfUser)
         }
+        getRef('request_type_selector').addEventListener('change', render.internRequests)
+
         function postUpdate() {
             const { projectId, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
             const description = getRef('update_description').value.trim()
@@ -2520,6 +2642,10 @@
                 }).finally(() => {
                     buttonLoader(getRef('intern_apply__button'), false)
                 })
+        }
+
+        function getSortedProjectList() {
+            return RIBC.getProjectList().sort((a, b) => RIBC.getProjectDetails(a).projectName.toLowerCase().localeCompare(RIBC.getProjectDetails(b).projectName.toLowerCase()))
         }
     </script>
 </body>

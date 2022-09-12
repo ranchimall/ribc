@@ -42,13 +42,12 @@ body[data-theme=dark] ::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
-p {
-  max-width: 70ch;
+p,
+strong {
+  font-size: 0.9rem;
+  max-width: 65ch;
   line-height: 1.7;
-  color: rgba(var(--text-color), 0.8);
-}
-p:not(:last-of-type) {
-  margin-bottom: 1.5rem;
+  color: rgba(var(--text-color), 0.9);
 }
 
 img {
@@ -487,6 +486,10 @@ ul {
   margin-bottom: 2rem;
 }
 
+.margin-block-0-5 {
+  margin-block: 0.5rem;
+}
+
 .margin-block-1 {
   margin-block: 1rem;
 }
@@ -838,7 +841,8 @@ ul {
   margin-bottom: 1rem;
 }
 
-.timeline-task__description {
+.timeline-task__description,
+.admin-reply__description {
   white-space: pre-line;
 }
 
@@ -970,6 +974,9 @@ ul {
   display: grid;
   position: relative;
   padding: 1rem;
+  margin: 0.2rem;
+  background-color: rgba(var(--text-color), 0.06);
+  border-radius: 0.5rem;
 }
 .request-card sm-button {
   --padding: 0.5rem 0.8rem;
@@ -986,6 +993,9 @@ ul {
   margin-right: 0.5rem;
 }
 
+#updates_page {
+  align-content: flex-start;
+}
 #updates_page sm-select {
   --max-height: 50vh;
 }
@@ -1014,10 +1024,14 @@ ul {
   max-width: 65ch;
 }
 
-.update__sender {
-  color: var(--accent-color);
-  font-size: 0.9rem;
+.update__sender,
+.admin-reply__title {
+  font-size: 0.85rem;
   font-weight: 500;
+  background-color: rgba(var(--text-color), 0.06);
+  padding: 0.3rem 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: 1rem;
 }
 
 .update__time {
@@ -1027,6 +1041,25 @@ ul {
 
 .update__message {
   white-space: pre-line;
+}
+
+.admin-reply {
+  position: relative;
+  padding: 1rem;
+  padding-left: 1.5rem;
+  margin-left: 0.5rem;
+  gap: 0.3rem;
+}
+.admin-reply::before {
+  content: "";
+  position: absolute;
+  width: 0.1rem;
+  height: calc(100% - 1rem);
+  left: 0;
+  background-color: rgba(var(--text-color), 0.5);
+}
+.admin-reply__title {
+  justify-self: flex-start;
 }
 
 .container-header {
@@ -1095,6 +1128,7 @@ ul {
 }
 
 #task_list {
+  gap: 0.5rem;
   padding: 1rem 0 1.5rem 0;
 }
 
@@ -1106,7 +1140,7 @@ ul {
   padding: 1rem;
   gap: 0.5rem;
   border-radius: 0.5rem;
-  background: rgba(var(--text-color), 0.02);
+  background: rgba(var(--foreground-color), 1);
 }
 .task-list-item sm-checkbox {
   grid-area: status;
@@ -1410,13 +1444,14 @@ ul {
   margin-top: 0.2rem;
 }
 
-.send-update-button {
-  padding: 0.6rem 0.8rem;
+.send-update-button,
+.init-update-replay {
   color: var(--accent-color);
   background-color: rgba(var(--text-color), 0.04);
   margin-left: auto;
 }
-.send-update-button .icon {
+.send-update-button .icon,
+.init-update-replay .icon {
   fill: var(--accent-color);
 }
 
