@@ -1904,7 +1904,7 @@
                 if (branch !== 'mainLine') {
                     const { startPoint, parentBranch } = getAllBranches(projectId).find(({ branchName }) => branchName === branch)
                     taskList.append(html.node`<p class="margin-bottom-0-5">
-                        Branched off from <a href=${`#project_explorer?projectId=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
+                        Branched off from <a href=${`#${pageId}?projectId=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
                     </p>`)
                 }
                 taskList.appendChild(frag);
