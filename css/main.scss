@@ -386,6 +386,9 @@ ul {
 .align-items-start {
   align-items: flex-start;
 }
+.align-content-start {
+  align-content: flex-start;
+}
 
 .align-start {
   align-content: flex-start;
@@ -793,7 +796,7 @@ ul {
 .task {
   display: grid;
   grid-template-columns: auto 1fr;
-  margin: 0 1rem;
+  margin-right: 1rem;
   .task__branch_container {
     padding-bottom: 2rem;
   }
@@ -1447,6 +1450,44 @@ ul {
   }
 }
 
+#internship_requests_list {
+  padding-bottom: 2rem;
+}
+
+.status-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(var(--foreground-color), 1);
+  &__time {
+    font-size: 0.8rem;
+    color: rgba(var(--text-color), 0.8);
+  }
+  &__status {
+    justify-content: flex-end;
+    .icon {
+      height: 1em;
+      width: 1em;
+    }
+  }
+  &.accepted {
+    .icon {
+      fill: var(--green);
+    }
+  }
+  &.rejected {
+    .icon {
+      fill: var(--danger-color);
+    }
+  }
+  &.pending {
+    .icon {
+      fill: var(--yellow);
+    }
+  }
+}
+
 #admin_page__left {
   height: 100%;
   overflow-y: hidden;
@@ -1579,6 +1620,14 @@ input[type="date"] {
   }
   .list-container {
     padding-bottom: 5rem;
+  }
+  .status-card {
+    &__status {
+      grid-area: 1/2/2/3;
+    }
+    &__details {
+      grid-area: 2/1/3/3;
+    }
   }
 }
 @media only screen and (min-width: 640px) {
@@ -1742,6 +1791,11 @@ input[type="date"] {
   }
   #intern_list_popup {
     --height: 80vh;
+  }
+  .status-card {
+    align-items: center;
+    font-size: 0.9rem;
+    grid-template-columns: 6rem 1fr 8rem;
   }
 }
 
