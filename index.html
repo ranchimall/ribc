@@ -159,7 +159,7 @@
                 </svg>
                 <h4 class="hide-on-mobile nav-list__item_title">RIBC</h4>
             </div>
-            <a id="dashboard_btn" href="#dashboard_page" class="nav-list__item nav-list__item--active interact"
+            <a id="dashboard_btn" href="#/dashboard_page" class="nav-list__item nav-list__item--active interact"
                 title="open dashboard page">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
@@ -176,7 +176,7 @@
                     Dashboard
                 </span>
             </a>
-            <a id="update_panel_btn" href="#updates_page" class="nav-list__item interact" title="show updates">
+            <a id="update_panel_btn" href="#/updates_page" class="nav-list__item interact" title="show updates">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -191,7 +191,7 @@
                     Updates
                 </span>
             </a>
-            <a href="#applications" class="nav-list__item interact not-for-admin" title="See status of applications">
+            <a href="#/applications" class="nav-list__item interact not-for-admin" title="See status of applications">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
                     height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
                     <g>
@@ -220,7 +220,7 @@
                     Applications
                 </span>
             </a>
-            <a href="#admin_page" class="admin-option nav-list__item interact open-first-project"
+            <a href="#/admin_page" class="admin-option nav-list__item interact open-first-project"
                 title="open admin panel">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
@@ -238,7 +238,7 @@
                     Manage
                 </span>
             </a>
-            <a id="settings_btn" href="#settings_page" class="nav-list__item interact" title="open settings page">
+            <a id="settings_btn" href="#/settings_page" class="nav-list__item interact" title="open settings page">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -260,7 +260,7 @@
         <article id="sub_page_container">
             <section id="dashboard_page" class="page">
                 <div class="flex flex-direction-column gap-2">
-                    <div id="application_card" class="card flex align-center space-between general-only">
+                    <div id="application_card" class="card flex align-center space-between general-only hidden">
                         <div>
                             <h2 class="margin-bottom-0-5">Looking for an internship?</h2>
                             <p class="margin-bottom-1">Apply for internships at RanchiMall</p>
@@ -363,7 +363,7 @@
                             <p class="margin-block-0-5">
                                 You can add projects to watchlist by clicking on the 'Watch' button in opened project.
                             </p>
-                            <a href="#project_explorer" class="button open-first-project">See all projects</a>
+                            <a href="#/project_explorer" class="button open-first-project">See all projects</a>
                         </div>
                     </section>
                     <section id="intern_view" class="hidden intern-option">
@@ -381,7 +381,7 @@
                                     d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" />
                             </svg>
                             <h4>Leaderboard</h4>
-                            <a id="all_interns_btn" href="#all_interns_page" class="button">All</a>
+                            <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
                         </div>
                         <div id="top_interns"></div>
                     </div>
@@ -394,7 +394,7 @@
                                     d="M6 7V4a1 1 0 0 1 1-1h6.414l2 2H21a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3zm0 2H4v10h12v-2H6V9z" />
                             </svg>
                             <h4>Projects</h4>
-                            <a href="#project_explorer" class="button open-first-project">All</a>
+                            <a href="#/project_explorer" class="button open-first-project">All</a>
                         </div>
                         <div id="project_list"></div>
                     </div>
@@ -587,11 +587,13 @@
             </section>
             <section id="applications" class="page hidden align-content-start">
                 <p>Check status of your applications</p>
-                <div class="hidden">
+                <div class="grid gap-0-5 hidden">
+                    <h4>Task applications</h4>
                     <ul id="task_requests_list" class="grid gap-0-5 observe-empty-state"></ul>
                     <h4 class="empty-state">No task requests</h4>
                 </div>
-                <div>
+                <div class="grid gap-0-5">
+                    <h4>Internship applications</h4>
                     <ul id="internship_requests_list" class="grid gap-0-5 observe-empty-state"></ul>
                     <h4 class="empty-state">No applications</h4>
                 </div>
@@ -628,6 +630,9 @@
                         </sm-button>
                     </header>
                     <p id="project_explorer__project_description"></p>
+                    <a href="" id="project_explorer__project_updates"
+                        class="button button--small margin-right-auto">Check projects
+                        related updates</a>
                     <div id="explorer_branch_container" class="flex align-center flex-wrap gap-0-3"></div>
                     <h4></h4>
                     <div id="explorer_task_list" class="observe-empty-state"></div>
@@ -690,7 +695,7 @@
             </button>
             <h3 class="medium-top-bottom-margin">Choose an intern</h3>
         </header>
-        <sm-input id="intern_search_field" placeholder="Search for interns" type="search">
+        <sm-input id="intern_search_field" placeholder="Search for interns" type="search" autofocus>
             <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                 <path fill="none" d="M0 0h24v24H0z" />
                 <path
@@ -785,8 +790,9 @@
         <h5 id="update_of_project"></h5>
         <h3 id="update_of_task"></h3>
         <sm-form>
-            <sm-textarea id="update_description" placeholder="Type the update" rows="4" autofocus required>
+            <sm-textarea id="update__brief" placeholder="Type the update" rows="4" autofocus required>
             </sm-textarea>
+            <sm-input id="update__link" placeholder="Related link (optional)" animate></sm-input>
             <sm-button id="post_update_btn" title="post this update" variant="primary" disabled onclick="postUpdate()">
                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
@@ -812,8 +818,9 @@
             <h3>Apply for internship</h3>
         </header>
         <sm-form>
-            <sm-input id="intern_apply__name" placeholder="Full name" autofocus required></sm-input>
+            <sm-input id="intern_apply__name" placeholder="Full name" autofocus required animate></sm-input>
             <sm-textarea id="intern_apply__brief" placeholder="Tell us about yourself" rows="6" required></sm-textarea>
+            <sm-input id="intern_apply__link" placeholder="Link to your portfolio (optional)" animate></sm-input>
             <div class="multi-state-button">
                 <sm-button id="intern_apply__button" title="post this update" variant="primary" disabled
                     onclick="applyForInternship()">
@@ -899,22 +906,6 @@
                 <div class="task__branch_container"></div>
             </div>
         </div>
-    </template>
-    <template id="watchlist_project_template">
-        <a class="watchlist_project_card interact">
-            <div class="project-icon">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" />
-                </svg>
-            </div>
-            <b class="project__title"></b>
-            <div class="progress-bar">
-                <div class="progress-value"></div>
-            </div>
-            <span class="project__complete-percent"></span>
-        </a>
     </template>
     <script>
         /*jshint esversion: 8 */
@@ -1125,6 +1116,7 @@
 
         function getFormattedTime(timestamp, format) {
             try {
+                timestamp = parseInt(timestamp)
                 if (String(timestamp).length < 13)
                     timestamp *= 1000
                 let [day, month, date, year] = new Date(timestamp).toString().split(' '),
@@ -1177,12 +1169,22 @@
                 pageId = 'dashboard_page'
             }
             else {
-                if (targetPage.includes('?')) {
-                    const splitAddress = targetPage.split('?')
-                    searchParams = splitAddress.pop()
-                    pageId = splitAddress.pop().split('#').pop()
+                if (targetPage.includes('/')) {
+                    if (targetPage.includes('?')) {
+                        const splitAddress = targetPage.split('?')
+                        searchParams = splitAddress.pop()
+                        const pages = splitAddress.pop().split('/')
+                        pageId = pages[1]
+                        subPageId1 = pages[2]
+                        subPageId2 = pages[3]
+                    } else {
+                        const pages = targetPage.split('/')
+                        pageId = pages[1]
+                        subPageId1 = pages[2]
+                        subPageId2 = pages[3]
+                    }
                 } else {
-                    pageId = targetPage.split('#').pop()
+                    pageId = targetPage
                 }
             }
 
@@ -1202,21 +1204,31 @@
                 targetListItem.classList.add('nav-list__item--active')
             switch (pageId) {
                 case 'dashboard_page':
-                    const frag = document.createDocumentFragment()
-                    getRef('project_watchlist').innerHTML = ''
-                    if (watchList.length) {
-                        watchList.forEach(project => {
-                            frag.append(render.watchlistProject(project))
-                        })
-                        getRef('project_watchlist').append(frag)
-                    }
+                    renderElem(getRef('project_watchlist'), html`${watchList.map(project => render.watchlistProject(project))} `)
                     break;
                 case 'updates_page':
-                    renderInternUpdates()
                     if (!getRef('updates_page__project_selector').children.length) {
                         renderProjectSelectorOptions()
                         renderInternSelectorOptions()
                     }
+                    const { projectId, internId, date } = params || getUpdateFilters()
+                    if (params) {
+                        setUpdateFilters({ projectId, internId, date })
+                    } else if (projectId) {
+                        const dateParam = date !== '' ? `&date=${date}` : ''
+                        history.replaceState(null, null, `#/updates_page?projectId=${projectId}&internId=${internId}${dateParam}`)
+                    }
+                    let matchedUpdates
+                    if (projectId !== 'all') {
+                        matchedUpdates = getUpdatesByProject(projectId)
+                    }
+                    if (internId !== 'all') {
+                        matchedUpdates = getUpdatesByIntern(internId, matchedUpdates)
+                    }
+                    if (date) {
+                        matchedUpdates = getUpdatesByDate(date, matchedUpdates)
+                    }
+                    renderInternUpdates(matchedUpdates)
                     break;
                 case 'applications':
                     render.internApplications()
@@ -1266,15 +1278,9 @@
                     } else {
                         getRef('admin_page__left').classList.remove('hide-on-mobile')
                         getRef('project_editing_panel').classList.add('hide-on-mobile')
-                        history.replaceState(null, '', '#admin_page')
+                        history.replaceState(null, '', '#/admin_page')
                     }
                     break;
-            }
-            if (pageId !== 'all_interns_page') {
-                getRef('all_interns_list').innerHTML = ''
-            }
-            if (pageId !== 'dashboard_page') {
-                getRef('project_watchlist').innerHTML = ''
             }
             getRef(pageId).classList.remove('hidden')
             lastPage = pageId
@@ -1317,8 +1323,6 @@
                             this.render({ lazyLoad: true })
                         }
                     })
-                }, {
-                    root: this.lazyContainer
                 })
                 this.mutationObserver = new MutationObserver(mutationList => {
                     mutationList.forEach(mutation => {
@@ -1441,7 +1445,7 @@
             projectCard(projectCode, isAdmin = false, ref) { // creates cards containing project information
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
-                return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#${page}?projectId=${projectCode}&branch=mainLine`}>${projectName}</a>`
+                return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}?projectId=${projectCode}&branch=mainLine`}>${projectName}</a>`
             },
             taskCard(currentProject, currentBranch, taskNo) {
                 const card = getRef('timeline_task_card').content.cloneNode(true),
@@ -1506,10 +1510,18 @@
             },
             // creates cards containing updates provided by interns
             updateCard(update) {
-                const { time, internName, topic, description, floID, note } = update
+                let { floID, time, note, update: { projectId, projectBranch, task, topic, description, link } } = update
+                if (!topic) {
+                    topic = `${RIBC.getProjectDetails(projectId).projectName} / ${RIBC.getTaskDetails(projectId, projectBranch, task).taskTitle}`
+                }
+                const internName = RIBC.getInternList()[floID]
                 let replyButton
                 if (typeOfUser === 'admin' && !note) {
                     replyButton = html`<button class="button button--small init-update-replay margin-left-auto">Reply</button>`
+                }
+                let providedLink
+                if (link) {
+                    providedLink = html`<a href=${link} target="_blank" rel="noopener noreferrer">${link}</a> `
                 }
                 let adminReply
                 if (note) {
@@ -1526,6 +1538,7 @@
                         </div>
                         <h4 class="update__topic">${topic}</h4>
                         <p class="update__message">${description}</p>
+                        ${providedLink}
                         ${replyButton}
                         ${adminReply}
                     </li>`;
@@ -1533,7 +1546,7 @@
             branchButton(obj = {}) {
                 const { projectId, branch, page, innerHTML } = obj
                 return html.node`
-                    <a class="branch-button" href=${`#${page}?projectId=${projectId}&branch=${branch}`}>
+                    <a class="branch-button" href=${`#/${page}?projectId=${projectId}&branch=${branch}`}>
                        ${innerHTML ? html`${innerHTML}` : branch}
                     </a>
                 `;
@@ -1610,11 +1623,16 @@
             },
             internshipRequest(details) {
                 const { comments, floID, name, vectorClock } = details
+                let providedLink
+                if (typeof comments !== 'string') {
+                    providedLink = html`<a class="internship-request__link" href="${comments.link}" target="_blank">${comments.link}</a>`
+                }
                 return html`
                     <li class="request-card" .dataset=${{ vectorClock, type: 'internship' }}>
                         <h4>${name}</h4>
-                        <p class="request-card__description">${comments}</p>
-                        <div class="flex gap-0-3 margin-left-auto">
+                        <p class="request-card__description">${typeof comments !== 'string' ? comments.brief : comments}</p>
+                        ${providedLink}
+                        <div class="flex gap-0-3 margin-left-auto" style="margin-top: 0.5rem">
                             <button class="button button--small reject-request">
                                 <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
                                 Reject
@@ -1646,34 +1664,28 @@
                 `;
             },
             watchlistProject(projectId) {
-                const projectCard = getRef('watchlist_project_template').content.cloneNode(true)
                 const { projectName } = RIBC.getProjectDetails(projectId)
-                projectCard.firstElementChild.setAttribute('href', `#project_explorer?projectId=${projectId}&branch=mainLine`)
-                projectCard.querySelector('.project__title').textContent = projectName
                 const projectMap = RIBC.getProjectMap(projectId)
-                const projectBranches = RIBC.getProjectBranches(projectId)
                 const projectTasks = []
-                projectBranches.forEach(branch => {
-                    projectMap[branch].forEach((task, index, array) => {
-                        if (index > 3) {
-                            projectTasks.push({
-                                status: RIBC.getTaskStatus(projectId, branch, array[index])
-                            })
-                        }
+                RIBC.getProjectBranches(projectId).forEach(branch => {
+                    projectMap[branch].slice(4).forEach((task) => {
+                        projectTasks.push(RIBC.getTaskStatus(projectId, branch, task))
                     })
                 })
-                const completedTasks = projectTasks.reduce((count, task) => {
-                    if (task.status === 'completed') {
-                        return count += 1
-                    } else {
-                        return count
-                    }
-                }, 0)
-                let completePercent = (completedTasks / projectTasks.length) * 100
-                completePercent = Number.isInteger(completePercent) ? completePercent : completePercent.toFixed(1)
-                projectCard.querySelector('.progress-value').style.width = `${completePercent}%`
-                projectCard.querySelector('.project__complete-percent').textContent = `${completePercent}% complete`
-                return projectCard
+                const completedTasks = projectTasks.filter(task => task === 'completed').length
+                let completePercent = parseFloat(((completedTasks / projectTasks.length) * 100).toFixed(2))
+                return html`
+                    <a class="watchlist_project_card interact" href=${`#/project_explorer?projectId=${projectId}&branch=mainLine`}>
+                        <div class="project-icon">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
+                        </div>
+                        <b class="project__title">${projectName}</b>
+                        <div class="progress-bar">
+                            <div class="progress-value" style=${`width: ${completePercent}%`}></div>
+                        </div>
+                        <span class="project__complete-percent">${completePercent}% complete</span>
+                    </a>
+                `
             },
             internRequests() {
                 const selectedRequestType = getRef('request_type_selector').value;
@@ -1781,7 +1793,7 @@
             RIBC.admin.createProject(projectCode)
             RIBC.admin.addProjectDetails(projectCode, { projectName, projectDescription })
             render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
-            getRef('admin_page__project_list').querySelector(`[href="#admin_page?projectId=${projectCode}&branch=mainLine"]`)?.click()
+            getRef('admin_page__project_list').querySelector(`[href="#/admin_page?projectId=${projectCode}&branch=mainLine"]`)?.click()
             closePopup();
         }
 
@@ -1842,6 +1854,7 @@
                 getRef('watch_project_button').textContent = 'Watch';
             }
             getRef('project_explorer__project_description').textContent = projectDescription;
+            getRef('project_explorer__project_updates').href = `#/updates_page?projectId=${projectId}&internId=all`;
             getRef('explorer_branch_container').innerHTML = ``;
             RIBC.getProjectBranches(projectId).forEach((branch) => {
                 frag.append(render.branchButton({ projectId, branch, page: 'project_explorer' }))
@@ -1887,7 +1900,7 @@
             allBranches.forEach((branchButton) => {
                 branchButton.classList.remove('active-branch')
             })
-            document.getElementById(destination).querySelector(`.branch-button[href="#${pageId}?projectId=${projectId}&branch=${branch}"]`).classList.add('active-branch')
+            document.getElementById(destination).querySelector(`.branch-button[href="#/${pageId}?projectId=${projectId}&branch=${branch}"]`).classList.add('active-branch')
             if (branchTasks[1] && !taskListContainer === 'task_list') {
                 taskList.textContent = "No tasks added yet, Please explore other projects"
             } else {
@@ -1904,7 +1917,7 @@
                 if (branch !== 'mainLine') {
                     const { startPoint, parentBranch } = getAllBranches(projectId).find(({ branchName }) => branchName === branch)
                     taskList.append(html.node`<p class="margin-bottom-0-5">
-                        Branched off from <a href=${`#${pageId}?projectId=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
+                        Branched off from <a href=${`#/${pageId}?projectId=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
                     </p>`)
                 }
                 taskList.appendChild(frag);
@@ -2095,7 +2108,7 @@
                 const internName = RIBC.getInternList()[floId]
                 const { projectName } = RIBC.getProjectDetails(currentProject)
                 if (RIBC.admin.assignInternToTask(floId, currentProject, currentBranch, currentTask.dataset.taskId)) {
-                    notify(`${internName} assigned to ${projectName}`)
+                    notify(`${internName} assigned to ${projectName}`, 'success')
                     currentTask.querySelector('.assigned-interns').append(html.node`${render.assignedInternCard(floId, true)}`)
                 } else {
                     notify('intern already assigned', 'error')
@@ -2144,14 +2157,14 @@
         }
 
         function renderProjectSelectorOptions() {
-            const options = [html`<sm-option value="all" active>All</sm-option>`];
+            const options = [html`<sm-option value="all" selected>All</sm-option>`];
             RIBC.getProjectList().reverse().forEach(project => {
                 options.push(html`<sm-option value="${project}">${RIBC.getProjectDetails(project).projectName}</sm-option>`);
             })
             renderElem(getRef('updates_page__project_selector'), html`${options}`)
         }
         function renderInternSelectorOptions() {
-            const options = [html`<sm-option value="all" active>All</sm-option>`];
+            const options = [html`<sm-option value="all" selected>All</sm-option>`];
             const allInterns = Object.entries(RIBC.getInternList()).sort((a, b) => a[1].toLowerCase().localeCompare(b[1].toLowerCase()));
             allInterns.forEach(intern => {
                 options.push(html`<sm-option value="${intern[0]}">${intern[1]}</sm-option>`);
@@ -2159,24 +2172,23 @@
             renderElem(getRef('updates_page__intern_selector'), html`${options}`)
         }
 
-        async function getUpdatesByProject(projectId, allUpdates) {
+        function getUpdatesByProject(projectId) {
             const projectName = RIBC.getProjectDetails(projectId).projectName
-            if (!allUpdates) {
-                allUpdates = RIBC.getInternUpdates()
-            }
-
-            const options = {
-                keys: ['update.topic'],
-                threshold: 0.2
-            }
-            const fuse = new Fuse(allUpdates, options)
-            return fuse.search(projectName).map(v => v.item)
+            const allUpdates = RIBC.getInternUpdates()
+            const filteredUpdates = allUpdates.filter(({ update: { topic, projectId } }) => {
+                if (topic) {
+                    return topic.includes(projectName)
+                } else if (projectId) {
+                    return projectId === projectId
+                }
+            })
+            return filteredUpdates
         }
 
         function getUpdatesByIntern(floId, allUpdates = RIBC.getInternUpdates()) {
             return allUpdates.filter(update => update.floID === floId)
         }
-        async function getUpdatesByDate(date, allUpdates = RIBC.getInternUpdates()) {
+        function getUpdatesByDate(date, allUpdates = RIBC.getInternUpdates()) {
             const filteredUpdates = []
             const dateStart = new Date(`${date} 00:00:00`).getTime()
             const dateEnd = new Date(`${date} 23:59:59`).getTime()
@@ -2189,68 +2201,30 @@
             }
             return filteredUpdates
         }
-
-        let updateStartIndex = 0
-        let updateEndIndex = 0
-        const intersectionObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    observer.disconnect()
-                    renderFilteredUpdates({ lazyLoad: true })
-                }
-            })
-        }, {
-            threshold: 0.3
-        })
-        function renderInternUpdates(options = {}) {
-            let { updates, lazyLoad = false } = options
-            const frag = document.createDocumentFragment();
-            if (!updates) {
-                updates = RIBC.getInternUpdates();
-            }
-            if (lazyLoad) {
-                updateStartIndex = updateEndIndex
-                updateEndIndex = updates.length > updateEndIndex + 10 ? updateEndIndex + 10 : updates.length
+        let updatesLazyLoader
+        function renderInternUpdates(updates = RIBC.getInternUpdates()) {
+            if (updatesLazyLoader) {
+                updatesLazyLoader.update(updates)
             } else {
-                intersectionObserver.disconnect()
-                getRef('all_updates_list').innerHTML = ``;
-                updateStartIndex = 0
-                updateEndIndex = updates.length > 10 ? 10 : updates.length
+                updatesLazyLoader = new LazyLoader('#all_updates_list', updates, render.updateCard)
             }
-            for (let index = updateStartIndex; index < updateEndIndex; index++) {
-                const { floID, time, note, update: { projectId, projectBranch, task, topic, description } } = updates[index]
-                const updateObj = {
-                    internName: RIBC.getInternList()[floID],
-                    time: parseInt(time),
-                    topic: topic || `${RIBC.getProjectDetails(project).projectName} / ${RIBC.getTaskDetails(projectId, projectBranch, task).taskTitle}`,
-                    description,
-                    floID,
-                    note
-                }
-                frag.append(render.updateCard(updateObj))
-            }
-            getRef('all_updates_list').append(frag)
-            if (updateEndIndex !== updates.length && getRef('all_updates_list').lastElementChild) {
-                intersectionObserver.observe(getRef('all_updates_list').lastElementChild)
-            }
+            updatesLazyLoader.init()
         }
         delegate(getRef('all_updates_list'), 'click', '.init-update-replay', (e) => {
             const vectorClock = e.delegateTarget.closest('.intern-update').dataset.vectorClock;
             e.delegateTarget.after(html.node`
-                <div class="update-replay grid gap-0-5">
-                    <div class="update-replay__input">
-                        <sm-textarea placeholder="Enter your reply here" id="update_reply_textarea" rows="4"></sm-textarea>
-                    </div>
+                <sm-form class="update-replay grid gap-0-5">
+                    <sm-textarea placeholder="Enter your reply here" class="update-reply-textarea" rows="4" required></sm-textarea>
                     <div class="flex align-center gap-0-3 margin-left-auto">
                         <button class="update-replay__cancel button button--small" onclick="cancelUpdateReply(this.closest('.update-replay'))">Cancel</button>
                         <div class="multi-state-button">
-                            <button class="update-replay__submit button button--small button--primary" onclick="submitUpdateReply(this.closest('.update-replay'))">Submit</button>
+                            <button class="update-replay__submit button button--small button--primary" onclick="submitUpdateReply(this.closest('.update-replay'))" type="submit">Submit</button>
                         </div>
                     </div>
-                </div>
+                </sm-form>
             `)
             e.delegateTarget.classList.add('hidden')
-            e.target.closest('.intern-update').querySelector('#update_reply_textarea').focusIn()
+            e.target.closest('.intern-update').querySelector('.update-reply-textarea').focusIn()
         })
 
         function cancelUpdateReply(replayBox) {
@@ -2260,7 +2234,7 @@
         function submitUpdateReply(replayBox) {
             buttonLoader(replayBox.querySelector('.update-replay__submit'), true)
             const vectorClock = replayBox.previousElementSibling.closest('.intern-update').dataset.vectorClock;
-            const replyText = replayBox.querySelector('#update_reply_textarea').value.trim()
+            const replyText = replayBox.querySelector('.update-reply-textarea').value.trim()
             if (replyText !== '') {
                 RIBC.admin.commentInternUpdate(vectorClock, replyText).then(res => {
                     replayBox.previousElementSibling.remove()
@@ -2275,35 +2249,34 @@
                 })
             }
         }
-
-        const renderFilteredUpdates = debounce(async (options = {}) => {
-            const { lazyLoad = false } = options
-            const selectedProject = getRef('updates_page__project_selector').value
-            const selectedIntern = getRef('updates_page__intern_selector').value
-            const selectedDate = getRef('updates_page__date_selector').value
-            let matchedUpdates
-            if (selectedProject !== 'all') {
-                matchedUpdates = await getUpdatesByProject(selectedProject)
+        function setUpdateFilters(filters) {
+            const { projectId, internId, date } = filters || getUpdateFilters()
+            if (filters) {
+                getRef('updates_page__project_selector').value = projectId
+                getRef('updates_page__intern_selector').value = internId
+                getRef('updates_page__date_selector').value = date || ''
+            } else {
+                const dateParam = date !== '' ? `&date=${date}` : ''
+                location.hash = `/updates_page?projectId=${projectId}&internId=${internId}${dateParam}`
             }
-            if (selectedIntern !== 'all') {
-                matchedUpdates = await getUpdatesByIntern(selectedIntern, matchedUpdates)
-            }
-            if (selectedDate) {
-                matchedUpdates = await getUpdatesByDate(selectedDate, matchedUpdates)
-            }
-            renderInternUpdates({ updates: matchedUpdates, lazyLoad })
-        }, 100)
+        }
+        function getUpdateFilters() {
+            const projectId = getRef('updates_page__project_selector').value || 'all'
+            const internId = getRef('updates_page__intern_selector').value || 'all'
+            const date = getRef('updates_page__date_selector').value || ''
+            return { projectId, internId, date }
+        }
 
         function clearFilter() {
             getRef('updates_page__project_selector').reset()
             getRef('updates_page__intern_selector').reset()
             getRef('updates_page__date_selector').value = ''
-            renderFilteredUpdates()
+            setUpdateFilters()
         }
 
-        getRef('updates_page__project_selector').addEventListener('change', renderFilteredUpdates)
-        getRef('updates_page__intern_selector').addEventListener('change', renderFilteredUpdates)
-        getRef('updates_page__date_selector').addEventListener('change', renderFilteredUpdates)
+        getRef('updates_page__project_selector').addEventListener('change', e => setUpdateFilters())
+        getRef('updates_page__intern_selector').addEventListener('change', e => setUpdateFilters())
+        getRef('updates_page__date_selector').addEventListener('change', e => setUpdateFilters())
 
         getRef('watch_project_button').addEventListener('mouseenter', e => {
             if (e.target.textContent === 'watching') {
@@ -2373,7 +2346,7 @@
                     resolve(getRef('private_key_input').value.trim())
                     getRef('private_key_input').value = ''
                     loader('show')
-                    window.location.hash = '#dashboard_page'
+                    window.location.hash = '#/dashboard_page'
                     getRef('sign_in_page').classList.add('hidden');
                 }
             })
@@ -2399,7 +2372,7 @@
         document.addEventListener('popupopened', e => {
             switch (e.detail.popup.id) {
                 case 'intern_list_popup':
-                    renderElem(getRef('intern_list_container'), filterInterns(''))
+                    renderElem(getRef('intern_list_container'), filterInterns('', { availableInternsOnly: true }))
                     break;
             }
         })
@@ -2619,6 +2592,11 @@
                     elem.classList.add('hidden')
                 })
             } else {
+                document.querySelectorAll('.not-for-admin').forEach((elem) => {
+                    elem.classList.remove('hidden')
+                })
+            }
+            if (typeOfUser === 'general') {
                 const internshipRequests = RIBC.getInternRequests(false).reverse()
                 const hasPendingApplication = internshipRequests.find(request => !request.status)
                 if (internshipRequests.length === 0 || !hasPendingApplication) {
@@ -2626,9 +2604,6 @@
                 } else {
                     getRef('application_card').classList.add('hidden')
                 }
-                document.querySelectorAll('.not-for-admin').forEach((elem) => {
-                    elem.classList.remove('hidden')
-                })
             }
 
             renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 4).map((intern) => {
@@ -2666,9 +2641,12 @@
 
         function postUpdate() {
             const { projectId, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
-            const description = getRef('update_description').value.trim()
-            if (topic !== '' && description !== '') {
-                RIBC.postInternUpdate({ projectId, projectBranch, task, description })
+            const description = getRef('update__brief').value.trim()
+            const linkText = getRef('update__link').value.trim()
+            const link = linkText !== '' ? linkText : null
+            console.log(link)
+            if (description !== '') {
+                RIBC.postInternUpdate({ projectId, projectBranch, task, description, link })
                     .then((result) => {
                         notify('Update posted', 'success')
                         closePopup()
@@ -2678,14 +2656,17 @@
                     })
             }
             else {
-                notify('Please enter topic and description', 'error')
+                notify('Please enter description', 'error')
             }
         }
         function filterInterns(searchKey, options = {}) {
-            const { sortByRating = false } = options
+            const {
+                sortByRating = false,
+                availableInternsOnly = false
+            } = options
             let filtered = [];
             const allInterns = RIBC.getInternList()
-            const arrayOfInterns = []
+            let arrayOfInterns = []
             for (const intern in allInterns) {
                 arrayOfInterns.push({
                     floId: intern,
@@ -2693,6 +2674,9 @@
                 })
             }
             arrayOfInterns.sort((a, b) => a.internName.toLowerCase().localeCompare(b.internName.toLowerCase()))
+            if (availableInternsOnly) {
+                arrayOfInterns = arrayOfInterns.filter(intern => !RIBC.getAssignedInterns(currentProject, currentBranch, currentTask.dataset.taskId).includes(intern.floId))
+            }
             if (searchKey === '') {
                 filtered = (sortByRating ? highPerformingInterns : arrayOfInterns).map(({ internName, floId }) => {
                     return render.internCard(internName, floId, RIBC.getInternRating(floId))
@@ -2710,7 +2694,7 @@
             return html`${filtered}`
         }
         const searchInternPopup = debounce((e) => {
-            renderElem(getRef('intern_list_container'), filterInterns(e.target.value.trim()))
+            renderElem(getRef('intern_list_container'), filterInterns(e.target.value.trim(), { availableInternsOnly: true }))
         }, 150)
         const searchInternPage = debounce((e) => {
             renderElem(getRef('all_interns_list'), filterInterns(e.target.value.trim(), { sortByRating: true }))
@@ -2723,7 +2707,12 @@
             buttonLoader(getRef('intern_apply__button'), true)
             const name = getRef('intern_apply__name').value.trim();
             const brief = getRef('intern_apply__brief').value.trim();
-            RIBC.applyForIntern(name, brief)
+            const link = getRef('intern_apply__link').value.trim();
+            const details = {
+                brief,
+                link
+            }
+            RIBC.applyForIntern(name, details)
                 .then((result) => {
                     notify('Application submitted', 'success')
                     getRef('application_card').classList.add('hidden')

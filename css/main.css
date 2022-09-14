@@ -948,6 +948,12 @@ ul {
   gap: 0.8rem;
   grid-template-columns: auto 1fr auto;
 }
+.intern-card .icon {
+  fill: #ff5722 !important;
+  height: 1rem !important;
+  width: 1rem !important;
+  margin-left: 0.2rem;
+}
 
 .intern-card__initials {
   display: flex;
@@ -968,18 +974,12 @@ ul {
   font-size: 1.2rem;
 }
 
-.intern-card .icon {
-  fill: #ff5722 !important;
-  height: 1rem !important;
-  width: 1rem !important;
-  margin-left: 0.2rem;
-}
-
 .request-card {
   display: grid;
   position: relative;
   padding: 1rem;
   margin: 0.2rem;
+  gap: 0.3rem;
   background-color: rgba(var(--text-color), 0.06);
   border-radius: 0.5rem;
 }
@@ -990,7 +990,6 @@ ul {
 .request-card__description {
   width: 100%;
   font-size: 1rem;
-  margin-bottom: 1rem;
 }
 
 .reject-app {

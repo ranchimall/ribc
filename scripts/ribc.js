@@ -1,8 +1,8 @@
-(function() {
+(function () {
     const Ribc = window.RIBC = {};
     const Admin = Ribc.admin = {};
 
-    Ribc.init = function(isSubAdmin = false) {
+    Ribc.init = function (isSubAdmin = false) {
         return new Promise((resolve, reject) => {
             Promise.all([refreshObjectData(), refreshGeneralData(isSubAdmin)])
                 .then(results => resolve(results))
@@ -65,7 +65,7 @@
             .catch(error => reject(error))
     });
 
-    Ribc.getInternUpdates = function(count = null) {
+    Ribc.getInternUpdates = function (count = null) {
         let internUpdates = Object.values(floGlobals.generalDataset("InternUpdates")).map(data => {
             return {
                 floID: data.senderID,
@@ -117,7 +117,7 @@
             .catch(error => reject(error))
     });
 
-    Admin.addProjectDetails = function(projectCode, details) {
+    Admin.addProjectDetails = function (projectCode, details) {
         if (!(projectCode in _.projectMap))
             return "Project not Found!";
         if (projectCode in _.projectDetails && typeof projectCode === 'object' && typeof details === 'object')
@@ -128,7 +128,7 @@
         return "added project details for " + projectCode;
     }
 
-    Ribc.getInternRequests = function(ignoreProcessed = true) {
+    Ribc.getInternRequests = function (ignoreProcessed = true) {
         var internRequests = Object.values(floGlobals.generalDataset("InternRequests")).map(data => {
             return {
                 floID: data.senderID,
@@ -146,7 +146,7 @@
         return internRequests;
     }
 
-    Admin.processInternRequest = function(vectorClock, accept = true) {
+    Admin.processInternRequest = function (vectorClock, accept = true) {
         let request = floGlobals.generalDataset("InternRequests")[vectorClock];
         if (!request)
             return "Request not found";
@@ -159,7 +159,7 @@
         return status;
     }
 
-    const addIntern = Admin.addIntern = function(floID, internName) {
+    const addIntern = Admin.addIntern = function (floID, internName) {
         if (floID in _.internList)
             return false
         _.internList[floID] = internName
@@ -167,14 +167,14 @@
         return true;
     }
 
-    Admin.updateInternRating = function(floID, change = 0) {
+    Admin.updateInternRating = function (floID, change = 0) {
         if (!(floID in _.internList))
             return "Intern not found!"
         _.internRating[floID] += change
         return "Intern rating Updated";
     }
 
-    Ribc.getTaskRequests = function(ignoreProcessed = true) {
+    Ribc.getTaskRequests = function (ignoreProcessed = true) {
         var taskRequests = Object.values(floGlobals.generalDataset("TaskRequests")).map(data => {
             return {
                 floID: data.senderID,
@@ -194,7 +194,7 @@
         return taskRequests
     }
 
-    Admin.processTaskRequest = function(vectorClock, accept = true) {
+    Admin.processTaskRequest = function (vectorClock, accept = true) {
         let request = floGlobals.generalDataset("TaskRequests")[vectorClock];
         if (!request)
             return "Request not found";
@@ -207,7 +207,7 @@
         return status;
     }
 
-    const assignInternToTask = Admin.assignInternToTask = function(floID, projectCode, branch, taskNumber) {
+    const assignInternToTask = Admin.assignInternToTask = function (floID, projectCode, branch, taskNumber) {
         var index = projectCode + "_" + branch + "_" + taskNumber
         if (!Array.isArray(_.internsAssigned[index]))
             _.internsAssigned[index] = []
@@ -218,18 +218,18 @@
             return false
     }
 
-    Admin.unassignInternFromTask = function(floID, projectCode, branch, taskNumber) {
+    Admin.unassignInternFromTask = function (floID, projectCode, branch, taskNumber) {
         var index = projectCode + "_" + branch + "_" + taskNumber
         var pos = _.internsAssigned[index].indexOf(floID)
         if (pos > -1)
             _.internsAssigned[index].splice(pos, 1)
     }
 
-    Admin.putTaskStatus = function(taskStatus, projectCode, branch, taskNumber) {
+    Admin.putTaskStatus = function (taskStatus, projectCode, branch, taskNumber) {
         _.projectTaskStatus[projectCode + "_" + branch + "_" + taskNumber] = taskStatus;
     };
 
-    Admin.createProject = function(projectCode) {
+    Admin.createProject = function (projectCode) {
         if (projectCode in _.projectMap) {
             return "Project Name already exists";
         }
@@ -237,7 +237,7 @@
         return "Project Create: " + projectCode
     }
 
-    Admin.copyBranchtoNewProject = function(oldProjectCode, oldBranch, newProjectCode, newBranchConnection,
+    Admin.copyBranchtoNewProject = function (oldProjectCode, oldBranch, newProjectCode, newBranchConnection,
         newStartPoint, newEndPoint) {
         //Make sure new branch is a new text string that does not exist in new project
         if (oldBranch == "mainLine") {
@@ -285,7 +285,7 @@
         return _.projectMap[newProjectCode][newBranch];
     }
 
-    Admin.deleteTaskInMap = function(projectCode, branch, taskNumber) {
+    Admin.deleteTaskInMap = function (projectCode, branch, taskNumber) {
         var arr = _.projectMap[projectCode][branch];
         var currentIndex;
         for (var i = 4; i < arr.length; i++) {
@@ -359,7 +359,7 @@
         arr[1] = arr[1] - 1;
     }
 
-    Admin.insertTaskInMap = function(projectCode, branchName, insertPoint) {
+    Admin.insertTaskInMap = function (projectCode, branchName, insertPoint) {
         var lastTasks = [];
         lastTasks = findLastTaskNumber(projectCode);
         var lastNumber = lastTasks[branchName];
@@ -391,7 +391,7 @@
     //The best error management I have done
     //Project changing is overdoing right now
     //newStartPoint,newEndPoint is optional
-    Admin.changeBranchLine = function(projectCode, branch, newConnection, newStartPoint, newEndPoint) {
+    Admin.changeBranchLine = function (projectCode, branch, newConnection, newStartPoint, newEndPoint) {
         //find the task number on the original line where it was branched, and then close the line there
         //Do some basic tests
         if (branch == "mainLine") {
@@ -423,7 +423,7 @@
 
     //startOrEndOrNewProject 1=>Start,2=>End .. projectCode and branch will remain same .. mainLines cannot be rerouted
     //One test is missing .. you cannot connect to a point after end of connected trunk .. do it later .. not critical  
-    Admin.changeBranchPoint = function(projectCode, branch, newPoint, startOrEnd) {
+    Admin.changeBranchPoint = function (projectCode, branch, newPoint, startOrEnd) {
         var message;
 
         if (branch != "mainLine") {
@@ -450,7 +450,7 @@
         return message;
     }
 
-    const addBranch = Admin.addBranch = function(projectCode1, branch, startPoint, mergePoint) {
+    const addBranch = Admin.addBranch = function (projectCode1, branch, startPoint, mergePoint) {
         var arr = findAllBranches(projectCode1);
         var newBranchName;
 
@@ -481,12 +481,12 @@
         return newBranchName;
     }
 
-    Admin.editTaskDetails = function(taskDetails, projectCode, branch, taskNumber) {
+    Admin.editTaskDetails = function (taskDetails, projectCode, branch, taskNumber) {
         //add taskDetails
         _.projectTaskDetails[projectCode + "_" + branch + "_" + taskNumber] = taskDetails;
     }
 
-    Admin.addTaskInMap = function(projectCode, branchName) {
+    Admin.addTaskInMap = function (projectCode, branchName) {
         var lastTasks = [];
         lastTasks = findLastTaskNumber(projectCode);
         var lastNumber = lastTasks[branchName];
