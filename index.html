@@ -1690,13 +1690,13 @@
                 const selectedRequestType = getRef('request_type_selector').value;
                 let requestCards = [];
                 if (selectedRequestType === 'task') {
-                    RIBC.getTaskRequests().forEach((request) => {
+                    RIBC.getTaskRequests().reverse().forEach((request) => {
                         const { projectCode, branch, task } = request
                         if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined')
                             requestCards.push(render.taskRequestCard(request))
                     })
                 } else {
-                    requestCards = RIBC.getInternRequests().map((request) => render.internshipRequest(request))
+                    requestCards = RIBC.getInternRequests().reverse().map((request) => render.internshipRequest(request))
                 }
                 console.log(requestCards)
                 renderElem(getRef('requests_list'), html`${requestCards}`)
@@ -2515,7 +2515,7 @@
                 render.internRequests()
                 // accept task request
                 delegate(getRef('requests_list'), 'click', '.accept-request', (e) => {
-                    getConfirmation('Are you sure you want to accept this request?', (result) => {
+                    getConfirmation('Are you sure you want to accept this request?').then(result => {
                         if (result) {
                             const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
                             const type = e.delegateTarget.closest('.request-card').dataset.type
