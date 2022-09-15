@@ -53,8 +53,8 @@
         <h4 id="confirm_title"></h4>
         <p id="confirm_message"></p>
         <div class="flex align-center">
-            <sm-button variant="no-outline" class="cancel-btn">Cancel</sm-button>
-            <sm-button variant="no-outline" class="submit-btn">OK</button>
+            <sm-button variant="no-outline" class="cancel-button">Cancel</sm-button>
+            <sm-button variant="no-outline" class="confirm-button">OK</button>
         </div>
     </sm-popup>
     <section id="loading_page">
@@ -998,16 +998,17 @@
 
 
         // displays a popup for asking permission. Use this instead of JS confirm
-        const getConfirmation = (title, message, cancelText = 'Cancel', confirmText = 'OK') => {
+        const getConfirmation = (title, options = {}) => {
             return new Promise(resolve => {
+                const { message = '', cancelText = 'Cancel', confirmText = 'OK' } = options
                 openPopup('confirmation_popup', true)
-                getRef('confirm_title').textContent = title;
-                getRef('confirm_message').textContent = message;
-                let cancelButton = getRef('confirmation_popup').children[2].children[0],
-                    submitButton = getRef('confirmation_popup').children[2].children[1]
-                submitButton.textContent = confirmText
+                getRef('confirm_title').innerText = title;
+                getRef('confirm_message').innerText = message;
+                const cancelButton = getRef('confirmation_popup').querySelector('.cancel-button');
+                const confirmButton = getRef('confirmation_popup').querySelector('.confirm-button')
+                confirmButton.textContent = confirmText
                 cancelButton.textContent = cancelText
-                submitButton.onclick = () => {
+                confirmButton.onclick = () => {
                     closePopup()
                     resolve(true);
                 }
@@ -2093,7 +2094,7 @@
         }
 
         function signOut() {
-            getConfirmation('Sign out?', 'You are about to sign out of the app, continue?', 'Stay', 'Leave')
+            getConfirmation('Sign out?', { message: 'You are about to sign out of the app, continue?', confirmText: 'Stay', cancelText: 'Leave' })
                 .then(async (res) => {
                     if (res) {
                         await floDapps.clearCredentials();
@@ -2523,13 +2524,13 @@
                             if (type === 'task') {
                                 result = RIBC.admin.processTaskRequest(vectorClock, true)
                                 if (result === 'Accepted') {
-                                    notify('Intern assigned.', 'success')
+                                    notify('Intern assigned, commit changes to make it permanent.', 'success')
                                     removeRequest(e.delegateTarget.closest('.request-card'))
                                 }
                             } else if (type === 'internship') {
                                 result = RIBC.admin.processInternRequest(vectorClock, true)
                                 if (result === 'Accepted') {
-                                    notify('Added intern', 'success')
+                                    notify('Added intern, commit changes to make it permanent.', 'success')
                                     removeRequest(e.delegateTarget.closest('.request-card'))
                                 }
                             }
