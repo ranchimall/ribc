@@ -31,16 +31,16 @@
     <script src="scripts/ribc.js"></script>
     <script id="onLoadStartUp">
         function onLoadStartUp() {
-            floDapps.setCustomPrivKeyInput(customSignIn);
+            showPage('loading')
+            document.body.classList.remove('hidden')
+            floDapps.setCustomPrivKeyInput(getSignedIn);
             floDapps.launchStartUp().then(result => {
-                loader('show')
                 console.log(result)
                 console.log(`Welcome FLO_ID: ${myFloID}`)
                 RIBC.init(floGlobals.subAdmins.includes(myFloID)).then(result => {
                     console.log(result)
                     renderAllElements()
                     showPage(window.location.hash, { firstLoad: true })
-                    loader('hide')
                 }).catch(error => console.error(error))
             }).catch(error => console.error(error))
         }
@@ -57,90 +57,91 @@
             <sm-button variant="no-outline" class="confirm-button">OK</button>
         </div>
     </sm-popup>
-    <section id="loading_page">
-        <sm-spinner></sm-spinner>
-        <h4 class="loading-message">Loading RIBC</h4>
-        <p>
-            A FLO Blockchain App by RanchiMall
-        </p>
-        <footer id="loading_page__footer">
-            <svg class="icon" viewBox="0 0 118.35 118.35">
-                <title>RanchiMall logo</title>
-                <style type="text/css">
-                    .outer-layer {
-                        fill: #CB1F1F;
-                    }
-
-                    .inner-layer {
-                        fill: #FF4E4E;
-                    }
-
-                    .logo-layer {
-                        fill: #FFFFFF;
-                    }
-                </style>
-                <g id="Group_329_1_" transform="translate(-1783.76 -17.542)">
-                    <g id="Group_330_1_" transform="matrix(0.966, 0.259, -0.259, 0.966, 1814.879, 17.541)">
-                        <path id="Path_180_1_" class="outer-layer" d="M63.89-1.96c-10.68-4.42-9.91-8.27-21.47-8.27s-10.8,3.85-21.48,8.27S8.08-0.8-0.09,7.37
-                    S-5,17.73-9.43,28.41s-8.27,9.92-8.27,21.47s3.85,10.8,8.27,21.48s1.16,12.86,9.34,21.03s10.35,4.91,21.03,9.33
-                    S30.86,110,42.42,110s10.79-3.85,21.47-8.27s12.86-1.16,21.04-9.33s4.91-10.36,9.33-21.04s8.27-9.92,8.27-21.47
-                    s-3.85-10.79-8.27-21.47s-1.23-12.71-9.29-21C77.3-0.46,74.57,2.47,63.89-1.96z" />
-                    </g>
-                    <g id="Group_326_1_" transform="translate(1810.58 44.362)">
-                        <path id="Path_180-2_1_" class="inner-layer" d="M49.08-8.03c-8.31-3.44-7.72-6.44-16.72-6.44s-8.41,3-16.72,6.44S5.62-7.13-0.74-0.76
-                    S-4.56,7.3-8.01,15.61s-6.44,7.72-6.44,16.72s3,8.4,6.44,16.72s0.9,10.01,7.27,16.38s8.06,3.82,16.38,7.27s7.72,6.44,16.72,6.44
-                    s8.4-3,16.72-6.44s10.01-0.9,16.38-7.27s3.82-8.06,7.27-16.38s6.44-7.72,6.44-16.72s-3-8.4-6.44-16.72s-0.96-9.9-7.24-16.35
-                    C59.52-6.86,57.39-4.59,49.08-8.03z" />
-                    </g>
-                    <path id="Path_5_2_" class="logo-layer" d="M1864.51,98.2c-1.11-3.75-4.48-6.58-12.45-10.48c-2.26-0.99-4.39-2.26-6.34-3.76
-                c-0.78-0.72-1.42-1.57-1.9-2.52c-0.32-1.12-0.33-2.3-0.02-3.42c0.57-1.64,1.2-2.37,5.88-6.87c2.81-2.7,4.23-4.69,5.05-7.06
-                c0.34-1.4,0.37-2.86,0.08-4.27c-1.04-2.81-3.22-5.18-6.88-7.5c-1.35-0.85-1.95-0.97-1.96-0.37c-0.1,0.39-0.25,0.76-0.45,1.1
-                l-0.45,0.83l-1.27-0.88c-0.7-0.49-1.54-1.02-1.86-1.19c-0.59-0.3-1.09-0.28-1.09,0.07c-0.25,0.7-0.56,1.37-0.92,2.01
-                c-0.02,0.03-0.2-0.05-0.4-0.2c-2.77-1.98-3.97-2.52-3.97-1.77c-0.47,1.26-1.08,2.46-1.81,3.59c-2.94,4.94-5.94,7.38-9.05,7.38
-                c-1.35,0-1.33-0.03-0.93,1.53c0.33,1.28,0.5,1.39,1.65,1.04c0.96-0.27,1.85-0.71,2.65-1.31c0.35-0.25,0.69-0.43,0.75-0.39
-                c0.16,0.3,0.27,0.62,0.32,0.95c0.05,0.36,0.2,0.69,0.43,0.96c1.22-0.18,2.39-0.62,3.42-1.31l1.04-0.66l0.21,0.83
-                c0.28,1.11,0.48,1.24,1.48,0.98c2.09-0.67,3.92-1.97,5.24-3.73l0.91-1.07l-0.1,0.96c-0.26,2.46-1.95,5.16-5.12,8.18l-2.95,2.81
-                c-4.85,4.63-4.57,8.45,0.91,12.07c2.25,1.34,4.57,2.56,6.95,3.64c0.43,0.19,1.51,0.79,2.41,1.31c5,2.96,7.48,5.93,7.48,8.96
-                c-0.03,0.39,0.01,0.78,0.1,1.16l0,0c0.14,0.14,0.05,0.15,1.37-0.21c0.44-0.09,0.87-0.26,1.26-0.49c-0.03-0.98-0.32-1.93-0.84-2.76
-                c-1.09-1.65-2.46-3.1-4.05-4.29c-2.44-1.68-5.02-3.15-7.71-4.39c-3.88-1.9-5.38-2.83-6.67-4.13c-1.08-0.95-1.72-2.3-1.78-3.73
-                c-0.01-2.09,1.06-3.91,3.77-6.4c4.29-3.93,5.92-5.9,7.06-8.53c0.5-0.94,0.72-2,0.63-3.06c0.09-0.93-0.07-1.87-0.48-2.71l-0.48-1.11
-                l0.44-0.73c0.24-0.4,0.55-0.94,0.68-1.2l0.24-0.47l0.66,0.97c0.84,1.27,1.35,2.73,1.47,4.25c-0.05,1-0.26,1.99-0.64,2.93
-                c-0.08,0.18-0.18,0.45-0.23,0.6c-0.3,0.58-0.64,1.13-1.01,1.67c-0.89,1.36-2.37,2.93-6.09,6.47c-2.59,2.47-3.45,3.9-3.56,5.93
-                c-0.14,1.58,0.48,3.13,1.68,4.17c1.44,1.55,3.13,2.63,7.93,5.02c5.5,2.75,7.88,4.37,9.68,6.61c1.04,1.18,1.67,2.66,1.79,4.23
-                c0.01,0.47,0.08,0.93,0.21,1.39c0.22,0.02,0.45,0,0.66-0.08c0.3-0.08,0.86-0.23,1.25-0.33l0.7-0.18l-0.09-0.69
-                c-0.32-2.32-2.45-4.92-5.96-7.25c-1.99-1.33-2.66-1.69-7.88-4.27c-1.96-0.87-3.77-2.04-5.36-3.47c-1.87-1.55-2.38-4.2-1.21-6.33
-                c0.62-1.28,1.25-1.98,5.69-6.26c3.62-3.5,5.18-6.24,5.19-9.12c-0.08-2.51-1.22-4.87-3.15-6.49c-0.34-0.31-0.67-0.64-0.98-0.99
-                c0.12-0.66,0.42-1.27,0.86-1.77c0.55,0,3.56,2.88,4.4,4.2c0.84,1.18,1.25,2.61,1.16,4.06c0.06,1.59-0.4,3.17-1.31,4.48
-                c-1.08,1.84-1.91,2.75-6.45,7.06c-1.27,1.11-2.33,2.45-3.13,3.93c-0.64,1.44-0.66,3.08-0.06,4.54c0.86,1.83,3.37,3.85,7.02,5.64
-                c5.68,2.79,6.85,3.44,8.8,4.89c3.26,2.42,4.83,4.78,4.83,7.25c-0.03,0.39,0.01,0.78,0.13,1.16c0.87-0.05,1.72-0.25,2.51-0.6
-                C1864.74,99.06,1864.74,98.98,1864.51,98.2z M1832.73,62.18L1832.73,62.18c-0.68,0.38-1.43,0.61-2.2,0.68l-0.97,0.07l1.03-1.26
-                c1.79-2.24,3.32-4.69,4.55-7.28c0.42-0.84,0.82-1.58,0.89-1.66c0.17-0.18,1.17,0.48,2.32,1.53l0.95,0.87l-0.86,1.27
-                C1836.33,59.53,1834.65,61.23,1832.73,62.18L1832.73,62.18z M1841.36,59.49c-1.12,1.19-2.44,2.18-3.89,2.94l0,0
-                c-0.57,0.21-1.16,0.35-1.77,0.42l-0.87,0.08l0.97-1.18c1.2-1.47,2.26-3.05,3.18-4.71c0.34-0.62,0.63-1.15,0.66-1.19
-                c0.15-0.18,0.75,0.64,1.35,1.86l0.67,1.36L1841.36,59.49z M1843.78,56.14c-0.18,0.35-0.41,0.68-0.68,0.96
-                c-0.49-0.43-0.94-0.88-1.37-1.37l-1.27-1.36l0.29-0.68c0.51-1.19,0.59-1.22,1.55-0.47c0.75,0.55,1.44,1.18,2.06,1.87
-                C1844.18,55.46,1843.99,55.8,1843.78,56.14L1843.78,56.14z" />
-                </g>
-            </svg>
-        </footer>
-    </section>
-    <article id="sign_in_page" class="hidden">
-        <h2>Sign In</h2>
-        <p>Welcome to RIBC.</p>
-        <sm-form id="sign_in_form" class="grid gap-1">
-            <sm-input id="private_key_input" placeholder="Private key" type="password"
-                error-text="Private key is invalid" data-private-key required></sm-input>
-            <sm-button id="sign_in_button" variant="primary" disabled>Sign in</sm-button>
-        </sm-form>
-        <p>
-            Don't have a private key? get it <a href="https://flo-webwallet.duckdns.org/" target="_blank">here</a>
-            <br> or
-        </p>
-        <sm-button id="guest_btn" title="sign in as a guest">
-            Sign in as guest
-        </sm-button>
-    </article>
-    <main id="main_page" class="grid">
+    <div id="secondary_pages" class="page">
+        <header class="flex align-center gap-1">
+            <div class="flex align-center flex-1">
+                <svg class="icon flo-icon" width="64" height="64" viewBox="0 0 64 64" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <mask id="path-1-outside-1_16_6" maskUnits="userSpaceOnUse" x="3" y="3" width="58" height="58">
+                        <rect class="foreground-circle" x="3" y="3" width="58" height="58" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M31.946 43.6019C28.8545 47.1308 28.7789 51.9719 31.9811 55.1957C35.0078 52.2797 35.0105 46.8446 31.946 43.6019ZM31.9487 10.6835C24.6452 19.1291 24.9206 29.1137 31.9433 37.4108C39.0929 28.9436 39.1118 19.0076 31.9487 10.6808V10.6835ZM37.1111 35.051C43.1861 28.841 50.5976 27.4208 59 28.7654C56.2919 34.9754 52.4714 39.9353 45.7214 42.53C47.2118 41.3609 48.5699 40.4051 49.7984 39.3089C51.8504 37.481 53.303 35.267 54.0293 32.6075C54.2588 31.7678 53.9618 31.5302 53.1896 31.406C50.3627 30.9524 47.7086 31.5464 45.1733 32.702C40.9073 34.646 37.4324 37.6403 34.1735 40.8938C34.1168 40.9532 34.0925 41.0396 33.9899 41.2259C40.3754 41.4689 45.2381 44.0177 48.119 49.9064C44.3768 50.738 40.9532 50.5625 37.778 48.5213C40.1702 49.2557 42.557 49.7903 45.176 48.5483C44.852 48.0083 44.663 47.3765 44.231 47.0228C43.0511 46.0589 41.8415 45.0842 40.505 44.3498C38.4395 43.2212 36.131 42.692 33.5768 42.1682C37.0247 48.2081 36.1607 53.6918 31.946 59C29.9858 56.5295 28.6142 53.9456 28.2389 50.8946C27.8609 47.8328 28.7222 45.0518 30.1991 42.3896C26.9321 41.8658 19.8824 45.6485 18.7916 48.5645C21.3215 49.8443 23.7893 49.2611 26.33 48.3161C24.5048 50.1953 19.2425 50.9648 15.8108 49.8335C18.6593 44.0285 23.4977 41.4716 30.0263 41.2286C29.5457 40.7426 29.1893 40.3673 28.8167 40.0082C26.1005 37.3892 23.2142 34.9862 19.823 33.2366C17.0501 31.8056 14.1422 30.9092 10.9481 31.3871C10.5701 31.4438 10.1948 31.5356 9.6656 31.6436C10.6376 36.6386 13.9856 39.7355 18.1274 42.3464C13.775 41.8199 6.431 34.214 5 28.7546C13.397 27.3938 20.849 28.8842 26.897 35.2319C21.8939 24.089 24.5561 14.2259 31.946 5C39.2765 14.153 41.9657 23.9459 37.1111 35.051" />
+                    </mask>
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M31.946 43.6019C28.8545 47.1308 28.7789 51.9719 31.9811 55.1957C35.0078 52.2797 35.0105 46.8446 31.946 43.6019ZM31.9487 10.6835C24.6452 19.1291 24.9206 29.1137 31.9433 37.4108C39.0929 28.9436 39.1118 19.0076 31.9487 10.6808V10.6835ZM37.1111 35.051C43.1861 28.841 50.5976 27.4208 59 28.7654C56.2919 34.9754 52.4714 39.9353 45.7214 42.53C47.2118 41.3609 48.5699 40.4051 49.7984 39.3089C51.8504 37.481 53.303 35.267 54.0293 32.6075C54.2588 31.7678 53.9618 31.5302 53.1896 31.406C50.3627 30.9524 47.7086 31.5464 45.1733 32.702C40.9073 34.646 37.4324 37.6403 34.1735 40.8938C34.1168 40.9532 34.0925 41.0396 33.9899 41.2259C40.3754 41.4689 45.2381 44.0177 48.119 49.9064C44.3768 50.738 40.9532 50.5625 37.778 48.5213C40.1702 49.2557 42.557 49.7903 45.176 48.5483C44.852 48.0083 44.663 47.3765 44.231 47.0228C43.0511 46.0589 41.8415 45.0842 40.505 44.3498C38.4395 43.2212 36.131 42.692 33.5768 42.1682C37.0247 48.2081 36.1607 53.6918 31.946 59C29.9858 56.5295 28.6142 53.9456 28.2389 50.8946C27.8609 47.8328 28.7222 45.0518 30.1991 42.3896C26.9321 41.8658 19.8824 45.6485 18.7916 48.5645C21.3215 49.8443 23.7893 49.2611 26.33 48.3161C24.5048 50.1953 19.2425 50.9648 15.8108 49.8335C18.6593 44.0285 23.4977 41.4716 30.0263 41.2286C29.5457 40.7426 29.1893 40.3673 28.8167 40.0082C26.1005 37.3892 23.2142 34.9862 19.823 33.2366C17.0501 31.8056 14.1422 30.9092 10.9481 31.3871C10.5701 31.4438 10.1948 31.5356 9.6656 31.6436C10.6376 36.6386 13.9856 39.7355 18.1274 42.3464C13.775 41.8199 6.431 34.214 5 28.7546C13.397 27.3938 20.849 28.8842 26.897 35.2319C21.8939 24.089 24.5561 14.2259 31.946 5C39.2765 14.153 41.9657 23.9459 37.1111 35.051" />
+                    <path
+                        d="M31.946 43.6019L32.6728 42.915L31.918 42.1163L31.1938 42.943L31.946 43.6019ZM31.9811 55.1957L31.2716 55.9004L31.9657 56.5992L32.6749 55.9159L31.9811 55.1957ZM31.9487 10.6835L32.7051 11.3376L32.9487 11.0559V10.6835H31.9487ZM31.9433 37.4108L31.18 38.0569L31.9442 38.9597L32.7074 38.056L31.9433 37.4108ZM31.9487 10.6808L32.7068 10.0287L30.9487 7.98495V10.6808H31.9487ZM59 28.7654L59.9166 29.1651L60.4326 27.9819L59.158 27.778L59 28.7654ZM45.7214 42.53L45.1042 41.7432L46.0802 43.4634L45.7214 42.53ZM49.7984 39.3089L49.1332 38.5622L49.1326 38.5628L49.7984 39.3089ZM54.0293 32.6075L53.0647 32.3439L53.0646 32.3441L54.0293 32.6075ZM53.1896 31.406L53.3484 30.4187L53.348 30.4186L53.1896 31.406ZM45.1733 32.702L45.588 33.612L45.5881 33.6119L45.1733 32.702ZM34.1735 40.8938L33.467 40.1861L33.4585 40.1946L33.4501 40.2033L34.1735 40.8938ZM33.9899 41.2259L33.114 40.7435L32.3319 42.1635L33.9519 42.2252L33.9899 41.2259ZM48.119 49.9064L48.3359 50.8826L49.5751 50.6072L49.0173 49.4669L48.119 49.9064ZM37.778 48.5213L38.0715 47.5653L37.2372 49.3625L37.778 48.5213ZM45.176 48.5483L45.6045 49.4518L46.6008 48.9794L46.0335 48.0338L45.176 48.5483ZM44.231 47.0228L44.8645 46.2491L44.8637 46.2484L44.231 47.0228ZM40.505 44.3498L40.9866 43.4734L40.9845 43.4723L40.505 44.3498ZM33.5768 42.1682L33.7777 41.1886L31.6127 40.7446L32.7083 42.664L33.5768 42.1682ZM31.946 59L31.1626 59.6216L31.9457 60.6085L32.7292 59.6218L31.946 59ZM28.2389 50.8946L29.2314 50.7725L29.2314 50.7721L28.2389 50.8946ZM30.1991 42.3896L31.0736 42.8747L31.7652 41.6279L30.3574 41.4022L30.1991 42.3896ZM18.7916 48.5645L17.855 48.2141L17.5413 49.0527L18.3402 49.4568L18.7916 48.5645ZM26.33 48.3161L27.0473 49.0128L25.9814 47.3788L26.33 48.3161ZM15.8108 49.8335L14.9131 49.393L14.4073 50.4237L15.4977 50.7832L15.8108 49.8335ZM30.0263 41.2286L30.0635 42.2279L32.3372 42.1433L30.7373 40.5255L30.0263 41.2286ZM28.8167 40.0082L28.1226 40.7281L28.1228 40.7282L28.8167 40.0082ZM19.823 33.2366L19.3644 34.1252L19.3645 34.1253L19.823 33.2366ZM10.9481 31.3871L10.8001 30.3981L10.7998 30.3982L10.9481 31.3871ZM9.6656 31.6436L9.46564 30.6638L8.49474 30.8619L8.68401 31.8346L9.6656 31.6436ZM18.1274 42.3464L18.0073 43.3392L18.6607 41.5005L18.1274 42.3464ZM5 28.7546L4.84003 27.7675L3.75363 27.9435L4.03268 29.0082L5 28.7546ZM26.897 35.2319L26.173 35.9217L27.8093 34.8223L26.897 35.2319ZM31.946 5L32.7265 4.37488L31.9461 3.40036L31.1655 4.37483L31.946 5ZM31.1938 42.943C27.7974 46.8199 27.6566 52.261 31.2716 55.9004L32.6906 54.491C29.9012 51.6828 29.9116 47.4417 32.6982 44.2609L31.1938 42.943ZM32.6749 55.9159C36.1304 52.5867 36.081 46.5214 32.6728 42.915L31.2192 44.2888C33.94 47.1678 33.8852 51.9727 31.2873 54.4755L32.6749 55.9159ZM31.1923 10.0294C27.4048 14.4092 25.5379 19.2455 25.5737 24.1102C25.6095 28.971 27.5438 33.7608 31.18 38.0569L32.7066 36.7647C29.3201 32.7637 27.6054 28.4127 27.5736 24.0955C27.5419 19.7822 29.1891 15.4034 32.7051 11.3376L31.1923 10.0294ZM32.7074 38.056C36.4083 33.6729 38.31 28.8504 38.3133 23.9938C38.3165 19.1359 36.42 14.3451 32.7068 10.0287L31.1906 11.3329C34.6405 15.3433 36.3161 19.6839 36.3133 23.9925C36.3104 28.3024 34.6279 32.6815 31.1792 36.7656L32.7074 38.056ZM30.9487 10.6808V10.6835H32.9487V10.6808H30.9487ZM37.8259 35.7503C43.6131 29.8345 50.6632 28.444 58.842 29.7528L59.158 27.778C50.532 26.3976 42.7591 27.8475 36.3963 34.3517L37.8259 35.7503ZM58.0834 28.3657C55.4402 34.4268 51.7791 39.1301 45.3626 41.5966L46.0802 43.4634C53.1637 40.7405 57.1436 35.524 59.9166 29.1651L58.0834 28.3657ZM46.3386 43.3168C47.7733 42.1914 49.2057 41.178 50.4642 40.055L49.1326 38.5628C47.9341 39.6322 46.6503 40.5304 45.1042 41.7432L46.3386 43.3168ZM50.4636 40.0556C52.6466 38.111 54.2121 35.7338 54.994 32.871L53.0646 32.3441C52.3939 34.8002 51.0542 36.851 49.1332 38.5622L50.4636 40.0556ZM54.9939 32.8711C55.1262 32.3872 55.2248 31.6946 54.7698 31.1186C54.3643 30.6053 53.7257 30.4794 53.3484 30.4187L53.0308 32.3933C53.1086 32.4058 53.17 32.4181 53.2184 32.43C53.2671 32.442 53.2955 32.4518 53.3091 32.4572C53.3227 32.4626 53.3139 32.4606 53.2926 32.4461C53.2699 32.4307 53.2353 32.4025 53.2004 32.3583C53.1832 32.3366 53.1677 32.3132 53.1543 32.2886C53.1409 32.264 53.1307 32.2402 53.1231 32.2182C53.1079 32.1742 53.1053 32.144 53.1049 32.1366C53.1046 32.1302 53.1059 32.1427 53.1007 32.1797C53.0955 32.2165 53.0849 32.27 53.0647 32.3439L54.9939 32.8711ZM53.348 30.4186C50.274 29.9254 47.4176 30.5801 44.7585 31.7921L45.5881 33.6119C47.9996 32.5127 50.4514 31.9794 53.0312 32.3934L53.348 30.4186ZM44.7586 31.792C40.3293 33.8104 36.7535 36.9051 33.467 40.1861L34.88 41.6015C38.1113 38.3755 41.4853 35.4816 45.588 33.612L44.7586 31.792ZM33.4501 40.2033C33.3063 40.354 33.2291 40.5156 33.2033 40.5674C33.1672 40.64 33.1517 40.6749 33.114 40.7435L34.8658 41.7083C34.9307 41.5906 34.9786 41.4891 34.9945 41.4572C35.0049 41.4363 35.0004 41.4467 34.9882 41.4667C34.9731 41.4914 34.9435 41.5355 34.8969 41.5843L33.4501 40.2033ZM33.9519 42.2252C37.0233 42.3421 39.6629 43.0109 41.8597 44.3098C44.0485 45.6039 45.857 47.5582 47.2207 50.3459L49.0173 49.4669C47.5001 46.3659 45.4368 44.1014 42.8776 42.5882C40.3265 41.0798 37.342 40.3527 34.0279 40.2266L33.9519 42.2252ZM47.9021 48.9302C44.3241 49.7253 41.1983 49.5313 38.3188 47.6801L37.2372 49.3625C40.7081 51.5937 44.4295 51.7507 48.3359 50.8826L47.9021 48.9302ZM37.4845 49.4773C39.9089 50.2215 42.6205 50.8669 45.6045 49.4518L44.7475 47.6448C42.4935 48.7137 40.4315 48.2899 38.0715 47.5653L37.4845 49.4773ZM46.0335 48.0338C45.8849 47.7862 45.8212 47.6158 45.6292 47.2504C45.4736 46.9544 45.2423 46.5584 44.8645 46.2491L43.5975 47.7965C43.6517 47.8409 43.7309 47.9377 43.8588 48.181C43.9503 48.3549 44.1431 48.7704 44.3185 49.0628L46.0335 48.0338ZM44.8637 46.2484C43.6913 45.2906 42.4149 44.2582 40.9866 43.4734L40.0234 45.2262C41.2681 45.9102 42.4109 46.8272 43.5983 47.7972L44.8637 46.2484ZM40.9845 43.4723C38.7711 42.2628 36.3236 41.7107 33.7777 41.1886L33.3759 43.1478C35.9384 43.6733 38.1079 44.1796 40.0255 45.2273L40.9845 43.4723ZM32.7083 42.664C34.346 45.5328 34.9255 48.203 34.6411 50.7474C34.3555 53.3015 33.1882 55.8274 31.1628 58.3782L32.7292 59.6218C34.9185 56.8644 36.2905 53.9944 36.6287 50.9696C36.9679 47.9351 36.2555 44.8435 34.4453 41.6724L32.7083 42.664ZM32.7294 58.3784C30.8397 55.9968 29.577 53.5818 29.2314 50.7725L27.2464 51.0167C27.6514 54.3094 29.1319 57.0622 31.1626 59.6216L32.7294 58.3784ZM29.2314 50.7721C28.8877 47.9881 29.6602 45.4224 31.0736 42.8747L29.3247 41.9045C27.7842 44.6812 26.8341 47.6775 27.2464 51.0171L29.2314 50.7721ZM30.3574 41.4022C29.3303 41.2375 28.1125 41.4187 26.9159 41.7622C25.6987 42.1117 24.4105 42.6564 23.2045 43.307C21.999 43.9574 20.8488 44.728 19.9166 45.543C19.005 46.3399 18.2137 47.2553 17.855 48.2141L19.7282 48.9149C19.9149 48.4157 20.4139 47.7647 21.233 47.0487C22.0314 46.3507 23.0524 45.6616 24.1541 45.0672C25.2552 44.4732 26.4102 43.9882 27.4678 43.6846C28.5458 43.3751 29.4344 43.2798 30.0408 43.377L30.3574 41.4022ZM18.3402 49.4568C21.2702 50.939 24.0958 50.214 26.6786 49.2534L25.9814 47.3788C23.4828 48.3082 21.3728 48.7496 19.243 47.6722L18.3402 49.4568ZM25.6127 47.6194C24.9334 48.3187 23.4333 48.9382 21.5294 49.2141C19.6667 49.484 17.6562 49.3889 16.1239 48.8838L15.4977 50.7832C17.3971 51.4094 19.7336 51.4952 21.8162 51.1934C23.8578 50.8976 25.9014 50.1927 27.0473 49.0128L25.6127 47.6194ZM16.7085 50.274C18.0554 47.5292 19.8486 45.5942 22.044 44.3081C24.2482 43.0169 26.918 42.345 30.0635 42.2279L29.9891 40.2293C26.606 40.3552 23.5923 41.0832 21.0331 42.5824C18.4649 44.0869 16.4147 46.3328 14.9131 49.393L16.7085 50.274ZM30.7373 40.5255C30.2757 40.0586 29.8942 39.6578 29.5106 39.2882L28.1228 40.7282C28.4844 41.0768 28.8157 41.4266 29.3153 41.9317L30.7373 40.5255ZM29.5108 39.2883C26.7637 36.6396 23.7967 34.1615 20.2815 32.3479L19.3645 34.1253C22.6317 35.8109 25.4373 38.1388 28.1226 40.7281L29.5108 39.2883ZM20.2816 32.348C17.4111 30.8666 14.2829 29.877 10.8001 30.3981L11.0961 32.3761C14.0015 31.9414 16.6891 32.7446 19.3644 34.1252L20.2816 32.348ZM10.7998 30.3982C10.388 30.4599 9.94468 30.566 9.46564 30.6638L9.86556 32.6234C10.4449 32.5052 10.7522 32.4277 11.0964 32.376L10.7998 30.3982ZM8.68401 31.8346C9.73479 37.2345 13.3673 40.5279 17.5941 43.1923L18.6607 41.5005C14.6039 38.9431 11.5404 36.0427 10.6472 31.4526L8.68401 31.8346ZM18.2475 41.3536C17.3819 41.2489 16.2594 40.7693 14.9918 39.9335C13.742 39.1093 12.427 37.9891 11.1875 36.7057C8.68437 34.1137 6.62095 30.9947 5.96732 28.5011L4.03268 29.0082C4.81005 31.9739 7.13413 35.3875 9.74885 38.095C11.0683 39.4613 12.4947 40.6825 13.8908 41.6031C15.2691 42.512 16.6967 43.1806 18.0073 43.3392L18.2475 41.3536ZM5.15997 29.7417C13.3246 28.4186 20.4108 29.874 26.173 35.9217L27.621 34.5421C21.2872 27.8944 13.4694 26.369 4.84003 27.7675L5.15997 29.7417ZM27.8093 34.8223C25.3851 29.4232 24.8341 24.3801 25.7561 19.5859C26.6809 14.7778 29.1009 10.1516 32.7265 5.62517L31.1655 4.37483C27.4012 9.07433 24.7952 13.9927 23.7921 19.2082C22.7863 24.4378 23.4058 29.8977 25.9847 35.6415L27.8093 34.8223ZM31.1655 5.62512C34.7619 10.1157 37.1747 14.7077 38.1168 19.4869C39.0562 24.2523 38.5469 29.2701 36.1948 34.6504L38.0274 35.4515C40.5299 29.7268 41.1033 24.2956 40.0791 19.1001C39.0576 13.9183 36.4606 9.03731 32.7265 4.37488L31.1655 5.62512Z"
+                        mask="url(#path-1-outside-1_16_6)" />
+                </svg>
+                <h4>RanchiMall Internships</h4>
+            </div>
+            <theme-toggle></theme-toggle>
+        </header>
+        <div id="landing" class="grid inner-page hidden">
+            <div class="left">
+                <h1 class="title-font">
+                    Truly Secure, Private and Reliable.
+                </h1>
+                <p class="margin-block-1">A messenger made with Blockchain and Open Source technologies. Take back
+                    control of your data that
+                    belongs to you and you alone.</p>
+                <div class="flex">
+                    <a href="#/sign_up" class="button">Get started</a>
+                    <a href="#/sign_in" class="button button--primary">Sign In</a>
+                </div>
+            </div>
+            <div id="landing_illustration" class="right">
+                <img src="assets/message-background.svg" alt="">
+            </div>
+        </div>
+        <article id="sign_in" class="inner-page hidden">
+            <section>
+                <h1 style="font-size: 2rem;">Sign In</h1>
+                <p>Welcome back, glad to see you again</p>
+                <sm-form id="sign_in_form">
+                    <sm-input id="private_key_field" type="password" placeholder="FLO private key"
+                        error-text="Private key is invalid" data-private-key required></sm-input>
+                    <sm-button id="sign_in_button" variant="primary" disabled>Sign In</sm-button>
+                </sm-form>
+                <p>
+                    New here? <a href="#/sign_up">get your FLO login credentials</a>
+                </p>
+            </section>
+        </article>
+        <article id="sign_up" class="inner-page hidden">
+            <section class="grid gap-1-5">
+                <div id="flo_id_warning" class="grid justify-center gap-0-5">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                        fill="#000000">
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+                    </svg>
+                    <h3>Keep your keys safe!</h3>
+                    <strong>Don't share with anyone. Once lost private key can't be
+                        recovered.</strong>
+                </div>
+                <div class="grid gap-1-5">
+                    <div class="grid gap-0-5">
+                        <h5>FLO ID</h5>
+                        <sm-copy id="generated_flo_id"></sm-copy>
+                    </div>
+                    <div class="grid gap-0-5">
+                        <h5>Private key</h5>
+                        <sm-copy id="generated_private_key"></sm-copy>
+                    </div>
+                </div>
+                <sm-button id="sign_up_button" variant="primary">Sign in with these credentials</sm-button>
+                <p>You can use these FLO credentials with FLO Messenger other RanchiMall apps
+                    too. </p>
+            </section>
+        </article>
+        <div id="loading" class="inner-page hidden">
+            <sm-spinner></sm-spinner>
+            <h4 class="page__tag-line margin-block-1">Getting everything ready, Hang on.</h4>
+            <button class="button" onclick="floDapps.clearCredentials()">Reset</button>
+        </div>
+    </div>
+    <main id="main_page" class="grid page hidden">
         <header id="main_header" class="hide-on-desktop space-between">
             <div id="logo" class="logo">
                 <svg class="icon rm-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -258,7 +259,7 @@
             <theme-toggle class="hide-on-mobile"></theme-toggle>
         </nav>
         <article id="sub_page_container">
-            <section id="dashboard_page" class="page">
+            <section id="dashboard_page" class="inner-page">
                 <div class="flex flex-direction-column gap-2">
                     <div id="application_card" class="card flex align-center space-between general-only hidden">
                         <div>
@@ -400,32 +401,15 @@
                     </div>
                 </section>
             </section>
-            <section id="settings_page" class="page hidden">
-                <section class="grid gap-0-5">
-                    <h2 id="username" class="capitalize"></h2>
-                    <div id="user_role"></div>
-                    <sm-copy id="user_flo_id"></sm-copy>
-                    <button id="logout" class="justify-self-start button button--danger button--primary"
-                        onclick="signOut()">
-                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" />
-                        </svg>
-                        Sign out
-                    </button>
-                </section>
-            </section>
-            <section id="admin_page" class="page hidden">
+            <section id="admin_page" class="inner-page hidden">
                 <section id="admin_page__left" class="flex flex-direction-column">
-                    <sm-tab-header target="admin_tabs">
-                        <sm-tab>Projects</sm-tab>
-                        <sm-tab>Interns</sm-tab>
-                        <sm-tab>Requests</sm-tab>
-                    </sm-tab-header>
-                    <sm-tab-panels id="admin_tabs">
-                        <section id="projects_container">
+                    <strip-select id="admin_view_selector">
+                        <strip-option value="0" selected>Projects</strip-option>
+                        <strip-option value="1">Interns</strip-option>
+                        <strip-option value="2">Requests</strip-option>
+                    </strip-select>
+                    <div id="admin_views">
+                        <section id="projects_container" class="flex flex-direction-column">
                             <button class="button button--small margin-left-auto margin-block-0-5"
                                 onclick="openPopup('add_project_popup')">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
@@ -440,7 +424,7 @@
                             <div id="admin_page__project_list" class="list-container observe-empty-state"></div>
                             <h4 class="empty-state">No project added</h4>
                         </section>
-                        <section id="interns_container">
+                        <section id="interns_container" class="flex flex-direction-column hidden">
                             <button class="button button--small margin-left-auto margin-block-0-5"
                                 onclick="openPopup('add_intern_popup')">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
@@ -454,7 +438,7 @@
                             <ul id="admin_page__intern_list" class="list-container observe-empty-state"></ul>
                             <h4 class="empty-state">No interns added</h4>
                         </section>
-                        <section>
+                        <section class="flex flex-direction-column hidden">
                             <strip-select id="request_type_selector" class="margin-left-auto margin-block-0-5">
                                 <strip-option value="task" selected>Task</strip-option>
                                 <strip-option value="intern">Internship</strip-option>
@@ -462,10 +446,18 @@
                             <ul id="requests_list" class="list-container observe-empty-state"></ul>
                             <h4 class="empty-state">No pending requests</h4>
                         </section>
-                    </sm-tab-panels>
+                    </div>
                 </section>
-                <section id="project_editing_panel" class="inner-page hide-on-mobile hidden">
-                    <div id="project_details_wrapper" class="grid gap-1 margin-bottom-2">
+                <section id="project_editing_panel" class="hide-on-mobile hidden">
+                    <div id="project_details_wrapper"
+                        class="flex flex-direction-column gap-1 margin-bottom-2 align-items-start">
+                        <a class="button icon-only hide-on-desktop" href="#/admin_page">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
+                                width="24px" fill="#000000">
+                                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+                            </svg>
+                        </a>
                         <div class="flex flex-wrap align-items-start">
                             <h2 id="editing_panel__title" data-editable></h2>
                             <button class="button button--small button--transparent admin-option"
@@ -491,10 +483,13 @@
                             </button>
                         </div>
                     </div>
+                    <div class="grid gap-0-3">
+                        <h4>Branches</h4>
+                        <div id="branch_container"></div>
+                    </div>
                     <h4>Tasks</h4>
-                    <div id="branch_container"></div>
                     <ul id="task_list" class="grid observe-empty-state"></ul>
-                    <h4 class="empty-state margin-bottom-1">No tasks added yet, tasks will appear here after adding
+                    <h4 class="empty-state padding-block-1">No tasks added yet, tasks will appear here after adding
                         them.</h4>
                     <sm-button id="add_task" title="show element to add new task" onclick="addPlaceholderTask()">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -561,7 +556,7 @@
                     Commit changes
                 </button>
             </section>
-            <section id="updates_page" class="page hidden">
+            <section id="updates_page" class="inner-page hidden">
                 <sm-button class="hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</sm-button>
                 <section id="update_filters_wrapper" class="grid hide-on-mobile">
                     <h4>Filter</h4>
@@ -585,7 +580,7 @@
                     <h4 class="empty-state">No related updates</h4>
                 </section>
             </section>
-            <section id="applications" class="page hidden align-content-start">
+            <section id="applications" class="inner-page hidden align-content-start">
                 <p>Check status of your applications</p>
                 <div class="grid gap-0-5 hidden">
                     <h4>Task applications</h4>
@@ -599,7 +594,7 @@
                 </div>
 
             </section>
-            <section id="all_interns_page" class="page hidden flex flex-direction-column align-start">
+            <section id="all_interns_page" class="inner-page hidden flex flex-direction-column align-start">
                 <div id="all_interns_page__header" class="grid gap-0-5">
                     <h2>Interns</h2>
                     <sm-input id="interns_page__search" placeholder="Search">
@@ -614,7 +609,7 @@
                 <ul id="all_interns_list" class="grid observe-empty-state"></ul>
                 <h4 class="empty-state">No intern found</h4>
             </section>
-            <section id="project_explorer" class="page hidden">
+            <section id="project_explorer" class="inner-page hidden">
                 <div id="project_explorer__left" class="list-container">
                     <h4 class="padding intern-option hidden">My projects</h4>
                     <div id="my_projects"></div>
@@ -622,23 +617,66 @@
                     <div id="other_projects"></div>
                 </div>
                 <section id="project_explorer__right" class="grid hide-on-mobile">
-                    <header class="flex space-between align-center">
-                        <h2 id="project_explorer__project_title"></h2>
-                        <sm-button id="watch_project_button" title="Add project to your watchlist"
-                            onclick="watchThisProject(this)">
-                            Watch
-                        </sm-button>
+                    <header class="flex flex-direction-column gap-0-5 align-items-start">
+                        <a class="button icon-only hide-on-desktop" href="#/project_explorer">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
+                                width="24px" fill="#000000">
+                                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+                            </svg>
+                        </a>
+                        <div class="flex space-between align-center">
+                            <h2 id="project_explorer__project_title"></h2>
+                            <sm-button id="watch_project_button" title="Add project to your watchlist"
+                                onclick="watchThisProject(this)">
+                                Watch
+                            </sm-button>
+                        </div>
                     </header>
                     <p id="project_explorer__project_description"></p>
                     <a href="" id="project_explorer__project_updates"
-                        class="button button--small margin-right-auto">Check related updates</a>
-                    <div id="explorer_branch_container" class="flex align-center flex-wrap gap-0-3"></div>
-                    <h4></h4>
+                        class="button button--small margin-right-auto">Check
+                        related updates</a>
+                    <div id="explorer_branch_container" class="flex align-center flex-wrap gap-0-3 margin-top-0-5">
+                    </div>
                     <div id="explorer_task_list" class="observe-empty-state"></div>
                     <h4 class="empty-state">No tasks are added to this projects</h4>
                 </section>
             </section>
+            <section id="settings_page" class="inner-page hidden">
+                <section class="grid gap-1 card">
+                    <h2 id="username" class="capitalize"></h2>
+                    <div class="grid">
+                        <h4>My FLO ID</h4>
+                        <sm-copy id="user_flo_id"></sm-copy>
+                    </div>
+                    <button id="logout" class="justify-self-start button button--danger button--primary"
+                        onclick="signOut()">
+                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" />
+                        </svg>
+                        Sign out
+                    </button>
+                </section>
+                <div class="grid gap-1 card">
+                    <div class="grid gap-0-5">
+                        <h4>Secure private key</h4>
+                        <p>
+                            You can set a password to secure your private key and use the password instead of private
+                            key.
+                            This is applied to this browser only.
+                        </p>
+                    </div>
+                    <button id="secure_pwd_button" class="button button--primary justify-self-start secure-priv-key"
+                        onclick="openPopup('secure_pwd_popup')">Set
+                        password</button>
+                </div>
+            </section>
         </article>
+    </main>
     </main>
 
     <sm-popup id="intern_info_popup">
@@ -692,7 +730,7 @@
                         d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
                 </svg>
             </button>
-            <h3 class="medium-top-bottom-margin">Choose an intern</h3>
+            <h3 class="medium-block-0-5">Choose an intern</h3>
         </header>
         <sm-input id="intern_search_field" placeholder="Search for interns" type="search" autofocus>
             <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -860,22 +898,6 @@
             </div>
         </div>
     </template>
-    <template id="task_list_item_template">
-        <li class="task-list-item">
-            <sm-checkbox title="Mark this task as completed"></sm-checkbox>
-            <h4 class="task-title capitalize" data-editable></h4>
-            <button class="task-option">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                </svg>
-            </button>
-            <div class="assigned-interns"></div>
-            <p class="task-description" data-editable></p>
-            <div class="task__branch_container"></div>
-        </li>
-    </template>
     <template id="intern_card_template">
         <li class="intern-card grid align-center interact">
             <div class="intern-card__initials"></div>
@@ -889,22 +911,6 @@
                 </svg>
             </div>
         </li>
-    </template>
-    <template id="timeline_task_card">
-        <div class="task">
-            <div class="left">
-                <div class="circle"></div>
-                <div class="line"></div>
-            </div>
-            <div class="right">
-                <div class="apply-container flex space-between align-items-start">
-                    <h4 class="timeline-task__title capitalize"></h4>
-                </div>
-                <div class="assigned-interns"></div>
-                <p class="timeline-task__description"></p>
-                <div class="task__branch_container"></div>
-            </div>
-        </div>
     </template>
     <script>
         /*jshint esversion: 8 */
@@ -1185,54 +1191,62 @@
             }
         }
 
-        let lastPage
-        let lastParams = {
-            projectId: '',
-            branch: ''
+        const appState = {
+            params: {},
+            openedPages: new Set(),
         }
         function showPage(targetPage, options = {}) {
             const { firstLoad, hashChange } = options
             let pageId
+            let subPageId1
             let searchParams
             let params
             if (targetPage === '') {
-                pageId = 'dashboard_page'
-            }
-            else {
+                try {
+                    if (floDapps.user.id)
+                        pageId = 'dashboard_page'
+                } catch (e) {
+                    pageId = 'sign_in'
+                }
+            } else {
                 if (targetPage.includes('/')) {
                     if (targetPage.includes('?')) {
                         const splitAddress = targetPage.split('?')
-                        searchParams = splitAddress.pop()
-                        const pages = splitAddress.pop().split('/')
-                        pageId = pages[1]
-                        subPageId1 = pages[2]
-                        subPageId2 = pages[3]
+                        searchParams = splitAddress.pop();
+                        [, pageId, subPageId1] = splitAddress.pop().split('/')
                     } else {
-                        const pages = targetPage.split('/')
-                        pageId = pages[1]
-                        subPageId1 = pages[2]
-                        subPageId2 = pages[3]
+                        [, pageId, subPageId1] = targetPage.split('/')
                     }
                 } else {
                     pageId = targetPage
                 }
             }
 
-            if (!document.querySelector(`#${pageId}.page`)) return
+            if (!document.querySelector(`#${pageId}`)?.classList.contains('inner-page')) return
+            try {
+                if (floDapps.user.id && (['sign_up', 'sign_in', 'loading', 'landing'].includes(pageId))) {
+                    history.replaceState(null, null, '#/dashboard_page');
+                    pageId = 'dashboard_page'
+                }
+            } catch (e) {
+                if (!(['sign_up', 'sign_in', 'loading', 'landing'].includes(pageId))) return
+            }
 
             if (searchParams) {
                 const urlSearchParams = new URLSearchParams('?' + searchParams);
                 params = Object.fromEntries(urlSearchParams.entries());
             }
-            if (pageId !== lastPage && document.querySelector('.page:not(.hidden)')) {
-                document.querySelector('.page:not(.hidden)').classList.add('hidden')
-            }
-            if (document.querySelector('.nav-list__item--active'))
-                document.querySelector('.nav-list__item--active').classList.remove('nav-list__item--active');
-            const targetListItem = [...document.querySelectorAll(`a.nav-list__item`)].find(item => item.href.includes(pageId))
-            if (targetListItem)
-                targetListItem.classList.add('nav-list__item--active')
             switch (pageId) {
+                case 'sign_in':
+                    setTimeout(() => {
+                        getRef('private_key_field').focusIn()
+                    }, 0);
+                    break;
+                case 'sign_up':
+                    const { floID, privKey } = floCrypto.generateNewID()
+                    getRef('generated_flo_id').value = floID
+                    getRef('generated_private_key').value = privKey
+                    break;
                 case 'dashboard_page':
                     renderElem(getRef('project_watchlist'), html`${watchList.map(project => render.watchlistProject(project))} `)
                     break;
@@ -1267,54 +1281,96 @@
                     renderAllInterns()
                     break;
                 case 'project_explorer':
-                    if (params) {
-                        const { projectId, branch } = params
-                        if (lastParams.projectId !== projectId) {
-                            showProjectInfo(projectId)
-                        }
-                        if (branch) {
-                            const branchDetails = {
-                                destination: 'project_explorer',
-                                taskListContainer: 'explorer_task_list',
-                                projectId,
-                                branch,
-                                pageId
+                    if (subPageId1) {
+                        if (params) {
+                            const { id: projectId, branch } = params
+                            if (appState.params.projectId !== projectId) {
+                                showProjectInfo(projectId)
+                                const allProjects = getRef('project_explorer__left').querySelectorAll('.project-card');
+                                allProjects.forEach(project => project.classList.remove('project-card--active'))
+                                const targetProject = [...allProjects].find(project => project.getAttribute('href').includes(projectId))
+                                if (targetProject)
+                                    targetProject.classList.add('project-card--active')
                             }
-                            showTasksOfBranch(branchDetails)
+                            if (branch) {
+                                const branchDetails = {
+                                    destination: 'project_explorer',
+                                    taskListContainer: 'explorer_task_list',
+                                    projectId,
+                                    branch,
+                                    pageId
+                                }
+                                showTasksOfBranch(branchDetails)
+                            }
+                            getRef('project_explorer__left').classList.add('hide-on-mobile')
+                            getRef('project_explorer__right').classList.remove('hide-on-mobile')
+                        } else {
+                            getRef('project_explorer__left').querySelectorAll('.project-card').forEach(project => project.classList.remove('project-card--active'))
                         }
-                        getRef('project_explorer__left').classList.add('hide-on-mobile')
-                        getRef('project_explorer__right').classList.remove('hide-on-mobile')
                     } else {
                         getRef('project_explorer__left').classList.remove('hide-on-mobile')
                         getRef('project_explorer__right').classList.add('hide-on-mobile')
+                        history.replaceState(null, '', '#/project_explorer')
                     }
                     break;
                 case 'admin_page':
-                    if (params && RIBC.getProjectList().includes(params.projectId)) {
-                        const { projectId, branch } = params
-                        renderAdminProjectView(projectId)
-                        if (branch) {
-                            const branchDetails = {
-                                destination: 'project_editing_panel',
-                                taskListContainer: 'task_list',
-                                projectId,
-                                branch,
-                                pageId
+                    if (subPageId1) {
+                        if (params && RIBC.getProjectList().includes(params.id)) {
+                            const { id: projectId, branch } = params
+                            renderAdminProjectView(projectId)
+                            if (branch) {
+                                const branchDetails = {
+                                    destination: 'project_editing_panel',
+                                    taskListContainer: 'task_list',
+                                    projectId,
+                                    branch,
+                                    pageId
+                                }
+                                showTasksOfBranch(branchDetails)
                             }
-                            showTasksOfBranch(branchDetails)
+                            getRef('admin_page__left').classList.add('hide-on-mobile')
+                            getRef('project_editing_panel').classList.remove('hidden')
                         }
-                        getRef('admin_page__left').classList.add('hide-on-mobile')
-                        getRef('project_editing_panel').classList.remove('hide-on-mobile')
                     } else {
                         getRef('admin_page__left').classList.remove('hide-on-mobile')
-                        getRef('project_editing_panel').classList.add('hide-on-mobile')
+                        getRef('project_editing_panel').classList.add('hidden')
                         history.replaceState(null, '', '#/admin_page')
                     }
                     break;
             }
-            getRef(pageId).classList.remove('hidden')
-            lastPage = pageId
-            lastParams
+            if (appState.lastPage !== pageId) {
+                if (document.querySelector('.nav-list__item--active'))
+                    document.querySelector('.nav-list__item--active').classList.remove('nav-list__item--active');
+                const targetListItem = [...document.querySelectorAll(`a.nav-list__item`)].find(item => item.href.includes(pageId))
+                if (targetListItem)
+                    targetListItem.classList.add('nav-list__item--active')
+                document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'))
+                getRef(pageId).closest('.page').classList.remove('hidden')
+                document.querySelectorAll('.inner-page').forEach(page => page.classList.add('hidden'))
+                getRef(pageId).classList.remove('hidden')
+                let ogOverflow = getRef(pageId).parentNode.style.overflow
+                getRef(pageId).parentNode.style.overflow = 'hidden'
+                getRef(pageId).animate([
+                    {
+                        opacity: 0,
+                        transform: 'translateY(1rem)'
+                    },
+                    {
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    },
+                ],
+                    {
+                        duration: 300,
+                        easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    }).onfinish = () => {
+                        getRef(pageId).parentNode.style.overflow = ogOverflow
+                    }
+                appState.lastPage = pageId
+            }
+            if (params)
+                appState.params = params
+            appState.openedPages.add(pageId)
         }
         // class based lazy loading
         class LazyLoader {
@@ -1468,6 +1524,101 @@
                 }
             })
         }
+        const slideInLeft = [
+            {
+                opacity: 0,
+                transform: 'translateX(1rem)'
+            },
+            {
+                opacity: 1,
+                transform: 'translateX(0)'
+            }
+        ]
+        const slideOutLeft = [
+            {
+                opacity: 1,
+                transform: 'translateX(0)'
+            },
+            {
+                opacity: 0,
+                transform: 'translateX(-1rem)'
+            },
+        ]
+        const slideInRight = [
+            {
+                opacity: 0,
+                transform: 'translateX(-1rem)'
+            },
+            {
+                opacity: 1,
+                transform: 'translateX(0)'
+            }
+        ]
+        const slideOutRight = [
+            {
+                opacity: 1,
+                transform: 'translateX(0)'
+            },
+            {
+                opacity: 0,
+                transform: 'translateX(1rem)'
+            },
+        ]
+        const slideInDown = [
+            {
+                opacity: 0,
+                transform: 'translateY(-1rem)'
+            },
+            {
+                opacity: 1,
+                transform: 'translateY(0)'
+            },
+        ]
+        const slideOutUp = [
+            {
+                opacity: 1,
+                transform: 'translateY(0)'
+            },
+            {
+                opacity: 0,
+                transform: 'translateY(-1rem)'
+            },
+        ]
+
+        function showChildElement(id, index, options = {}) {
+            return new Promise((resolve) => {
+                const { mobileView = false, entry, exit } = options
+                const animOptions = {
+                    duration: 150,
+                    easing: 'ease',
+                    fill: 'forwards'
+                }
+                const parent = typeof id === 'string' ? document.getElementById(id) : id;
+                const visibleElement = [...parent.children].find(elem => !elem.classList.contains(mobileView ? 'hide-on-mobile' : 'hidden'));
+                if (visibleElement === parent.children[index]) return;
+                visibleElement.getAnimations().forEach(anim => anim.cancel())
+                parent.children[index].getAnimations().forEach(anim => anim.cancel())
+                if (visibleElement) {
+                    if (exit) {
+                        parent.style.overflow = 'hidden'
+                        visibleElement.animate(exit, animOptions).onfinish = () => {
+                            visibleElement.classList.add(mobileView ? 'hide-on-mobile' : 'hidden')
+                            parent.style.overflow = ''
+                        }
+                        parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
+                        if (entry)
+                            parent.children[index].animate(entry, animOptions).onfinish = () => resolve()
+                    } else {
+                        visibleElement.classList.add(mobileView ? 'hide-on-mobile' : 'hidden')
+                        parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
+                        resolve()
+                    }
+                } else {
+                    parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
+                    parent.children[index].animate(entry, animOptions).onfinish = () => resolve()
+                }
+            })
+        }
     </script>
     <script id="UI_functions">
         // Method object for creating various UI elements
@@ -1475,43 +1626,16 @@
             projectCard(projectCode, isAdmin = false, ref) { // creates cards containing project information
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
-                return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}?projectId=${projectCode}&branch=mainLine`}>${projectName}</a>`
+                return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>`
             },
             taskCard(currentProject, currentBranch, taskNo) {
-                const card = getRef('timeline_task_card').content.cloneNode(true),
-                    assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo).filter(v => v)
-
-                if (RIBC.getTaskStatus(currentProject, currentBranch, taskNo) === 'completed') {
-                    card.firstElementChild.classList.add('completed-task')
-                }
-                if (assignedInterns) {
-                    renderElem(card.querySelector('.assigned-interns'), html`${assignedInterns.map((internFloId) => render.assignedInternCard(internFloId))}`)
-                }
-                if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
-                    const applyButton = createElement('sm-button', {
-                        textContent: 'Apply',
-                        className: 'apply-button',
-                        attributes: { 'data-project-code': currentProject, 'data-branch': currentBranch, 'data-task-no': taskNo }
-                    })
-                    function checkObject(obj) {
-                        return (obj.projectCode === currentProject && obj.branch === currentBranch && obj.taskNo == taskNo)
-                    }
-                    if (localStorage.getItem('requests') !== null) {
-                        if (JSON.parse(localStorage.getItem('requests')).find(checkObject) !== undefined) {
-                            applyButton.textContent = 'Applied';
-                            applyButton.setAttribute('disabled', '')
-                        }
-                    }
-                    card.querySelector('.apply-container').append(applyButton)
-                }
                 const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, taskNo)
-                card.querySelector('.timeline-task__title').textContent = taskTitle;
-                card.querySelector('.timeline-task__description').textContent = taskDescription;
                 const branches = getAllBranches(currentProject)
+                const frag = document.createDocumentFragment()
                 for (const branch of branches) {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === currentBranch && startPoint === taskNo) {
-                        card.querySelector('.task__branch_container').append(
+                        frag.append(
                             render.branchButton({
                                 projectId: currentProject,
                                 branch: branchName,
@@ -1520,7 +1644,35 @@
                         )
                     }
                 }
-                return card;
+                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo).filter(v => v).map((internFloId) => render.assignedInternCard(internFloId));
+                const status = RIBC.getTaskStatus(currentProject, currentBranch, taskNo)
+                let applyButton
+                if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
+                    const taskRequests = RIBC.getTaskRequests();
+                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
+                        return `${projectCode}_${branch}_${task}` === `${currentProject}_${currentBranch}_${taskNo}`
+                    })
+                    applyButton = html`
+                            <button class="button apply-button" .dataset=${{ projectCode, currentProject, branch: currentBranch, taskNo }} .disabled=${hasApplied}>${hasApplied ? 'Applied' : 'Apply'}</button>
+                        `;
+                }
+                return html`
+                    <div class=${`task ${status}`}>
+                        <div class="left">
+                            <div class="circle"></div>
+                            <div class="line"></div>
+                        </div>
+                        <div class="right">
+                            <div class="apply-container flex space-between align-items-start">
+                                <h4 class="timeline-task__title capitalize">${taskTitle}</h4>
+                                ${applyButton}
+                            </div>
+                            <div class="assigned-interns">${assignedInterns}</div>
+                            <p class="timeline-task__description">${taskDescription}</p>
+                            <div class="task__branch_container">${frag}</div>
+                        </div>
+                    </div>
+                `;
             },
             internCard(internName, internFloID, internPoints) {
                 const initials = internName.split(' ').map(v => v.charAt(0)).join('');
@@ -1576,7 +1728,7 @@
             branchButton(obj = {}) {
                 const { projectId, branch, page, innerHTML } = obj
                 return html.node`
-                    <a class="branch-button" href=${`#/${page}?projectId=${projectId}&branch=${branch}`}>
+                    <a class="branch-button" href=${`#/${page}/project?id=${projectId}&branch=${branch}`}>
                        ${innerHTML ? html`${innerHTML}` : branch}
                     </a>
                 `;
@@ -1596,27 +1748,21 @@
                 `
             },
             taskListItem(taskNo) {
-                const card = getRef('task_list_item_template').content.cloneNode(true)
                 const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo)
                 const frag = document.createDocumentFragment()
                 const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, taskNo)
-                if (RIBC.getTaskStatus(currentProject, currentBranch, taskNo) !== 'incomplete') {
-                    card.querySelector('sm-checkbox').setAttribute('checked', '')
-                }
-                card.firstElementChild.dataset.taskId = taskNo
-                card.querySelector('.task-title').textContent = taskTitle;
-                card.querySelector('.task-description').textContent = taskDescription;
+                const status = RIBC.getTaskStatus(currentProject, currentBranch, taskNo)
+                let assignedInternsCards
                 if (assignedInterns) {
-                    const assignedInternsCards = assignedInterns.filter(v => v).map((internFloId) => {
+                    assignedInternsCards = assignedInterns.filter(v => v).map((internFloId) => {
                         return render.assignedInternCard(internFloId, true);
                     })
-                    renderElem(card.querySelector('.assigned-interns'), html`${assignedInternsCards}`)
                 }
                 const branches = getAllBranches(currentProject)
                 for (const branch of branches) {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === currentBranch && startPoint === taskNo) {
-                        card.querySelector('.task__branch_container').append(
+                        frag.append(
                             render.branchButton({
                                 projectId: currentProject,
                                 branch: branchName,
@@ -1625,7 +1771,26 @@
                         )
                     }
                 }
-                return card;
+                return html`
+                <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
+                    <div class="flex align-cente space-between">
+                        <sm-checkbox ?checked=${status === 'completed'}>
+                            <p class="margin-left-0-5">Mark as complete</p>
+                        </sm-checkbox>
+                        <button class="task-option">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="none" d="M0 0h24v24H0z" />
+                                <path
+                                    d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <h4 class="task-title capitalize" data-editable>${taskTitle}</h4>
+                    <div class="assigned-interns">${assignedInternsCards}</div>
+                    <p class="task-description" data-editable>${taskDescription}</p>
+                    <div class="task__branch_container">${frag}</div>
+                </li>
+                `;
             },
             taskRequestCard(details) {
                 const { projectCode, branch, task, floID, vectorClock } = details
@@ -1686,7 +1851,7 @@
                             <h4 class="task__title">${taskTitle}</h4>
                             <p class="task__description">${taskDescription}</p>
                         </div>
-                        <button class="send-update-button">
+                        <button class="send-update-button button--small margin-left-auto">
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
                             Post an update
                         </button>
@@ -1705,7 +1870,7 @@
                 const completedTasks = projectTasks.filter(task => task === 'completed').length
                 let completePercent = parseFloat(((completedTasks / projectTasks.length) * 100).toFixed(2))
                 return html`
-                    <a class="watchlist_project_card interact" href=${`#/project_explorer?projectId=${projectId}&branch=mainLine`}>
+                    <a class="watchlist_project_card interact" href=${`#/project_explorer/project?id=${projectId}&branch=mainLine`}>
                         <div class="project-icon">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
                         </div>
@@ -1729,7 +1894,6 @@
                 } else {
                     requestCards = RIBC.getInternRequests().reverse().map((request) => render.internshipRequest(request))
                 }
-                console.log(requestCards)
                 renderElem(getRef('requests_list'), html`${requestCards}`)
             },
             projectList(container, projects, isAdminList = false) {
@@ -1823,7 +1987,7 @@
             RIBC.admin.createProject(projectCode)
             RIBC.admin.addProjectDetails(projectCode, { projectName, projectDescription })
             render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
-            getRef('admin_page__project_list').querySelector(`[href="#/admin_page?projectId=${projectCode}&branch=mainLine"]`)?.click()
+            getRef('admin_page__project_list').querySelector(`[href="#/admin_page/project?id=${projectCode}&branch=mainLine"]`)?.click()
             closePopup();
         }
 
@@ -1871,11 +2035,6 @@
         // opens a popup containing various project information
         function showProjectInfo(projectId) {
             const frag = document.createDocumentFragment();
-            const allProjects = getRef('project_explorer__left').querySelectorAll('.project-card');
-            allProjects.forEach(project => project.classList.remove('project-card--active'))
-            const targetProject = Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))
-            if (targetProject)
-                targetProject.classList.add('project-card--active')
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('project_explorer__project_title').textContent = projectName; // project name
             if (watchList.includes(projectId)) {
@@ -1905,7 +2064,6 @@
             if (targetProject)
                 targetProject.classList.add('project-card--active')
             getRef('branch_container').innerHTML = '';
-            getRef('task_list').innerHTML = '';
             currentProject = projectId;
             branchList.forEach((branch) => {
                 branch.classList.remove('active-branch')
@@ -1922,35 +2080,27 @@
             const { destination, taskListContainer, projectId, branch, pageId } = obj
             currentProject = projectId;
             currentBranch = branch;
-            const frag = document.createDocumentFragment();
-            let branchTasks = RIBC.getProjectMap(currentProject)[currentBranch],
-                taskList = document.getElementById(taskListContainer)
-            allBranches = document.getElementById(destination).querySelectorAll('.branch-button');
-            taskList.innerHTML = '';
-            allBranches.forEach((branchButton) => {
+            let branchTasks = RIBC.getProjectMap(currentProject)[currentBranch];
+            document.getElementById(destination).querySelectorAll('.branch-button').forEach((branchButton) => {
                 branchButton.classList.remove('active-branch')
             })
-            document.getElementById(destination).querySelector(`.branch-button[href="#/${pageId}?projectId=${projectId}&branch=${branch}"]`).classList.add('active-branch')
+            document.getElementById(destination).querySelector(`.branch-button[href="#/${pageId}/project?id=${projectId}&branch=${branch}"]`).classList.add('active-branch')
             if (branchTasks[1] && !taskListContainer === 'task_list') {
-                taskList.textContent = "No tasks added yet, Please explore other projects"
+                getRef(taskListContainer).textContent = "No tasks added yet, Please explore other projects"
             } else {
-                if (taskListContainer === 'task_list') {
-                    showInnerPage('project_editing_panel')
-                    branchTasks.slice(4).forEach((taskNo) => {
-                        frag.append(render.taskListItem(taskNo))
-                    })
-                } else {
-                    branchTasks.slice(4).forEach((taskNo) => {
-                        frag.append(render.taskCard(currentProject, currentBranch, taskNo))
-                    })
-                }
+                let tasks = []
                 if (branch !== 'mainLine') {
                     const { startPoint, parentBranch } = getAllBranches(projectId).find(({ branchName }) => branchName === branch)
-                    taskList.append(html.node`<p class="margin-bottom-0-5">
-                        Branched off from <a href=${`#/${pageId}?projectId=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
+                    tasks.push(html`<p class="margin-bottom-0-5">
+                        Branched off from <a href=${`#/${pageId}/project?id=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
                     </p>`)
                 }
-                taskList.appendChild(frag);
+                if (taskListContainer === 'task_list') {
+                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskListItem(taskNo)))
+                } else {
+                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskCard(currentProject, currentBranch, taskNo)))
+                }
+                renderElem(getRef(taskListContainer), html`${tasks}`)
             }
         }
         function getAllBranches(projectId) {
@@ -1970,6 +2120,14 @@
             })
             return branchPoints
         }
+
+        let currentViewIndex = 0;
+        getRef('admin_view_selector').addEventListener('change', (e) => {
+            const newViewIndex = parseInt(e.target.value);
+            showChildElement(getRef('admin_views'), newViewIndex, { entry: newViewIndex > currentViewIndex ? slideInLeft : slideInRight, exit: newViewIndex > currentViewIndex ? slideOutLeft : slideOutRight });
+            currentViewIndex = parseInt(e.target.value);
+        })
+
         function toggleEditing(target) {
             if (target === 'title') {
                 makeEditable(currentTask.querySelector('.task-title'))
@@ -1977,12 +2135,10 @@
                 makeEditable(currentTask.querySelector('.task-description'))
             }
         }
-        getRef('task_list').addEventListener('change', (e) => {
-            if (e.target.closest('sm-checkbox')) {
-                currentTask = e.target.closest('.task-list-item');
-                const taskStatus = e.target.closest('sm-checkbox').checked ? 'completed' : 'incomplete'
-                RIBC.admin.putTaskStatus(taskStatus, currentProject, currentBranch, currentTask.dataset.taskId)
-            }
+        delegate(getRef('task_list'), 'change', 'sm-checkbox', (e) => {
+            currentTask = e.target.closest('.task-list-item');
+            const taskStatus = e.target.checked ? 'completed' : 'incomplete'
+            RIBC.admin.putTaskStatus(taskStatus, currentProject, currentBranch, currentTask.dataset.taskId)
         })
         getRef('task_list').addEventListener('focusout', (e) => {
             if (e.target.isContentEditable) {
@@ -2083,7 +2239,7 @@
                 RIBC.admin.editTaskDetails({ taskTitle: titleContent, taskDescription: descriptionContent }, currentProject, currentBranch, taskNo)
                 RIBC.admin.putTaskStatus('incomplete', currentProject, currentBranch, taskNo)
                 card.remove()
-                getRef('task_list').append(render.taskListItem(taskNo))
+                getRef('task_list').append(html.node`${render.taskListItem(taskNo)}`)
                 getRef('add_task').disabled = false
                 notify('Task added to current branch', 'success')
             }
@@ -2113,16 +2269,6 @@
                 }
             })
         }
-
-        function showInnerPage(page, type) {
-            let allPages = document.querySelectorAll('.inner-page'),
-                thisPage = document.getElementById(page)
-            allPages.forEach(function (pages) {
-                pages.classList.add('hidden');
-            });
-            thisPage.classList.remove('hidden');
-        }
-
         function signOut() {
             getConfirmation('Sign out?', { message: 'You are about to sign out of the app, continue?', confirmText: 'Leave', cancelText: 'Stay' })
                 .then(async (res) => {
@@ -2334,51 +2480,20 @@
             localStorage.setItem(`${myFloID}_watchlist`, watchList.join())
         }
 
-        let allRequests = [];
+        let sessionTaskRequests = new Set();
         function requestForTask(btn) {
             getConfirmation('Do you want to apply for this task?').then((result) => {
                 if (result) {
-                    if (localStorage.getItem('requests') === null)
-                        localStorage.setItem('requests', JSON.stringify(allRequests))
                     btn.textContent = 'Applied'
                     btn.disabled = true
-                    RIBC.applyForTask(btn.dataset.projectCode, btn.dataset.branch, btn.dataset.taskNo)
-                        .then((result) => {
-                            notify('Applied successfully.', 'success')
-                            allRequests = JSON.parse(localStorage.getItem('requests'))
-                            allRequests.push({ projectCode: btn.dataset.projectCode, branch: btn.dataset.branch, taskNo: btn.dataset.taskNo })
-                            localStorage.setItem('requests', JSON.stringify(allRequests))
-                        })
+                    const { projectCode, branch, taskNo } = btn.dataset
+                    RIBC.applyForTask(projectCode, branch, taskNo).then((result) => {
+                        notify('Applied successfully.', 'success')
+                        sessionTaskRequests.add({ projectCode, branch, task })
+                    })
                 }
-            })
-                .catch((error) => {
-                    notify(error, 'error')
-                })
-        }
-
-        function loader(mode) {
-            if (mode === 'show') {
-                getRef('loading_page').classList.remove('hidden')
-            }
-            else {
-                getRef('loading_page').classList.add('hidden')
-            }
-        }
-        function customSignIn() {
-            return new Promise((resolve, reject) => {
-                loader('hide')
-                getRef('sign_in_page').classList.remove('hidden');
-                document.getElementById('guest_btn').onclick = function () {
-                    getRef('sign_in_page').classList.add('hidden');
-                    reject(null);
-                }
-                document.getElementById('sign_in_button').onclick = function () {
-                    resolve(getRef('private_key_input').value.trim())
-                    getRef('private_key_input').value = ''
-                    loader('show')
-                    window.location.hash = '#/dashboard_page'
-                    getRef('sign_in_page').classList.add('hidden');
-                }
+            }).catch((error) => {
+                notify(error, 'error')
             })
         }
 
@@ -2421,7 +2536,7 @@
 
             let sortedProjectList = getSortedProjectList()
             document.querySelectorAll('.open-first-project').forEach(link => {
-                link.href = `${link.href}?projectId=${sortedProjectList[0]}&branch=mainLine`
+                link.href = `${link.href}/project?id=${sortedProjectList[0]}&branch=mainLine`
             })
 
             watchList = localStorage.getItem(`${myFloID}_watchlist`) ? localStorage.getItem(`${myFloID}_watchlist`).split(',') : []
@@ -2663,7 +2778,6 @@
             })
             getRef('username').textContent = typeOfUser === 'intern' ? `Hi, ${RIBC.getInternList()[myFloID]}` : `Hi, there!`;
             getRef('user_flo_id').value = myFloID;
-            getRef('user_role').textContent = typeOfUser;
 
             console.log(typeOfUser)
         }
@@ -2757,6 +2871,64 @@
 
         function getSortedProjectList() {
             return RIBC.getProjectList().sort((a, b) => RIBC.getProjectDetails(a).projectName.toLowerCase().localeCompare(RIBC.getProjectDetails(b).projectName.toLowerCase()))
+        }
+
+
+        function getSignedIn(passwordType) {
+            return new Promise((resolve, reject) => {
+                showPage('landing')
+                try {
+                    getPromptInput('Enter password', '', {
+                        isPassword: true,
+                    }).then(password => {
+                        if (password) {
+                            resolve(password)
+                        }
+                    })
+                } catch (err) {
+                    if (passwordType === 'PIN/Password') {
+                        floGlobals.isPrivKeySecured = true;
+                        getRef('private_key_field').removeAttribute('data-private-key');
+                        getRef('private_key_field').setAttribute('placeholder', 'Password');
+                        getRef('private_key_field').customValidation = null
+                        getRef('secure_pwd_button').closest('.card').classList.add('hidden');
+                    } else {
+                        floGlobals.isPrivKeySecured = false;
+                        getRef('private_key_field').dataset.privateKey = ''
+                        getRef('private_key_field').setAttribute('placeholder', 'FLO private key');
+                        getRef('private_key_field').customValidation = floCrypto.getPubKeyHex;
+                        getRef('secure_pwd_button').closest('.card').classList.remove('hidden');
+                    }
+                    if (window.location.hash.includes('sign_in') || window.location.hash.includes('sign_up')) {
+                        showPage(window.location.hash);
+                    } else {
+                        location.hash = floGlobals.isPrivKeySecured ? '#/sign_in' : `#/landing`;
+                    }
+                    getRef('sign_in_button').onclick = () => {
+                        resolve(getRef('private_key_field').value.trim());
+                        getRef('private_key_field').value = '';
+                        showPage('loading');
+                    };
+                    getRef('sign_up_button').onclick = () => {
+                        resolve(getRef('generated_private_key').value.trim());
+                        getRef('generated_private_key').value = '';
+                        showPage('loading');
+                    };
+                }
+            });
+        }
+        function setSecurePassword() {
+            if (!floGlobals.isPrivKeySecured) {
+                const password = getRef('secure_pwd_input').value.trim();
+                floDapps.securePrivKey(password).then(() => {
+                    floGlobals.isPrivKeySecured = true;
+                    notify('Password set successfully', 'success');
+                    getRef('secure_pwd_button').closest('.card').classList.add('hidden');
+                    closePopup();
+                }).catch(err => {
+                    notify(err, 'error');
+                })
+            }
         }
     </script>
 </body>
