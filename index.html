@@ -898,20 +898,6 @@
             </div>
         </div>
     </template>
-    <template id="intern_card_template">
-        <li class="intern-card grid align-center interact">
-            <div class="intern-card__initials"></div>
-            <div class="intern-card__name capitalize"></div>
-            <div class="intern-card__score-wrapper flex align-center">
-                <h4 class="intern-card__score"></h4>
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" />
-                </svg>
-            </div>
-        </li>
-    </template>
     <script>
         /*jshint esversion: 8 */
         /**
@@ -1119,35 +1105,6 @@
             rippleAnimation.onfinish = () => {
                 circle.remove();
             };
-        }
-        function randomHsl(saturation = 80, lightness = 80) {
-            let hue = Math.random() * 360;
-            let color = {
-                primary: `hsla( ${hue}, ${saturation}%, ${lightness}%, 1)`,
-                light: `hsla( ${hue}, ${saturation}%, 90%, 0.6)`,
-            };
-            return color;
-        }
-
-        const selectedColors = [
-            "#FF1744",
-            "#F50057",
-            "#8E24AA",
-            "#5E35B1",
-            "#3F51B5",
-            "#3D5AFE",
-            "#00B0FF",
-            "#00BCD4",
-            "#16c79a",
-            "#66BB6A",
-            "#8BC34A",
-            "#11698e",
-            "#FF6F00",
-            "#FF9100",
-            "#FF3D00",
-        ];
-        function randomColor() {
-            return selectedColors[Math.floor(Math.random() * selectedColors.length)];
         }
 
         function getFormattedTime(timestamp, format) {
@@ -1680,16 +1637,12 @@
             internCard(internName, internFloID, internPoints) {
                 const initials = internName.split(' ').map(v => v.charAt(0)).join('');
                 return html`
-                    <li class="intern-card grid align-center interact" data-intern-flo-id=${internFloID} title="Intern Information">
-                        <div class="intern-card__initials" style=${`background-color: ${getInternColor(internFloID)}`}>${initials}</div>
+                    <li class="intern-card grid align-center interact" .dataset=${{ internFloId: internFloID }} title="Intern Information">
+                        <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloID)})`}>${initials}</div>
                         <div class="intern-card__name capitalize">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
                             <h4 class="intern-card__score">${internPoints}</h4>
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" />
-                            </svg>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
                         </div>
                     </li>`;
             },
@@ -1949,7 +1902,26 @@
                 }
             }
         }
-
+        const selectedColors = [
+            '--dark-red',
+            '--red',
+            '--kinda-pink',
+            '--purple',
+            '--shady-blue',
+            '--nice-blue',
+            '--maybe-cyan',
+            '--teal',
+            '--mint-green',
+            '--greenish-yellow',
+            '--yellowish-green',
+            '--dark-teal',
+            '--orange',
+            '--tangerine',
+            '--redish-orange',
+        ]
+        function randomColor() {
+            return selectedColors[Math.floor(Math.random() * selectedColors.length)];
+        }
         const renderedIntensColor = {}
         function getInternColor(floId) {
             if (!renderedIntensColor[floId]) {
@@ -2024,7 +1996,7 @@
         function showInternInfo(internFloId) {
             const internName = RIBC.getInternList()[internFloId]
             getRef('intern_info__initials').textContent = internName.split(' ').map(v => v.charAt(0)).join('');
-            getRef('intern_info__initials').style.backgroundColor = getInternColor(internFloId)
+            getRef('intern_info__initials').style.setProperty('--color', `var(${getInternColor(internFloId)})`)
             getRef('intern_info__name').textContent = internName;
             getRef('intern_info__flo_id').value = currentIntern = internFloId;
             getRef('intern_info__score').textContent = RIBC.getInternRating(internFloId); // points earned by intern
