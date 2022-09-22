@@ -1623,7 +1623,7 @@
     <script id="UI_functions">
         // Method object for creating various UI elements
         const render = {
-            projectCard(projectCode, isAdmin = false, ref) { // creates cards containing project information
+            projectCard(projectCode, isAdmin = false, ref) {
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
                 return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>`
@@ -1644,17 +1644,20 @@
                         )
                     }
                 }
-                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo).filter(v => v).map((internFloId) => render.assignedInternCard(internFloId));
+                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo).filter(v => v)
+                const assignedInternsCards = assignedInterns.map((internFloId) => render.assignedInternCard(internFloId));
                 const status = RIBC.getTaskStatus(currentProject, currentBranch, taskNo)
                 let applyButton
                 if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
+                    console.log(assignedInterns, myFloID)
                     const taskRequests = RIBC.getTaskRequests();
                     const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
                         return `${projectCode}_${branch}_${task}` === `${currentProject}_${currentBranch}_${taskNo}`
                     })
                     applyButton = html`
-                            <button class="button apply-button" .dataset=${{ projectCode, currentProject, branch: currentBranch, taskNo }} .disabled=${hasApplied}>${hasApplied ? 'Applied' : 'Apply'}</button>
-                        `;
+                        <button class="button apply-button" .dataset=${{ projectCode: currentProject, branch: currentBranch, taskNo }} ?disabled=${hasApplied}>
+                            ${hasApplied ? 'Applied' : 'Apply'}
+                        </button>`;
                 }
                 return html`
                     <div class=${`task ${status}`}>
@@ -1667,7 +1670,7 @@
                                 <h4 class="timeline-task__title capitalize">${taskTitle}</h4>
                                 ${applyButton}
                             </div>
-                            <div class="assigned-interns">${assignedInterns}</div>
+                            <div class="assigned-interns">${assignedInternsCards}</div>
                             <p class="timeline-task__description">${taskDescription}</p>
                             <div class="task__branch_container">${frag}</div>
                         </div>
@@ -1690,8 +1693,7 @@
                         </div>
                     </li>`;
             },
-            // creates cards containing updates provided by interns
-            updateCard(update) {
+            internUpdateCard(update) {
                 let { floID, time, note, update: { projectId, projectBranch, task, topic, description, link } } = update
                 if (!topic) {
                     topic = `${RIBC.getProjectDetails(projectId).projectName} / ${RIBC.getTaskDetails(projectId, projectBranch, task).taskTitle}`
@@ -2382,7 +2384,7 @@
             if (updatesLazyLoader) {
                 updatesLazyLoader.update(updates)
             } else {
-                updatesLazyLoader = new LazyLoader('#all_updates_list', updates, render.updateCard)
+                updatesLazyLoader = new LazyLoader('#all_updates_list', updates, render.internUpdateCard)
             }
             updatesLazyLoader.init()
         }
@@ -2489,7 +2491,7 @@
                     const { projectCode, branch, taskNo } = btn.dataset
                     RIBC.applyForTask(projectCode, branch, taskNo).then((result) => {
                         notify('Applied successfully.', 'success')
-                        sessionTaskRequests.add({ projectCode, branch, task })
+                        sessionTaskRequests.add({ projectCode, branch, task: taskNo })
                     })
                 }
             }).catch((error) => {
@@ -2769,7 +2771,12 @@
                 render.projectList(getRef('my_projects'), assignedProjectsList)
                 sortedProjectList = sortedProjectList.filter(val => !assignedProjectsList.includes(val));
             }
-            render.projectList(getRef('other_projects'), sortedProjectList)
+            if (sortedProjectList.length > 0) {
+                getRef('other_projects').previousElementSibling.classList.remove('hidden')
+                render.projectList(getRef('other_projects'), sortedProjectList)
+            } else {
+                getRef('other_projects').previousElementSibling.classList.add('hidden')
+            }
 
             getRef('explorer_task_list').addEventListener('click', (event) => {
                 if (event.target.closest('.apply-button')) {
