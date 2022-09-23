@@ -276,6 +276,10 @@ sm-spinner {
   --stroke-width: 0.1rem;
 }
 
+cube-loader {
+  --size: 1.2rem;
+}
+
 sm-form {
   --gap: 1rem;
 }
@@ -601,7 +605,7 @@ ul {
 }
 
 .card {
-  background-color: rgba(var(--text-color), 0.06);
+  background-color: rgba(var(--foreground-color), 1);
   border-radius: 0.5rem;
   padding: max(1rem, 3vw);
 }
@@ -1095,7 +1099,7 @@ ul {
   gap: 0.5rem;
   padding: 1rem;
   border-radius: 0.5rem;
-  background-color: rgba(var(--text-color), 0.06);
+  background-color: rgba(var(--foreground-color), 1);
 }
 
 .update__topic {
@@ -1369,34 +1373,12 @@ ul {
   margin: 2rem 0;
 }
 
-#loading_page {
+#loading {
   display: grid;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 5;
   text-align: center;
   place-content: center;
   justify-items: center;
   background-color: rgba(var(--foreground-color), 1);
-}
-
-.loading-message {
-  font-size: 1.3rem;
-  margin: 1.5rem 0 0.5rem 0;
-}
-
-#loading_page__footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 1.5rem;
-}
-#loading_page__footer .icon {
-  height: 4rem;
-  width: 4rem;
 }
 
 #project_watching_section {
@@ -1415,9 +1397,8 @@ ul {
   padding: 1rem;
 }
 
-#watch_project_button {
+#pin_project_button {
   margin-left: 1rem;
-  text-transform: capitalize;
 }
 
 #admin_page {
@@ -1564,25 +1545,6 @@ ul {
   height: 100%;
   overflow-y: hidden;
 }
-#admin_page__left sm-tab-header {
-  --gap: 0;
-  --justify-content: stretch;
-  background-color: rgba(var(--text-color), 0.06);
-}
-#admin_page__left sm-tab {
-  justify-content: center;
-}
-#admin_page__left sm-tab-panels,
-#admin_page__left sm-tab-panels > * {
-  height: 100%;
-  flex-direction: column;
-}
-#admin_page__left sm-tab-panels {
-  overflow-y: hidden;
-}
-#admin_page__left sm-tab-panels > * {
-  display: flex;
-}
 #admin_page__left .list-container {
   height: 100%;
   overflow-y: auto;
@@ -1634,7 +1596,7 @@ input[type=date]:focus {
   gap: 1rem;
 }
 
-#project_watchlist {
+#pinned_projects {
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
@@ -1645,7 +1607,7 @@ input[type=date]:focus {
   display: grid;
   border-radius: 0.5rem;
   padding: 1rem;
-  background-color: rgba(var(--text-color), 0.04);
+  background-color: rgba(var(--foreground-color), 1);
   grid-template-columns: auto 1fr;
 }
 .watchlist_project_card .project-icon {
@@ -1773,7 +1735,7 @@ input[type=date]:focus {
     grid-template-columns: 18rem minmax(0, 1fr);
   }
   #admin_page__left {
-    background-color: rgba(var(--foreground-color), 1);
+    background-color: rgba(var(--foreground-color), 0.5);
   }
   #edit_data_fig {
     width: 16rem;
@@ -1834,9 +1796,10 @@ input[type=date]:focus {
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
   }
   #all_interns_list .intern-card {
+    margin: 0;
     gap: 1rem;
     border-radius: 0.5rem;
-    background-color: rgba(var(--text-color), 0.06);
+    background-color: rgba(var(--foreground-color), 1);
   }
   #intern_list_popup {
     --height: 80vh;
@@ -1874,7 +1837,10 @@ input[type=date]:focus {
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(var(--text-color), 0.5);
   }
+  .interact {
+    transition: background-color 0.2s;
+  }
   .interact:hover {
-    background-color: rgba(var(--text-color), 0.06);
+    background-color: rgba(var(--text-color), 0.04);
   }
 }

@@ -276,6 +276,9 @@ sm-spinner {
   --size: 1.5rem;
   --stroke-width: 0.1rem;
 }
+cube-loader {
+  --size: 1.2rem;
+}
 
 sm-form {
   --gap: 1rem;
@@ -596,7 +599,7 @@ ul {
 }
 
 .card {
-  background-color: rgba(var(--text-color), 0.06);
+  background-color: rgba(var(--foreground-color), 1);
   border-radius: 0.5rem;
   padding: max(1rem, 3vw);
 }
@@ -1112,7 +1115,7 @@ ul {
   gap: 0.5rem;
   padding: 1rem;
   border-radius: 0.5rem;
-  background-color: rgba(var(--text-color), 0.06);
+  background-color: rgba(var(--foreground-color), 1);
 }
 
 .update__topic {
@@ -1380,35 +1383,12 @@ ul {
   width: 60vw;
   margin: 2rem 0;
 }
-#loading_page {
+#loading {
   display: grid;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 5;
   text-align: center;
   place-content: center;
   justify-items: center;
   background-color: rgba(var(--foreground-color), 1);
-}
-
-.loading-message {
-  font-size: 1.3rem;
-  margin: 1.5rem 0 0.5rem 0;
-}
-
-#loading_page__footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 1.5rem;
-
-  .icon {
-    height: 4rem;
-    width: 4rem;
-  }
 }
 
 #project_watching_section {
@@ -1424,9 +1404,8 @@ ul {
   align-content: flex-start;
   padding: 1rem;
 }
-#watch_project_button {
+#pin_project_button {
   margin-left: 1rem;
-  text-transform: capitalize;
 }
 
 #admin_page {
@@ -1572,25 +1551,6 @@ ul {
 #admin_page__left {
   height: 100%;
   overflow-y: hidden;
-  sm-tab-header {
-    --gap: 0;
-    --justify-content: stretch;
-    background-color: rgba(var(--text-color), 0.06);
-  }
-  sm-tab {
-    justify-content: center;
-  }
-  sm-tab-panels,
-  sm-tab-panels > * {
-    height: 100%;
-    flex-direction: column;
-  }
-  sm-tab-panels {
-    overflow-y: hidden;
-  }
-  sm-tab-panels > * {
-    display: flex;
-  }
   .list-container {
     height: 100%;
     overflow-y: auto;
@@ -1637,7 +1597,7 @@ input[type="date"] {
   display: grid;
   gap: 1rem;
 }
-#project_watchlist {
+#pinned_projects {
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
@@ -1647,7 +1607,7 @@ input[type="date"] {
   display: grid;
   border-radius: 0.5rem;
   padding: 1rem;
-  background-color: rgba(var(--text-color), 0.04);
+  background-color: rgba(var(--foreground-color), 1);
   grid-template-columns: auto 1fr;
   .project-icon {
     display: flex;
@@ -1788,7 +1748,7 @@ input[type="date"] {
     grid-template-columns: 18rem minmax(0, 1fr);
   }
   #admin_page__left {
-    background-color: rgba(var(--foreground-color), 1);
+    background-color: rgba(var(--foreground-color), 0.5);
   }
 
   #edit_data_fig {
@@ -1853,9 +1813,10 @@ input[type="date"] {
     gap: 0.5rem;
     grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     .intern-card {
+      margin: 0;
       gap: 1rem;
       border-radius: 0.5rem;
-      background-color: rgba(var(--text-color), 0.06);
+      background-color: rgba(var(--foreground-color), 1);
     }
   }
   #intern_list_popup {
@@ -1901,8 +1862,10 @@ input[type="date"] {
       background: rgba(var(--text-color), 0.5);
     }
   }
-
-  .interact:hover {
-    background-color: rgba(var(--text-color), 0.06);
+  .interact {
+    transition: background-color 0.2s;
+    &:hover {
+      background-color: rgba(var(--text-color), 0.04);
+    }
   }
 }

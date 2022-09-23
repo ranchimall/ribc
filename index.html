@@ -31,7 +31,7 @@
     <script src="scripts/ribc.js"></script>
     <script id="onLoadStartUp">
         function onLoadStartUp() {
-            showPage('loading')
+            routeTo('loading')
             document.body.classList.remove('hidden')
             floDapps.setCustomPrivKeyInput(getSignedIn);
             floDapps.launchStartUp().then(result => {
@@ -40,7 +40,7 @@
                 RIBC.init(floGlobals.subAdmins.includes(myFloID)).then(result => {
                     console.log(result)
                     renderAllElements()
-                    showPage(window.location.hash, { firstLoad: true })
+                    routeTo(window.location.hash, { firstLoad: true })
                 }).catch(error => console.error(error))
             }).catch(error => console.error(error))
         }
@@ -136,7 +136,7 @@
             </section>
         </article>
         <div id="loading" class="inner-page hidden">
-            <sm-spinner></sm-spinner>
+            <cube-loader></cube-loader>
             <h4 class="page__tag-line margin-block-1">Getting everything ready, Hang on.</h4>
             <button class="button" onclick="floDapps.clearCredentials()">Reset</button>
         </div>
@@ -357,12 +357,13 @@
                         </svg>
                     </div>
                     <section id="project_watching_section" class="w-100">
-                        <h4>Projects watchlist</h4>
-                        <div id="project_watchlist" class="observe-empty-state"></div>
+                        <h4>Pinned projects</h4>
+                        <div id="pinned_projects" class="observe-empty-state"></div>
                         <div class="empty-state">
-                            <h4>No project added to watchlist. </h4>
+                            <h4>There are no pinned projects</h4>
                             <p class="margin-block-0-5">
-                                You can add projects to watchlist by clicking on the 'Watch' button in opened project.
+                                You can pin projects for easier monitoring by clicking on the 'pin' icon in opened
+                                project.
                             </p>
                             <a href="#/project_explorer" class="button open-first-project">See all projects</a>
                         </div>
@@ -627,10 +628,15 @@
                         </a>
                         <div class="flex space-between align-center">
                             <h2 id="project_explorer__project_title"></h2>
-                            <sm-button id="watch_project_button" title="Add project to your watchlist"
-                                onclick="watchThisProject(this)">
-                                Watch
-                            </sm-button>
+                            <button class="button icon-only" id="pin_project_button"
+                                title="Pin this project to dashboard" onclick="pinProject(this)">
+                                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"
+                                        fill="black" />
+                                </svg>
+                            </button>
                         </div>
                     </header>
                     <p id="project_explorer__project_description"></p>
@@ -1046,7 +1052,7 @@
             if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
             return M.join(' ');
         }
-        window.addEventListener('hashchange', e => showPage(window.location.hash))
+        window.addEventListener('hashchange', e => routeTo(window.location.hash))
         window.addEventListener("load", () => {
             const [browserName, browserVersion] = detectBrowser().split(' ');
             const supportedVersions = {
@@ -1152,7 +1158,7 @@
             params: {},
             openedPages: new Set(),
         }
-        function showPage(targetPage, options = {}) {
+        function routeTo(targetPage, options = {}) {
             const { firstLoad, hashChange } = options
             let pageId
             let subPageId1
@@ -1205,7 +1211,7 @@
                     getRef('generated_private_key').value = privKey
                     break;
                 case 'dashboard_page':
-                    renderElem(getRef('project_watchlist'), html`${watchList.map(project => render.watchlistProject(project))} `)
+                    renderElem(getRef('pinned_projects'), html`${pinnedProjects.map(project => render.watchlistProject(project))} `)
                     break;
                 case 'updates_page':
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1933,7 +1939,7 @@
         //helper functions
         let allInternsList = [];
         let highPerformingInterns = [];
-        let watchList = [];
+        let pinnedProjects = [];
         let currentIntern;
         let currentTaskId;
         let typeOfUser = 'general';
@@ -2011,10 +2017,11 @@
             const frag = document.createDocumentFragment();
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('project_explorer__project_title').textContent = projectName; // project name
-            if (watchList.includes(projectId)) {
-                getRef('watch_project_button').textContent = 'watching';
+            getRef('pin_project_button').dataset.pinned = pinnedProjects.includes(projectId);
+            if (pinnedProjects.includes(projectId)) {
+                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z" fill="black"/> </svg>`;
             } else {
-                getRef('watch_project_button').textContent = 'Watch';
+                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z" fill="black"/> </svg>`;
             }
             getRef('project_explorer__project_description').textContent = projectDescription;
             getRef('project_explorer__project_updates').href = `#/updates_page?projectId=${projectId}&internId=all`;
@@ -2427,31 +2434,18 @@
         getRef('updates_page__project_selector').addEventListener('change', e => setUpdateFilters())
         getRef('updates_page__intern_selector').addEventListener('change', e => setUpdateFilters())
         getRef('updates_page__date_selector').addEventListener('change', e => setUpdateFilters())
-
-        getRef('watch_project_button').addEventListener('mouseenter', e => {
-            if (e.target.textContent === 'watching') {
-                e.target.textContent = 'unwatch'
-                e.target.title = 'Remove project from your watchlist'
-            }
-        })
-        getRef('watch_project_button').addEventListener('mouseleave', e => {
-            if (e.target.textContent === 'unwatch') {
-                e.target.textContent = 'watching'
-                e.target.title = 'Add project to your watchlist'
-            }
-        })
-        function watchThisProject(thisBtn) {
-            watchList = localStorage.getItem(`${myFloID}_watchlist`) ? localStorage.getItem(`${myFloID}_watchlist`).split(',') : []
-            if (watchList.includes(currentProject)) {
-                watchList = watchList.filter(project => project !== currentProject)
-                thisBtn.textContent = 'Watch'
-                notify(`${RIBC.getProjectDetails(currentProject).projectName} removed from your watch list.`)
+        function pinProject(thisBtn) {
+            pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
+            if (pinnedProjects.includes(currentProject)) {
+                pinnedProjects = pinnedProjects.filter(project => project !== currentProject)
+                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z" fill="black"/> </svg>`;
+                notify(`${RIBC.getProjectDetails(currentProject).projectName} removed from your watch list.`, 'success')
             } else {
-                watchList.push(currentProject)
-                thisBtn.textContent = 'watching'
+                pinnedProjects.push(currentProject)
+                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z" fill="black"/> </svg>`;
                 notify(`${RIBC.getProjectDetails(currentProject).projectName} added to your watch list.`, 'success')
             }
-            localStorage.setItem(`${myFloID}_watchlist`, watchList.join())
+            localStorage.setItem(`${myFloID}_pinned_projects`, pinnedProjects.join())
         }
 
         let sessionTaskRequests = new Set();
@@ -2513,7 +2507,7 @@
                 link.href = `${link.href}/project?id=${sortedProjectList[0]}&branch=mainLine`
             })
 
-            watchList = localStorage.getItem(`${myFloID}_watchlist`) ? localStorage.getItem(`${myFloID}_watchlist`).split(',') : []
+            pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
             const frag = document.createDocumentFragment()
             let allProjectsList = RIBC.getProjectList();
             //creates cards for highest performing interns
@@ -2530,7 +2524,7 @@
             }
             highPerformingInterns.sort((a, b) => b.rating - a.rating);
 
-            getRef('watch_project_button').classList.remove('hidden')
+            getRef('pin_project_button').classList.remove('hidden')
 
             // Intern's view
 
@@ -2542,7 +2536,7 @@
                     option.classList.remove('hidden')
                 })
                 document.getElementById('project_watching_section').classList.add('hidden')
-                getRef('watch_project_button').classList.add('hidden')
+                getRef('pin_project_button').classList.add('hidden')
 
                 // store all the projects assigned to interns in array
 
@@ -2855,7 +2849,7 @@
 
         function getSignedIn(passwordType) {
             return new Promise((resolve, reject) => {
-                showPage('landing')
+                routeTo('landing')
                 try {
                     getPromptInput('Enter password', '', {
                         isPassword: true,
@@ -2879,19 +2873,19 @@
                         getRef('secure_pwd_button').closest('.card').classList.remove('hidden');
                     }
                     if (window.location.hash.includes('sign_in') || window.location.hash.includes('sign_up')) {
-                        showPage(window.location.hash);
+                        routeTo(window.location.hash);
                     } else {
                         location.hash = floGlobals.isPrivKeySecured ? '#/sign_in' : `#/landing`;
                     }
                     getRef('sign_in_button').onclick = () => {
                         resolve(getRef('private_key_field').value.trim());
                         getRef('private_key_field').value = '';
-                        showPage('loading');
+                        routeTo('loading');
                     };
                     getRef('sign_up_button').onclick = () => {
                         resolve(getRef('generated_private_key').value.trim());
                         getRef('generated_private_key').value = '';
-                        showPage('loading');
+                        routeTo('loading');
                     };
                 }
             });
