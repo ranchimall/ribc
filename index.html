@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>RIBC</title>
+    <title>RanchiMall Internships</title>
     <meta name="description" content="Web app for managing interns and projects">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/main.min.css">
@@ -78,20 +78,14 @@
             <theme-toggle></theme-toggle>
         </header>
         <div id="landing" class="grid inner-page hidden">
-            <div class="left">
+            <div class="card">
                 <h1 class="title-font">
-                    Truly Secure, Private and Reliable.
+                    Blockchain based Internship Platform
                 </h1>
-                <p class="margin-block-1">A messenger made with Blockchain and Open Source technologies. Take back
-                    control of your data that
-                    belongs to you and you alone.</p>
                 <div class="flex">
                     <a href="#/sign_up" class="button">Get started</a>
                     <a href="#/sign_in" class="button button--primary">Sign In</a>
                 </div>
-            </div>
-            <div id="landing_illustration" class="right">
-                <img src="assets/message-background.svg" alt="">
             </div>
         </div>
         <article id="sign_in" class="inner-page hidden">
@@ -449,7 +443,7 @@
                         </section>
                     </div>
                 </section>
-                <section id="project_editing_panel" class="hide-on-mobile hidden">
+                <section id="project_editing_panel" class="hidden">
                     <div id="project_details_wrapper"
                         class="flex flex-direction-column gap-1 margin-bottom-2 align-items-start">
                         <a class="button icon-only hide-on-desktop" href="#/admin_page">
@@ -500,7 +494,7 @@
                         Add task
                     </sm-button>
                     <ul id="task_context" class="hidden">
-                        <li id="assign_intern" tabindex="0" class="interact" onclick="toggleEditing('title')">
+                        <li tabindex="0" class="interact" onclick="toggleEditing('title')">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                 height="24">
                                 <path fill="none" d="M0 0h24v24H0z" />
@@ -509,7 +503,7 @@
                             </svg>
                             Edit title
                         </li>
-                        <li id="assign_intern" tabindex="0" class="interact" onclick="toggleEditing()">
+                        <li tabindex="0" class="interact" onclick="toggleEditing()">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                 height="24">
                                 <path fill="none" d="M0 0h24v24H0z" />
@@ -517,15 +511,6 @@
                                     d="M15.728 9.686l-1.414-1.414L5 17.586V19h1.414l9.314-9.314zm1.414-1.414l1.414-1.414-1.414-1.414-1.414 1.414 1.414 1.414zM7.242 21H3v-4.243L16.435 3.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 21z" />
                             </svg>
                             Edit description
-                        </li>
-                        <li id="assign_intern" tabindex="0" class="interact" onclick="openPopup('intern_list_popup')">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M14 14.252v2.09A6 6 0 0 0 6 22l-2-.001a8 8 0 0 1 10-7.748zM12 13c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm6 6v-3h2v3h3v2h-3v3h-2v-3h-3v-2h3z" />
-                            </svg>
-                            Assign an intern
                         </li>
                         <li onclick="showNewBranchPopup()" tabindex="0" class="interact">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
@@ -535,15 +520,6 @@
                                     d="M7.105 15.21A3.001 3.001 0 1 1 5 15.17V8.83a3.001 3.001 0 1 1 2 0V12c.836-.628 1.874-1 3-1h4a3.001 3.001 0 0 0 2.895-2.21 3.001 3.001 0 1 1 2.032.064A5.001 5.001 0 0 1 14 13h-4a3.001 3.001 0 0 0-2.895 2.21zM6 17a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM6 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
                             </svg>
                             Create new Branch
-                        </li>
-                        <li onclick="removeThisTask()" tabindex="0" class="interact">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zM9 4v2h6V4H9z" />
-                            </svg>
-                            Delete
                         </li>
                     </ul>
                 </section>
@@ -558,7 +534,7 @@
                 </button>
             </section>
             <section id="updates_page" class="inner-page hidden">
-                <sm-button class="hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</sm-button>
+                <button class="button hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</button>
                 <section id="update_filters_wrapper" class="grid hide-on-mobile">
                     <h4>Filter</h4>
                     <div class="grid gap-0-5">
@@ -574,7 +550,7 @@
                         <input type="date" id="updates_page__date_selector" aria-label="Filter updates by date"
                             min="2020-01-01">
                     </label>
-                    <sm-button onclick="clearFilter()">Clear</sm-button>
+                    <button class="button" onclick="clearFilter()">Clear</button>
                 </section>
                 <section id="updates_wrapper">
                     <ul id="all_updates_list" class="grid gap-0-5 observe-empty-state"></ul>
@@ -633,8 +609,7 @@
                                 <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
-                                        d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"
-                                        fill="black" />
+                                        d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z" />
                                 </svg>
                             </button>
                         </div>
@@ -656,8 +631,7 @@
                         <h4>My FLO ID</h4>
                         <sm-copy id="user_flo_id"></sm-copy>
                     </div>
-                    <button id="logout" class="justify-self-start button button--danger button--primary"
-                        onclick="signOut()">
+                    <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
                         <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                             width="24" height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
@@ -883,8 +857,8 @@
     <!-- Templates -->
     <template id="placeholder_task_card_template">
         <div class="temp-task grid gap-0-5">
-            <sm-input class="placeholder-task__title" placeholder="task title"></sm-input>
-            <sm-textarea class="placeholder-task__description" placeholder="task description" rows="4"></sm-textarea>
+            <sm-input class="placeholder-task__title" placeholder="Title"></sm-input>
+            <sm-textarea class="placeholder-task__description" placeholder="Description" rows="4"></sm-textarea>
             <div class="flex">
                 <sm-button class="cancel-task-button">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -1156,7 +1130,6 @@
 
         const appState = {
             params: {},
-            openedPages: new Set(),
         }
         function routeTo(targetPage, options = {}) {
             const { firstLoad, hashChange } = options
@@ -1194,11 +1167,14 @@
             } catch (e) {
                 if (!(['sign_up', 'sign_in', 'loading', 'landing'].includes(pageId))) return
             }
+            appState.openPage = pageId
 
             if (searchParams) {
                 const urlSearchParams = new URLSearchParams('?' + searchParams);
                 params = Object.fromEntries(urlSearchParams.entries());
             }
+            if (params)
+                appState.params = params
             switch (pageId) {
                 case 'sign_in':
                     setTimeout(() => {
@@ -1256,14 +1232,7 @@
                                     targetProject.classList.add('project-card--active')
                             }
                             if (branch) {
-                                const branchDetails = {
-                                    destination: 'project_explorer',
-                                    taskListContainer: 'explorer_task_list',
-                                    projectId,
-                                    branch,
-                                    pageId
-                                }
-                                showTasksOfBranch(branchDetails)
+                                renderBranchTasks()
                             }
                             getRef('project_explorer__left').classList.add('hide-on-mobile')
                             getRef('project_explorer__right').classList.remove('hide-on-mobile')
@@ -1282,14 +1251,7 @@
                             const { id: projectId, branch } = params
                             renderAdminProjectView(projectId)
                             if (branch) {
-                                const branchDetails = {
-                                    destination: 'project_editing_panel',
-                                    taskListContainer: 'task_list',
-                                    projectId,
-                                    branch,
-                                    pageId
-                                }
-                                showTasksOfBranch(branchDetails)
+                                renderBranchTasks()
                             }
                             getRef('admin_page__left').classList.add('hide-on-mobile')
                             getRef('project_editing_panel').classList.remove('hidden')
@@ -1331,9 +1293,6 @@
                     }
                 appState.lastPage = pageId
             }
-            if (params)
-                appState.params = params
-            appState.openedPages.add(pageId)
         }
         // class based lazy loading
         class LazyLoader {
@@ -1591,34 +1550,34 @@
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
                 return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>`
             },
-            taskCard(currentProject, currentBranch, taskNo) {
-                const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, taskNo)
-                const branches = getAllBranches(currentProject)
+            taskCard(taskNo) {
+                const { taskTitle, taskDescription } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
+                const branches = getAllBranches(appState.params.id)
                 const frag = document.createDocumentFragment()
                 for (const branch of branches) {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
-                    if (parentBranch === currentBranch && startPoint === taskNo) {
+                    if (parentBranch === appState.params.branch && startPoint === taskNo) {
                         frag.append(
                             render.branchButton({
-                                projectId: currentProject,
+                                projectId: appState.params.id,
                                 branch: branchName,
                                 page: 'project_explorer'
                             })
                         )
                     }
                 }
-                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo).filter(v => v)
+                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo).filter(v => v)
                 const assignedInternsCards = assignedInterns.map((internFloId) => render.assignedInternCard(internFloId));
-                const status = RIBC.getTaskStatus(currentProject, currentBranch, taskNo)
+                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
                 let applyButton
                 if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
                     console.log(assignedInterns, myFloID)
                     const taskRequests = RIBC.getTaskRequests();
                     const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
-                        return `${projectCode}_${branch}_${task}` === `${currentProject}_${currentBranch}_${taskNo}`
+                        return `${projectCode}_${branch}_${task}` === `${appState.params.id}_${appState.params.branch}_${taskNo}`
                     })
                     applyButton = html`
-                        <button class="button apply-button" .dataset=${{ projectCode: currentProject, branch: currentBranch, taskNo }} ?disabled=${hasApplied}>
+                        <button class="button apply-button" .dataset=${{ projectCode: appState.params.id, branch: appState.params.branch, taskNo }} ?disabled=${hasApplied}>
                             ${hasApplied ? 'Applied' : 'Apply'}
                         </button>`;
                 }
@@ -1709,48 +1668,53 @@
                 `
             },
             taskListItem(taskNo) {
-                const assignedInterns = RIBC.getAssignedInterns(currentProject, currentBranch, taskNo)
+                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo)
                 const frag = document.createDocumentFragment()
-                const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, taskNo)
-                const status = RIBC.getTaskStatus(currentProject, currentBranch, taskNo)
+                const { taskTitle, taskDescription } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
+                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
                 let assignedInternsCards
                 if (assignedInterns) {
                     assignedInternsCards = assignedInterns.filter(v => v).map((internFloId) => {
                         return render.assignedInternCard(internFloId, true);
                     })
                 }
-                const branches = getAllBranches(currentProject)
+                const branches = getAllBranches(appState.params.id)
                 for (const branch of branches) {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
-                    if (parentBranch === currentBranch && startPoint === taskNo) {
+                    if (parentBranch === appState.params.branch && startPoint === taskNo) {
                         frag.append(
                             render.branchButton({
-                                projectId: currentProject,
+                                projectId: appState.params.id,
                                 branch: branchName,
                                 page: 'admin_page'
                             })
                         )
                     }
                 }
-                return html`
-                <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
-                    <div class="flex align-cente space-between">
-                        <sm-checkbox ?checked=${status === 'completed'}>
-                            <p class="margin-left-0-5">Mark as complete</p>
-                        </sm-checkbox>
-                        <button class="task-option">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                            </svg>
-                        </button>
-                    </div>
-                    <h4 class="task-title capitalize" data-editable>${taskTitle}</h4>
-                    <div class="assigned-interns">${assignedInternsCards}</div>
-                    <p class="task-description" data-editable>${taskDescription}</p>
-                    <div class="task__branch_container">${frag}</div>
-                </li>
+                return html.for(getRef('task_list'), `${appState.params.id}_${appState.params.branch}_${taskNo}`)`
+                    <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
+                        <div class="flex align-cente gap-0-3">
+                            <sm-checkbox ?checked=${status === 'completed'}>
+                                <p class="margin-left-0-5">Mark as complete</p>
+                            </sm-checkbox>
+                            <button class="button--danger icon-only margin-left-auto"onclick="removeThisTask()">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
+                            </button>
+                            <button class="icon-only task-option">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /> </svg>
+                            </button>
+                        </div>
+                        <h4 class="task-title capitalize" data-editable>${taskTitle}</h4>
+                        <div class="assigned-interns">
+                            <button class="button--outlined button--small button--colored" onclick="currentTask=this.closest('.task-list-item');openPopup('intern_list_popup')">
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zM5 18c.2-.63 2.57-1.68 4.96-1.94l2.04-2c-.39-.04-.68-.06-1-.06-2.67 0-8 1.34-8 4v2h9l-2-2H5zm15.6-5.5l-5.13 5.17-2.07-2.08L12 17l3.47 3.5L22 13.91z"/></svg>
+                                Assign intern
+                            </button>
+                            ${assignedInternsCards}
+                        </div>
+                        <p class="task-description" data-editable>${taskDescription}</p>
+                        <div class="task__branch_container">${frag}</div>
+                    </li>
                 `;
             },
             taskRequestCard(details) {
@@ -1989,7 +1953,7 @@
                 if (e.target.innerText.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerText.trim())) {
                     const newTitle = DOMPurify.sanitize(getRef('editing_panel__title').innerText.trim())
                     const newDescription = DOMPurify.sanitize(getRef('editing_panel__description').innerText.trim())
-                    RIBC.admin.addProjectDetails(currentProject, { projectName: newTitle, projectDescription: newDescription })
+                    RIBC.admin.addProjectDetails(appState.params.id, { projectName: newTitle, projectDescription: newDescription })
                     notify('Changes saved locally, commit the changes to make them permanent', 'success')
                     render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
                 } else {
@@ -2019,9 +1983,9 @@
             getRef('project_explorer__project_title').textContent = projectName; // project name
             getRef('pin_project_button').dataset.pinned = pinnedProjects.includes(projectId);
             if (pinnedProjects.includes(projectId)) {
-                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z" fill="black"/> </svg>`;
+                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z"/> </svg>`;
             } else {
-                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z" fill="black"/> </svg>`;
+                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"/> </svg>`;
             }
             getRef('project_explorer__project_description').textContent = projectDescription;
             getRef('project_explorer__project_updates').href = `#/updates_page?projectId=${projectId}&internId=all`;
@@ -2032,10 +1996,7 @@
             getRef('explorer_branch_container').append(frag);
         }
 
-        let currentBranch = 'mainLine',
-            currentProject = '',
-            currentTask = '',
-            lastProject;
+        let currentTask = '';
         function renderAdminProjectView(projectId) {
             const allProjects = getRef('admin_page__project_list').querySelectorAll('.project-card');
             const branchList = document.querySelectorAll('.branch-button');
@@ -2045,27 +2006,25 @@
             if (targetProject)
                 targetProject.classList.add('project-card--active')
             getRef('branch_container').innerHTML = '';
-            currentProject = projectId;
             branchList.forEach((branch) => {
                 branch.classList.remove('active-branch')
             })
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('editing_panel__title').textContent = projectName;
             getRef('editing_panel__description').textContent = projectDescription;
-            RIBC.getProjectBranches(currentProject).forEach((branch) => {
-                frag.append(render.branchButton({ projectId: currentProject, branch, page: 'admin_page' }))
+            RIBC.getProjectBranches(appState.params.id).forEach((branch) => {
+                frag.append(render.branchButton({ projectId: appState.params.id, branch, page: 'admin_page' }))
             })
             getRef('branch_container').appendChild(frag)
         }
-        function showTasksOfBranch(obj = {}) {
-            const { destination, taskListContainer, projectId, branch, pageId } = obj
-            currentProject = projectId;
-            currentBranch = branch;
-            let branchTasks = RIBC.getProjectMap(currentProject)[currentBranch];
-            document.getElementById(destination).querySelectorAll('.branch-button').forEach((branchButton) => {
+        function renderBranchTasks() {
+            const { id: projectId, branch } = appState.params
+            const taskListContainer = appState.openPage === 'admin_page' ? 'task_list' : 'explorer_task_list';
+            let branchTasks = RIBC.getProjectMap(appState.params.id)[appState.params.branch];
+            getRef(appState.openPage).querySelectorAll('.branch-button').forEach((branchButton) => {
                 branchButton.classList.remove('active-branch')
             })
-            document.getElementById(destination).querySelector(`.branch-button[href="#/${pageId}/project?id=${projectId}&branch=${branch}"]`).classList.add('active-branch')
+            getRef(appState.openPage).querySelector(`.branch-button[href="#/${appState.openPage}/project?id=${projectId}&branch=${branch}"]`).classList.add('active-branch')
             if (branchTasks[1] && !taskListContainer === 'task_list') {
                 getRef(taskListContainer).textContent = "No tasks added yet, Please explore other projects"
             } else {
@@ -2073,13 +2032,13 @@
                 if (branch !== 'mainLine') {
                     const { startPoint, parentBranch } = getAllBranches(projectId).find(({ branchName }) => branchName === branch)
                     tasks.push(html`<p class="margin-bottom-0-5">
-                        Branched off from <a href=${`#/${pageId}/project?id=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
+                        Branched off from <a href=${`#/${appState.openPage}/project?id=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
                     </p>`)
                 }
                 if (taskListContainer === 'task_list') {
                     branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskListItem(taskNo)))
                 } else {
-                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskCard(currentProject, currentBranch, taskNo)))
+                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskCard(taskNo)))
                 }
                 renderElem(getRef(taskListContainer), html`${tasks}`)
             }
@@ -2119,13 +2078,13 @@
         delegate(getRef('task_list'), 'change', 'sm-checkbox', (e) => {
             currentTask = e.target.closest('.task-list-item');
             const taskStatus = e.target.checked ? 'completed' : 'incomplete'
-            RIBC.admin.putTaskStatus(taskStatus, currentProject, currentBranch, currentTask.dataset.taskId)
+            RIBC.admin.putTaskStatus(taskStatus, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
         })
         getRef('task_list').addEventListener('focusout', (e) => {
             if (e.target.isContentEditable) {
                 e.target.contentEditable = false
                 if (e.target.innerText.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerText.trim())) {
-                    const { taskTitle, taskDescription } = RIBC.getTaskDetails(currentProject, currentBranch, currentTask.dataset.taskId)
+                    const { taskTitle, taskDescription } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     const taskDetails = {}
                     if (e.target.closest('.task-description')) {
                         taskDetails['taskTitle'] = taskTitle
@@ -2134,7 +2093,7 @@
                         taskDetails['taskTitle'] = DOMPurify.sanitize(e.target.innerText.trim())
                         taskDetails['taskDescription'] = taskDescription
                     }
-                    RIBC.admin.editTaskDetails(taskDetails, currentProject, currentBranch, currentTask.dataset.taskId)
+                    RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     notify('Changes saved locally, commit the changes to make them permanent', 'success')
                 } else {
                     e.target.innerText = floGlobals.tempEditableContent
@@ -2191,18 +2150,18 @@
                     }
             }
             else if (e.target.closest('.assigned-intern button')) {
-                getConfirmation('Do you want to unassign this intern from this task?').then((result) => {
+                getConfirmation('Do you want to unassign this intern from this task?', { confirmText: 'Unassign' }).then((result) => {
                     if (result) {
-                        RIBC.admin.unassignInternFromTask(e.target.closest('.assigned-intern').dataset.floId, currentProject, currentBranch, currentTask.dataset.taskId)
-                        e.target.closest('.assigned-intern').remove()
+                        RIBC.admin.unassignInternFromTask(e.target.closest('.assigned-intern').dataset.floId, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                         notify('Intern removed from the task')
+                        renderBranchTasks()
                     }
                 })
             }
             else if (e.target.closest('.cancel-task-button')) {
                 const card = e.target.closest('.temp-task')
                 card.remove();
-                getRef('add_task').disabled = false
+                getRef('add_task').classList.remove('hidden')
             }
             else if (e.target.closest('.add-task-button')) {
                 const card = e.target.closest('.temp-task')
@@ -2216,12 +2175,12 @@
                     notify('Please enter description of the task', 'error')
                     return
                 }
-                const taskNo = RIBC.admin.addTaskInMap(currentProject, currentBranch)
-                RIBC.admin.editTaskDetails({ taskTitle: titleContent, taskDescription: descriptionContent }, currentProject, currentBranch, taskNo)
-                RIBC.admin.putTaskStatus('incomplete', currentProject, currentBranch, taskNo)
+                const taskNo = RIBC.admin.addTaskInMap(appState.params.id, appState.params.branch)
+                RIBC.admin.editTaskDetails({ taskTitle: titleContent, taskDescription: descriptionContent }, appState.params.id, appState.params.branch, taskNo)
+                RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, taskNo)
                 card.remove()
-                getRef('task_list').append(html.node`${render.taskListItem(taskNo)}`)
-                getRef('add_task').disabled = false
+                renderBranchTasks()
+                getRef('add_task').classList.remove('hidden')
                 notify('Task added to current branch', 'success')
             }
         })
@@ -2229,7 +2188,8 @@
             const placeholderTask = getRef('placeholder_task_card_template').content.cloneNode(true)
             getRef('task_list').append(placeholderTask)
             getRef('task_list').lastElementChild.scrollIntoView({ behavior: 'smooth' })
-            getRef('add_task').disabled = true
+            getRef('task_list').querySelector('.placeholder-task__title').focusIn()
+            getRef('add_task').classList.add('hidden')
         }
         function commitToChanges() {
             getConfirmation("Do you want to commit to changes?").then((result) => {
@@ -2243,40 +2203,25 @@
             })
         }
         function removeThisTask() {
-            getConfirmation("Are you sure to delete this task?").then((result) => {
+            getConfirmation("Are you sure to delete this task?", { confirmText: 'Delete' }).then((result) => {
                 if (result) {
-                    RIBC.admin.deleteTaskInMap(currentProject, currentBranch, currentTask.dataset.taskId)
-                    currentTask.remove();
+                    RIBC.admin.deleteTaskInMap(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+                    renderBranchTasks()
                 }
             })
         }
-        function signOut() {
-            getConfirmation('Sign out?', { message: 'You are about to sign out of the app, continue?', confirmText: 'Leave', cancelText: 'Stay' })
-                .then(async (res) => {
-                    if (res) {
-                        await floDapps.clearCredentials();
-                        location.reload();
-                    }
-                });
-        }
-        document.getElementById('intern_list_container').addEventListener('click', (event) => {
-            if (event.target.closest('.intern-card')) {
-                const floId = event.target.closest('.intern-card').dataset.internFloId;
-                const internName = RIBC.getInternList()[floId]
-                const { projectName } = RIBC.getProjectDetails(currentProject)
-                if (RIBC.admin.assignInternToTask(floId, currentProject, currentBranch, currentTask.dataset.taskId)) {
-                    notify(`${internName} assigned to ${projectName}`, 'success')
-                    currentTask.querySelector('.assigned-interns').append(html.node`${render.assignedInternCard(floId, true)}`)
-                } else {
-                    notify('intern already assigned', 'error')
-                }
-                closePopup()
+        delegate(getRef('intern_list_container'), 'click', '.intern-card', (e) => {
+            const floId = e.target.closest('.intern-card').dataset.internFloId;
+            const internName = RIBC.getInternList()[floId]
+            const { projectName } = RIBC.getProjectDetails(appState.params.id)
+            if (RIBC.admin.assignInternToTask(floId, appState.params.id, appState.params.branch, currentTask.dataset.taskId)) {
+                notify(`${internName} assigned to ${projectName}`, 'success')
+                renderBranchTasks()
+            } else {
+                notify('intern already assigned', 'error')
             }
+            closePopup()
         })
-
-        function unassignIntern() {
-            RIBC.admin.unassignInternFromTask(currentProject, currentBranch, currentTask)
-        }
 
         function renderAllInterns() {
             renderElem(getRef('all_interns_list'), filterInterns('', { sortByRating: true }))
@@ -2307,9 +2252,9 @@
             const startPoint = parseInt(currentTask.dataset.taskId)
             const userMergePoint = getRef('branch_merge_point').value.trim()
             const mergePoint = (userMergePoint === '') ? startPoint : parseInt(userMergePoint)
-            const branchName = RIBC.admin.addBranch(currentProject, currentBranch, startPoint, mergePoint);
+            const branchName = RIBC.admin.addBranch(appState.params.id, appState.params.branch, startPoint, mergePoint);
             notify(`Branch added ${branchName}`, 'success')
-            currentTask.querySelector('.task__branch_container').append(render.branchButton({ projectId: currentProject, branch: branchName, page: 'admin_page' }))
+            currentTask.querySelector('.task__branch_container').append(render.branchButton({ projectId: appState.params.id, branch: branchName, page: 'admin_page' }))
             closePopup()
         }
 
@@ -2436,21 +2381,21 @@
         getRef('updates_page__date_selector').addEventListener('change', e => setUpdateFilters())
         function pinProject(thisBtn) {
             pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
-            if (pinnedProjects.includes(currentProject)) {
-                pinnedProjects = pinnedProjects.filter(project => project !== currentProject)
-                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z" fill="black"/> </svg>`;
-                notify(`${RIBC.getProjectDetails(currentProject).projectName} removed from your watch list.`, 'success')
+            if (pinnedProjects.includes(appState.params.id)) {
+                pinnedProjects = pinnedProjects.filter(project => project !== appState.params.id)
+                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"/> </svg>`;
+                notify(`${RIBC.getProjectDetails(appState.params.id).projectName} removed from your watch list.`, 'success')
             } else {
-                pinnedProjects.push(currentProject)
-                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z" fill="black"/> </svg>`;
-                notify(`${RIBC.getProjectDetails(currentProject).projectName} added to your watch list.`, 'success')
+                pinnedProjects.push(appState.params.id)
+                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z"/> </svg>`;
+                notify(`${RIBC.getProjectDetails(appState.params.id).projectName} added to your watch list.`, 'success')
             }
             localStorage.setItem(`${myFloID}_pinned_projects`, pinnedProjects.join())
         }
 
         let sessionTaskRequests = new Set();
         function requestForTask(btn) {
-            getConfirmation('Do you want to apply for this task?').then((result) => {
+            getConfirmation('Do you want to apply for this task?', { confirmText: 'Apply' }).then((result) => {
                 if (result) {
                     btn.textContent = 'Applied'
                     btn.disabled = true
@@ -2508,8 +2453,6 @@
             })
 
             pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
-            const frag = document.createDocumentFragment()
-            let allProjectsList = RIBC.getProjectList();
             //creates cards for highest performing interns
             //sort interns earned points
 
@@ -2730,7 +2673,7 @@
             if (typeOfUser === 'intern') {
                 render.projectList(getRef('project_list'), assignedProjectsList)
             } else {
-                render.projectList(getRef('project_list'), allProjectsList.reverse().slice(0, 4))
+                render.projectList(getRef('project_list'), RIBC.getProjectList().reverse().slice(0, 4))
             }
 
             if (typeOfUser === 'intern') {
@@ -2792,7 +2735,7 @@
             }
             arrayOfInterns.sort((a, b) => a.internName.toLowerCase().localeCompare(b.internName.toLowerCase()))
             if (availableInternsOnly) {
-                arrayOfInterns = arrayOfInterns.filter(intern => !RIBC.getAssignedInterns(currentProject, currentBranch, currentTask.dataset.taskId).includes(intern.floId))
+                arrayOfInterns = arrayOfInterns.filter(intern => !RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId).includes(intern.floId))
             }
             if (searchKey === '') {
                 filtered = (sortByRating ? highPerformingInterns : arrayOfInterns).map(({ internName, floId }) => {
@@ -2902,6 +2845,15 @@
                     notify(err, 'error');
                 })
             }
+        }
+        function signOut() {
+            getConfirmation('Sign out?', { message: 'You are about to sign out of the app, continue?', confirmText: 'Leave', cancelText: 'Stay' })
+                .then(async (res) => {
+                    if (res) {
+                        await floDapps.clearCredentials();
+                        location.reload();
+                    }
+                });
         }
     </script>
 </body>
