@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="css/main.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Calistoga&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
     <script src="components.js" defer></script>
     <script id="floGlobals">
         /* Constants for FLO blockchain operations !!Make sure to add this at begining!! */
@@ -60,7 +62,7 @@
     <div id="secondary_pages" class="page">
         <header class="flex align-center gap-1">
             <div class="flex align-center flex-1">
-                <svg class="icon flo-icon" width="64" height="64" viewBox="0 0 64 64" fill="none"
+                <svg class="icon margin-right-0-3" width="64" height="64" viewBox="0 0 64 64" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <mask id="path-1-outside-1_16_6" maskUnits="userSpaceOnUse" x="3" y="3" width="58" height="58">
                         <rect class="foreground-circle" x="3" y="3" width="58" height="58" />
@@ -78,8 +80,8 @@
             <theme-toggle></theme-toggle>
         </header>
         <div id="landing" class="grid inner-page hidden">
-            <div class="card">
-                <h1 class="title-font">
+            <div class="card flex flex-direction-column gap-1-5">
+                <h1 class="calistoga">
                     Blockchain based Internship Platform
                 </h1>
                 <div class="flex">
@@ -117,15 +119,30 @@
                 <div class="grid gap-1-5">
                     <div class="grid gap-0-5">
                         <h5>FLO ID</h5>
-                        <sm-copy id="generated_flo_id"></sm-copy>
+                        <sm-copy id="generated_flo_address"></sm-copy>
                     </div>
                     <div class="grid gap-0-5">
                         <h5>Private key</h5>
                         <sm-copy id="generated_private_key"></sm-copy>
                     </div>
                 </div>
-                <sm-button id="sign_up_button" variant="primary">Sign in with these credentials</sm-button>
-                <p>You can use these FLO credentials with FLO Messenger other RanchiMall apps
+                <div class="flex gap-0-5 margin-top-1">
+                    <button class="button" style="flex-shrink: 0;" onclick="downloadGeneratedCredentials()">
+                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
+                            enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
+                            fill="#000000">
+                            <g>
+                                <rect fill="none" height="24" width="24" />
+                            </g>
+                            <g>
+                                <path
+                                    d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M17,11l-1.41-1.41L13,12.17V4h-2v8.17L8.41,9.59L7,11l5,5 L17,11z" />
+                            </g>
+                        </svg>
+                        Download</button>
+                    <button id="sign_up_button" class="button button--primary w-100">Sign in with these</button>
+                </div>
+                <p>You can use these FLO credentials with other RanchiMall apps
                     too. </p>
             </section>
         </article>
@@ -366,21 +383,6 @@
                         <h2>My tasks</h2>
                         <ul id="assigned_task_list"></ul>
                     </section>
-                </div>
-                <section>
-                    <div id="best_interns_container" class="container-card">
-                        <div class="container-header">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" />
-                            </svg>
-                            <h4>Leaderboard</h4>
-                            <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
-                        </div>
-                        <div id="top_interns"></div>
-                    </div>
                     <div id="project_list_container" class="container-card">
                         <div class="container-header">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
@@ -394,7 +396,19 @@
                         </div>
                         <div id="project_list"></div>
                     </div>
-                </section>
+                </div>
+                <div id="best_interns_container" class="container-card">
+                    <div class="container-header">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" />
+                        </svg>
+                        <h4>Leaderboard</h4>
+                        <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
+                    </div>
+                    <div id="top_interns"></div>
+                </div>
             </section>
             <section id="admin_page" class="inner-page hidden">
                 <section id="admin_page__left" class="flex flex-direction-column">
@@ -626,20 +640,35 @@
             </section>
             <section id="settings_page" class="inner-page hidden">
                 <section class="grid gap-1 card">
-                    <h2 id="username" class="capitalize"></h2>
                     <div class="grid">
-                        <h4>My FLO ID</h4>
+                        <h4>FLO address</h4>
                         <sm-copy id="user_flo_id"></sm-copy>
                     </div>
-                    <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
-                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" />
-                        </svg>
-                        Sign out
-                    </button>
+                    <div class="flex gap-0-5 flex-wrap">
+                        <button class="button" onclick="downloadCredentials()">
+                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
+                                enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
+                                fill="#000000">
+                                <g>
+                                    <rect fill="none" height="24" width="24" />
+                                </g>
+                                <g>
+                                    <path
+                                        d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M17,11l-1.41-1.41L13,12.17V4h-2v8.17L8.41,9.59L7,11l5,5 L17,11z" />
+                                </g>
+                            </svg>
+                            Download credentials
+                        </button>
+                        <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
+                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                width="24" height="24">
+                                <path fill="none" d="M0 0h24v24H0z" />
+                                <path
+                                    d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" />
+                            </svg>
+                            Sign out
+                        </button>
+                    </div>
                 </section>
                 <div class="grid gap-1 card">
                     <div class="grid gap-0-5">
@@ -1183,7 +1212,7 @@
                     break;
                 case 'sign_up':
                     const { floID, privKey } = floCrypto.generateNewID()
-                    getRef('generated_flo_id').value = floID
+                    getRef('generated_flo_address').value = floID
                     getRef('generated_private_key').value = privKey
                     break;
                 case 'dashboard_page':
@@ -1691,7 +1720,7 @@
                         )
                     }
                 }
-                return html.for(getRef('task_list'), `${appState.params.id}_${appState.params.branch}_${taskNo}`)`
+                return html`
                     <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
                         <div class="flex align-cente gap-0-3">
                             <sm-checkbox ?checked=${status === 'completed'}>
@@ -2692,7 +2721,6 @@
                     requestForTask(event.target.closest('.apply-button'))
                 }
             })
-            getRef('username').textContent = typeOfUser === 'intern' ? `Hi, ${RIBC.getInternList()[myFloID]}` : `Hi, there!`;
             getRef('user_flo_id').value = myFloID;
 
             console.log(typeOfUser)
@@ -2826,7 +2854,7 @@
                         routeTo('loading');
                     };
                     getRef('sign_up_button').onclick = () => {
-                        resolve(getRef('generated_private_key').value.trim());
+                        resolve(getRef('generated_private_key').value);
                         getRef('generated_private_key').value = '';
                         routeTo('loading');
                     };
@@ -2854,6 +2882,32 @@
                         location.reload();
                     }
                 });
+        }
+
+        async function downloadCredentials() {
+            try {
+                if (floDapps.user.id) {
+                    const privKey = await floDapps.user.private;
+                    generateTxtFile(`FLO address: ${floDapps.user.id}\n\nFLO Private Key: ${privKey} `, 'FLO credentials');
+                }
+            } catch (err) {
+                notify(err, 'error');
+            }
+        }
+        function downloadGeneratedCredentials() {
+            const floAddress = getRef('generated_flo_address').value;
+            const privKey = getRef('generated_private_key').value;
+            generateTxtFile(`FLO address: ${floAddress}\n\nFLO Private Key: ${privKey} `, 'FLO credentials');
+        }
+        // generate txt file with given content
+        function generateTxtFile(content, fileName) {
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', `${fileName}.txt`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         }
     </script>
 </body>

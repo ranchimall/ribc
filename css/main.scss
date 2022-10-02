@@ -73,7 +73,10 @@ body[data-theme="dark"] {
     filter: invert(1);
   }
 }
-
+.calistoga {
+  font-weight: 400;
+  font-family: "Calistoga", cursive;
+}
 p,
 strong {
   font-size: 0.9rem;
@@ -521,7 +524,9 @@ ul {
 .margin-right-auto {
   margin-right: auto;
 }
-
+.margin-top-1 {
+  margin-top: 1rem;
+}
 .margin-bottom-0-5 {
   margin-bottom: 0.5rem;
 }
