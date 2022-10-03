@@ -1404,7 +1404,7 @@ ul {
   background-color: rgba(var(--foreground-color), 1);
 }
 
-#project_watching_section {
+#pinned_project_section {
   position: relative;
   overflow: hidden;
 }
@@ -1614,18 +1614,18 @@ input[type=date]:focus {
   border: solid var(--accent-color) thin;
 }
 
-#project_watching_section {
+#pinned_project_section {
   display: grid;
   gap: 1rem;
 }
 
 #pinned_projects {
   display: grid;
-  gap: 0.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.3rem;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
 }
 
-.watchlist_project_card {
+.pinned-card {
   color: inherit;
   display: grid;
   border-radius: 0.5rem;
@@ -1633,7 +1633,7 @@ input[type=date]:focus {
   background-color: rgba(var(--foreground-color), 1);
   grid-template-columns: auto 1fr;
 }
-.watchlist_project_card .project-icon {
+.pinned-card .project-icon {
   display: flex;
   background-color: rgba(var(--text-color), 0.06);
   justify-self: start;
@@ -1643,14 +1643,15 @@ input[type=date]:focus {
   margin-right: 0.8rem;
   grid-row: span 3;
 }
-.watchlist_project_card .project-icon .icon {
+.pinned-card .project-icon .icon {
   fill: var(--accent-color);
 }
-.watchlist_project_card .project__title {
+.pinned-card .project__title {
   margin-bottom: 0.8rem;
   font-weight: 500;
+  color: inherit;
 }
-.watchlist_project_card .project__complete-percent {
+.pinned-card .project__complete-percent {
   font-size: 0.8rem;
   opacity: 0.8;
   margin-top: 0.5rem;
@@ -1747,7 +1748,7 @@ input[type=date]:focus {
   #dashboard_page {
     grid-template-columns: 3fr 18rem;
   }
-  #dashboard_page #project_watching_section {
+  #dashboard_page #pinned_project_section {
     align-self: flex-start;
   }
   #all_interns_page__header {

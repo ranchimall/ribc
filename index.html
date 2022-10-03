@@ -367,35 +367,28 @@
                             <circle cx="386.2497" cy="616.61448" r="34" fill="#e6e6e6" />
                         </svg>
                     </div>
-                    <section id="project_watching_section" class="w-100">
-                        <h4>Pinned projects</h4>
+                    <section id="pinned_project_section" class="w-100">
+                        <h4>Pinned</h4>
                         <div id="pinned_projects" class="observe-empty-state"></div>
                         <div class="empty-state">
                             <h4>There are no pinned projects</h4>
                             <p class="margin-block-0-5">
-                                You can pin projects for easier monitoring by clicking on the 'pin' icon in opened
-                                project.
+                                You can pin projects for easier monitoring by clicking on the 'pin' icon on project
+                                card.
                             </p>
-                            <a href="#/project_explorer" class="button open-first-project">See all projects</a>
                         </div>
                     </section>
+                    <div id="project_list_container">
+                        <div class="flex align-center space-between margin-bottom-0-5">
+                            <h4>Projects</h4>
+                            <a href="#/project_explorer" class="button open-first-project">All</a>
+                        </div>
+                        <div id="project_list" class="flex flex-direction-column gap-0-3"></div>
+                    </div>
                     <section id="intern_view" class="hidden intern-option">
                         <h2>My tasks</h2>
                         <ul id="assigned_task_list"></ul>
                     </section>
-                    <div id="project_list_container" class="container-card">
-                        <div class="container-header">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M6 7V4a1 1 0 0 1 1-1h6.414l2 2H21a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3zm0 2H4v10h12v-2H6V9z" />
-                            </svg>
-                            <h4>Projects</h4>
-                            <a href="#/project_explorer" class="button open-first-project">All</a>
-                        </div>
-                        <div id="project_list"></div>
-                    </div>
                 </div>
                 <div id="best_interns_container" class="container-card">
                     <div class="container-header">
@@ -616,17 +609,7 @@
                                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
                             </svg>
                         </a>
-                        <div class="flex space-between align-center">
-                            <h2 id="project_explorer__project_title"></h2>
-                            <button class="button icon-only" id="pin_project_button"
-                                title="Pin this project to dashboard" onclick="pinProject(this)">
-                                <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z" />
-                                </svg>
-                            </button>
-                        </div>
+                        <h2 id="project_explorer__project_title"></h2>
                     </header>
                     <p id="project_explorer__project_description"></p>
                     <a href="" id="project_explorer__project_updates"
@@ -1216,7 +1199,7 @@
                     getRef('generated_private_key').value = privKey
                     break;
                 case 'dashboard_page':
-                    renderElem(getRef('pinned_projects'), html`${pinnedProjects.map(project => render.watchlistProject(project))} `)
+                    render.dashProjects(getRef('pinned_projects'), pinnedProjects);
                     break;
                 case 'updates_page':
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1812,7 +1795,7 @@
                     </li>
                 `;
             },
-            watchlistProject(projectId) {
+            dashProject(projectId, ref) {
                 const { projectName } = RIBC.getProjectDetails(projectId)
                 const projectMap = RIBC.getProjectMap(projectId)
                 const projectTasks = []
@@ -1823,18 +1806,31 @@
                 })
                 const completedTasks = projectTasks.filter(task => task === 'completed').length
                 let completePercent = parseFloat(((completedTasks / projectTasks.length) * 100).toFixed(2))
-                return html`
-                    <a class="watchlist_project_card interact" href=${`#/project_explorer/project?id=${projectId}&branch=mainLine`}>
+                const isPinned = pinnedProjects.includes(projectId);
+                let pinIcon = ''
+                if (isPinned) {
+                    pinIcon = html`<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z"/> </svg>`;
+                } else {
+                    pinIcon = html`<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"/> </svg>`;
+                }
+                return html.for(ref, projectId)`
+                    <div class="pinned-card" data-id=${projectId}>
                         <div class="project-icon">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
                         </div>
-                        <b class="project__title">${projectName}</b>
+                        <div class="flex space-between align-items-start">
+                            <a class="project__title" href=${`#/project_explorer/project?id=${projectId}&branch=mainLine`}>${projectName}</a>
+                            <button class="icon-only pin-project" title=${`${isPinned ? 'Unpin' : 'Pin'} this project`} onclick="pinProject(this)" data-pinned=${isPinned}>${pinIcon}</button>
+                        </div>
                         <div class="progress-bar">
                             <div class="progress-value" style=${`width: ${completePercent}%`}></div>
                         </div>
                         <span class="project__complete-percent">${completePercent}% complete</span>
-                    </a>
+                    </div>
                 `
+            },
+            dashProjects(where, projects) {
+                renderElem(where, html`${projects.map(project => render.dashProject(project, where))} `)
             },
             internRequests() {
                 const selectedRequestType = getRef('request_type_selector').value;
@@ -2010,12 +2006,6 @@
             const frag = document.createDocumentFragment();
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('project_explorer__project_title').textContent = projectName; // project name
-            getRef('pin_project_button').dataset.pinned = pinnedProjects.includes(projectId);
-            if (pinnedProjects.includes(projectId)) {
-                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z"/> </svg>`;
-            } else {
-                getRef('pin_project_button').innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"/> </svg>`;
-            }
             getRef('project_explorer__project_description').textContent = projectDescription;
             getRef('project_explorer__project_updates').href = `#/updates_page?projectId=${projectId}&internId=all`;
             getRef('explorer_branch_container').innerHTML = ``;
@@ -2409,17 +2399,16 @@
         getRef('updates_page__intern_selector').addEventListener('change', e => setUpdateFilters())
         getRef('updates_page__date_selector').addEventListener('change', e => setUpdateFilters())
         function pinProject(thisBtn) {
+            const projectId = thisBtn.closest('.pinned-card').dataset.id;
             pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
-            if (pinnedProjects.includes(appState.params.id)) {
-                pinnedProjects = pinnedProjects.filter(project => project !== appState.params.id)
-                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"/> </svg>`;
-                notify(`${RIBC.getProjectDetails(appState.params.id).projectName} removed from your watch list.`, 'success')
+            if (pinnedProjects.includes(projectId)) {
+                pinnedProjects = pinnedProjects.filter(project => project !== projectId)
             } else {
-                pinnedProjects.push(appState.params.id)
-                thisBtn.innerHTML = `<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z"/> </svg>`;
-                notify(`${RIBC.getProjectDetails(appState.params.id).projectName} added to your watch list.`, 'success')
+                pinnedProjects.push(projectId)
             }
             localStorage.setItem(`${myFloID}_pinned_projects`, pinnedProjects.join())
+            render.dashProjects(getRef('pinned_projects'), pinnedProjects)
+            render.dashProjects(getRef('project_list'), RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse())
         }
 
         let sessionTaskRequests = new Set();
@@ -2482,9 +2471,9 @@
             })
 
             pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
+
             //creates cards for highest performing interns
             //sort interns earned points
-
             allInternsList = RIBC.getInternList();
             highPerformingInterns = [];
             for (let intern in allInternsList) {
@@ -2496,28 +2485,24 @@
             }
             highPerformingInterns.sort((a, b) => b.rating - a.rating);
 
-            getRef('pin_project_button').classList.remove('hidden')
-
             // Intern's view
 
             let assignedProjectsList = [];
-            let projectTaskNos;
             if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.remove('hidden')
                 })
-                document.getElementById('project_watching_section').classList.add('hidden')
-                getRef('pin_project_button').classList.add('hidden')
+                document.getElementById('pinned_project_section').classList.add('hidden')
 
                 // store all the projects assigned to interns in array
 
                 sortedProjectList.forEach(projectId => {
                     nextProject:
                     for (const branch in RIBC.getProjectMap(projectId)) {
-                        projectTaskNos = RIBC.getProjectMap(projectId)[branch].slice(4);
-                        for (let j = 0; j < projectTaskNos.length; j++) {
-                            const assignedInterns = RIBC.getAssignedInterns(projectId, branch, projectTaskNos[j])
+                        const projectTaskNos = RIBC.getProjectMap(projectId)[branch].slice(4);
+                        for (taskNo of projectTaskNos) {
+                            const assignedInterns = RIBC.getAssignedInterns(projectId, branch, taskNo)
                             if (Array.isArray(assignedInterns) && assignedInterns.includes(myFloID)) {
                                 assignedProjectsList.push(projectId)
                                 break nextProject;
@@ -2542,7 +2527,6 @@
                     }
                 })
 
-                document.getElementById('project_list_container').firstElementChild.children[1].textContent = 'My projects'
                 let parent = document.getElementById('assigned_task_list');
                 if (!Object.keys(floGlobals.assignedTasks).length) {
                     parent.textContent = 'No task assigned yet.';
@@ -2574,8 +2558,7 @@
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.add('hidden')
                 })
-                document.getElementById('project_watching_section').classList.remove('hidden')
-                document.getElementById('project_list_container').firstElementChild.children[1].textContent = 'Projects'
+                document.getElementById('pinned_project_section').classList.remove('hidden')
             }
 
             // admin view
@@ -2697,13 +2680,7 @@
             })}`);
 
             // displays recent projects
-
-            let recentProjects = []
-            if (typeOfUser === 'intern') {
-                render.projectList(getRef('project_list'), assignedProjectsList)
-            } else {
-                render.projectList(getRef('project_list'), RIBC.getProjectList().reverse().slice(0, 4))
-            }
+            render.dashProjects(getRef('project_list'), RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse())
 
             if (typeOfUser === 'intern') {
                 render.projectList(getRef('my_projects'), assignedProjectsList)
@@ -2722,7 +2699,6 @@
                 }
             })
             getRef('user_flo_id').value = myFloID;
-
             console.log(typeOfUser)
         }
         getRef('request_type_selector').addEventListener('change', render.internRequests)

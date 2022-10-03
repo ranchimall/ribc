@@ -1408,7 +1408,7 @@ ul {
   background-color: rgba(var(--foreground-color), 1);
 }
 
-#project_watching_section {
+#pinned_project_section {
   position: relative;
   overflow: hidden;
 }
@@ -1610,16 +1610,16 @@ input[type="date"] {
   border-radius: 0.3rem;
   border: solid var(--accent-color) thin;
 }
-#project_watching_section {
+#pinned_project_section {
   display: grid;
   gap: 1rem;
 }
 #pinned_projects {
   display: grid;
-  gap: 0.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.3rem;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
 }
-.watchlist_project_card {
+.pinned-card {
   color: inherit;
   display: grid;
   border-radius: 0.5rem;
@@ -1642,6 +1642,7 @@ input[type="date"] {
   .project__title {
     margin-bottom: 0.8rem;
     font-weight: 500;
+    color: inherit;
   }
   .project__complete-percent {
     font-size: 0.8rem;
@@ -1753,7 +1754,7 @@ input[type="date"] {
     grid-template-columns: 3fr 18rem;
   }
 
-  #dashboard_page #project_watching_section {
+  #dashboard_page #pinned_project_section {
     align-self: flex-start;
   }
   #all_interns_page__header {
