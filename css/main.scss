@@ -786,8 +786,12 @@ ul {
 }
 
 #landing {
+  padding: 0 1rem;
+  overflow-y: auto;
+  padding-bottom: 3rem;
 }
 .landing__card {
+  position: relative;
   width: min(100%, 64rem);
   margin: 0 auto;
   align-self: flex-start;
@@ -805,6 +809,29 @@ ul {
     color: white;
     h1 {
       mix-blend-mode: soft-light;
+    }
+  }
+  &:nth-of-type(2) {
+    background: url(../assets/globe.svg) no-repeat bottom right,
+      rgba(var(--foreground-color), 1);
+    background-size: max(60vw, 90vh);
+    color: white;
+    min-height: 24rem;
+    img {
+      align-self: flex-start;
+      width: 20vmax;
+    }
+    .grid {
+      margin-top: auto;
+      margin-left: auto;
+    }
+    h1 {
+      color: #262d4c;
+      mix-blend-mode: multiply;
+    }
+    p {
+      margin-top: auto;
+      color: rgba(255, 255, 255, 0.9);
     }
   }
 }

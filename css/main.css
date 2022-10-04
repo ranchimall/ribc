@@ -787,7 +787,14 @@ ul {
   background-color: rgba(var(--foreground-color), 0.3);
 }
 
+#landing {
+  padding: 0 1rem;
+  overflow-y: auto;
+  padding-bottom: 3rem;
+}
+
 .landing__card {
+  position: relative;
   width: min(100%, 64rem);
   margin: 0 auto;
   align-self: flex-start;
@@ -807,6 +814,28 @@ ul {
 }
 .landing__card:first-of-type h1 {
   mix-blend-mode: soft-light;
+}
+.landing__card:nth-of-type(2) {
+  background: url(../assets/globe.svg) no-repeat bottom right, rgba(var(--foreground-color), 1);
+  background-size: max(60vw, 90vh);
+  color: white;
+  min-height: 24rem;
+}
+.landing__card:nth-of-type(2) img {
+  align-self: flex-start;
+  width: 20vmax;
+}
+.landing__card:nth-of-type(2) .grid {
+  margin-top: auto;
+  margin-left: auto;
+}
+.landing__card:nth-of-type(2) h1 {
+  color: #262d4c;
+  mix-blend-mode: multiply;
+}
+.landing__card:nth-of-type(2) p {
+  margin-top: auto;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 #sign_in,
