@@ -49,7 +49,7 @@
     </script>
 </head>
 
-<body onload="onLoadStartUp()">
+<body onload="onLoadStartUp()" class="hidden">
     <sm-notifications id="notification_drawer"></sm-notifications>
     <sm-popup id="confirmation_popup">
         <h4 id="confirm_title"></h4>
@@ -125,19 +125,25 @@
         </article>
         <article id="sign_up" class="inner-page hidden">
             <section class="grid gap-1-5">
-                <div id="flo_id_warning" class="grid justify-center gap-0-5">
+                <div id="flo_id_warning" class="flex gap-1">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
                         fill="#000000">
                         <path d="M0 0h24v24H0z" fill="none" />
                         <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
                     </svg>
-                    <h3>Keep your keys safe!</h3>
-                    <strong>Don't share with anyone. Once lost private key can't be
-                        recovered.</strong>
-                </div>
-                <div class="grid gap-1-5">
                     <div class="grid gap-0-5">
-                        <h5>FLO ID</h5>
+                        <strong>
+                            <h3>
+                                Keep your keys safe!
+                            </h3>
+                        </strong>
+                        <p>Don't share with anyone. Once lost private key can't be
+                            recovered.</p>
+                    </div>
+                </div>
+                <div class="grid gap-1-5 generated-keys-wrapper">
+                    <div class="grid gap-0-5">
+                        <h5>FLO address</h5>
                         <sm-copy id="generated_flo_address"></sm-copy>
                     </div>
                     <div class="grid gap-0-5">
@@ -145,7 +151,7 @@
                         <sm-copy id="generated_private_key"></sm-copy>
                     </div>
                 </div>
-                <div class="flex gap-0-5 margin-top-1">
+                <div class="flex gap-0-5">
                     <button class="button" style="flex-shrink: 0;" onclick="downloadGeneratedCredentials()">
                         <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
                             enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
@@ -161,7 +167,7 @@
                         Download</button>
                     <button id="sign_up_button" class="button button--primary w-100">Sign in with these</button>
                 </div>
-                <p>You can use these FLO credentials with other RanchiMall apps
+                <p class="margin-top-1">You can use these FLO credentials with other RanchiMall apps
                     too. </p>
             </section>
         </article>
@@ -790,7 +796,8 @@
         </header>
         <sm-form>
             <sm-input id="intern_name_field" placeholder="Name" required></sm-input>
-            <sm-input id="intern_flo_id_field" placeholder="FLO address" error-text="Wrong FLO ID" data-flo-id required>
+            <sm-input id="intern_flo_id_field" placeholder="FLO address" error-text="Invalid FLO address" data-flo-id
+                required>
             </sm-input>
             <sm-button variant="primary" onclick="addInternToList()" disabled>
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">

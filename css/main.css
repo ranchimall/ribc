@@ -80,7 +80,6 @@ body[data-theme=dark] ::-webkit-calendar-picker-indicator {
 p,
 strong {
   font-size: 0.9rem;
-  line-height: 1.7;
   color: rgba(var(--text-color), 0.9);
 }
 
@@ -771,7 +770,7 @@ ul {
 }
 #secondary_pages header {
   padding: 1.5rem;
-  background-color: rgba(var(--foreground-color), 0.5);
+  background-color: rgba(var(--foreground-color), 0.3);
 }
 #secondary_pages .inner-page {
   width: 100%;
@@ -785,7 +784,7 @@ ul {
   padding: 1rem;
   grid-template-columns: minmax(0, 1fr);
   height: 100%;
-  background-color: rgba(var(--foreground-color), 0.5);
+  background-color: rgba(var(--foreground-color), 0.3);
 }
 
 #sign_in,
@@ -796,7 +795,7 @@ ul {
 #sign_in section,
 #sign_up section {
   margin-top: -8rem;
-  width: min(24rem, 100%);
+  width: min(26rem, 100%);
 }
 #sign_in sm-form,
 #sign_up sm-form {
@@ -806,25 +805,24 @@ ul {
 #sign_up .h2 {
   margin-bottom: 0.5rem;
 }
-#sign_up .card {
-  margin: 1.5rem 0;
-}
-#sign_up h5 {
-  color: rgba(var(--text-color), 0.8);
+
+.generated-keys-wrapper {
+  padding: 1rem;
+  background-color: rgba(var(--foreground-color), 1);
+  border-radius: 0.5rem;
 }
 
 #flo_id_warning {
   padding-bottom: 1.5rem;
-  border-bottom: thin solid rgba(var(--text-color), 0.3);
 }
 #flo_id_warning .icon {
-  height: 4rem;
-  width: 4rem;
-  padding: 1rem;
+  height: 3rem;
+  width: 3rem;
+  padding: 0.8rem;
+  overflow: visible;
   background-color: #ffc107;
   border-radius: 3rem;
   fill: rgba(0, 0, 0, 0.8);
-  margin-bottom: 1.5rem;
 }
 
 #main_page {
