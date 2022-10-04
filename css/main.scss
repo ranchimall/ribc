@@ -681,6 +681,18 @@ ul {
     z-index: 1;
   }
 }
+.password-field {
+  label {
+    display: flex;
+    justify-content: center;
+    input:checked ~ .visible {
+      display: none;
+    }
+    input:not(:checked) ~ .invisible {
+      display: none;
+    }
+  }
+}
 
 #confirmation_popup,
 #prompt_popup {

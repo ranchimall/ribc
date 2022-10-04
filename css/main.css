@@ -688,6 +688,17 @@ ul {
   z-index: 1;
 }
 
+.password-field label {
+  display: flex;
+  justify-content: center;
+}
+.password-field label input:checked ~ .visible {
+  display: none;
+}
+.password-field label input:not(:checked) ~ .invisible {
+  display: none;
+}
+
 #confirmation_popup,
 #prompt_popup {
   flex-direction: column;
