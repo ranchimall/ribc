@@ -785,6 +785,29 @@ ul {
   background-color: rgba(var(--foreground-color), 0.3);
 }
 
+#landing {
+}
+.landing__card {
+  width: min(100%, 64rem);
+  margin: 0 auto;
+  align-self: flex-start;
+  padding: 3rem max(1rem, 6vw);
+  border-radius: 1rem;
+  align-items: center;
+  h1 {
+    font-size: max(2rem, 3vw);
+  }
+  img {
+    width: min(100%, 24rem);
+  }
+  &:first-of-type {
+    background-color: #2a2c35;
+    color: white;
+    h1 {
+      mix-blend-mode: soft-light;
+    }
+  }
+}
 #sign_in,
 #sign_up {
   justify-items: center;
