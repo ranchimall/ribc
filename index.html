@@ -79,7 +79,8 @@
                         Blockchain based <br> Internship Platform
                     </h1>
                     <div class="flex gap-0-3">
-                        <a href="#/sign_up" class="button" style="background-color: rgba( 0 0 0 / 0.3);">Get
+                        <a href="#/sign_up" class="button"
+                            style="background-color: rgba( 0 0 0 / 0.3); padding: 0.8rem;">Get
                             started</a>
                         <a href="#/sign_in" class="button button--primary">Sign In</a>
                     </div>
@@ -417,7 +418,7 @@
                         <div id="project_list" class="flex flex-direction-column gap-0-3"></div>
                     </div>
                     <section id="intern_view" class="hidden intern-option">
-                        <h2>My tasks</h2>
+                        <h4>My tasks</h4>
                         <ul id="assigned_task_list"></ul>
                     </section>
                 </div>
@@ -524,13 +525,13 @@
                     <ul id="task_list" class="grid observe-empty-state"></ul>
                     <h4 class="empty-state padding-block-1">No tasks added yet, tasks will appear here after adding
                         them.</h4>
-                    <sm-button id="add_task" title="show element to add new task" onclick="addPlaceholderTask()">
+                    <button id="add_task" class="button " onclick="addPlaceholderTask()">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
                             <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" />
                         </svg>
                         Add task
-                    </sm-button>
+                    </button>
                     <ul id="task_context" class="hidden">
                         <li tabindex="0" class="interact" onclick="toggleEditing('title')">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
@@ -727,18 +728,18 @@
                     <h4 id="intern_info__score"></h4>
                 </div>
                 <div class="flex admin-option hidden">
-                    <sm-button id="reduce_score_button" title="increase intern score" onclick="changeScore(-1)">
+                    <button id="reduce_score_button" title="increase intern score" onclick="changeScore(-1)">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
                             <path d="M5 11h14v2H5z" />
                         </svg>
-                    </sm-button>
-                    <sm-button id="increase_score_button" title="decrease intern score" onclick="changeScore(1)">
+                    </button>
+                    <button id="increase_score_button" title="decrease intern score" onclick="changeScore(1)">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
                             <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" />
                         </svg>
-                    </sm-button>
+                    </button>
                 </div>
             </div>
         </section>
@@ -941,22 +942,24 @@
         <div class="temp-task grid gap-0-5">
             <sm-input class="placeholder-task__title" placeholder="Title"></sm-input>
             <sm-textarea class="placeholder-task__description" placeholder="Description" rows="4"></sm-textarea>
-            <div class="flex">
-                <sm-button class="cancel-task-button">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <div class="flex align-center gap-0-3">
+                <button class="button cancel-task-button">
+                    <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                        height="24">
                         <path fill="none" d="M0 0h24v24H0z" />
                         <path
                             d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
                     </svg>
                     Cancel
-                </sm-button>
-                <sm-button class="add-task-button">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                </button>
+                <button class="button button--primary add-task-button">
+                    <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                        height="24">
                         <path fill="none" d="M0 0h24v24H0z" />
                         <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" />
                     </svg>
                     Add
-                </sm-button>
+                </button>
             </div>
         </div>
     </template>
@@ -1270,6 +1273,8 @@
                     break;
                 case 'dashboard_page':
                     render.dashProjects(getRef('pinned_projects'), pinnedProjects);
+                    // displays recent projects
+                    render.dashProjects(getRef('project_list'), RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse())
                     break;
                 case 'updates_page':
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1701,7 +1706,7 @@
             internUpdateCard(update) {
                 let { floID, time, note, update: { projectId, projectBranch, task, topic, description, link } } = update
                 if (!topic) {
-                    topic = `${RIBC.getProjectDetails(projectId).projectName} / ${RIBC.getTaskDetails(projectId, projectBranch, task).taskTitle}`
+                    topic = `${RIBC.getProjectDetails(projectId.replaceAll('_', '-')).projectName} / ${RIBC.getTaskDetails(projectId.replaceAll('_', '-'), projectBranch, task).taskTitle}`
                 }
                 const internName = RIBC.getInternList()[floID]
                 let replyButton
@@ -1754,7 +1759,7 @@
                     </span>
                 `
             },
-            taskListItem(taskNo) {
+            taskListItem(taskNo, ref) {
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo)
                 const frag = document.createDocumentFragment()
                 const { taskTitle, taskDescription } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
@@ -1778,7 +1783,7 @@
                         )
                     }
                 }
-                return html`
+                return html.for(ref, `${appState.params.id}_${appState.params.branch}_${taskNo}`)`
                     <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
                         <div class="flex align-center gap-0-3">
                             <sm-checkbox ?checked=${status === 'completed'}>
@@ -1942,9 +1947,9 @@
                     details = html`
                     <p class="status-card__details">
                         You applied for 
-                        <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).taskTitle}</b> from 
+                        <b class="capitalize">${RIBC.getTaskDetails(projectCode.replaceAll('_', '-'), branch, task).taskTitle}</b> from 
                         <b class="capitalize">${branch}</b> of
-                        <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
+                        <b class="capitalize">${RIBC.getProjectDetails(projectCode.replaceAll('_', '-')).projectName}</b>
                     </p>`;
                 }
                 return html`
@@ -2027,7 +2032,7 @@
             if (projectDescription === '') {
                 return notify('Project description is important!', 'error')
             }
-            const projectCode = `${new Date().getFullYear()}_project_${RIBC.getProjectList() ? (RIBC.getProjectList().length + 1) : '1'}`;
+            const projectCode = `${new Date().getFullYear()}-project-${RIBC.getProjectList() ? (RIBC.getProjectList().length + 1) : '1'}`;
             RIBC.admin.createProject(projectCode)
             RIBC.admin.addProjectDetails(projectCode, { projectName, projectDescription })
             render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
@@ -2130,7 +2135,7 @@
                     </p>`)
                 }
                 if (taskListContainer === 'task_list') {
-                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskListItem(taskNo)))
+                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskListItem(taskNo, getRef(taskListContainer))))
                 } else {
                     branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskCard(taskNo)))
                 }
@@ -2562,45 +2567,30 @@
 
             // Intern's view
 
-            let assignedProjectsList = [];
+            let assignedProjectsList = new Set();
             if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.remove('hidden')
                 })
-                document.getElementById('pinned_project_section').classList.add('hidden')
 
                 // store all the projects assigned to interns in array
-
-                sortedProjectList.forEach(projectId => {
-                    nextProject:
-                    for (const branch in RIBC.getProjectMap(projectId)) {
-                        const projectTaskNos = RIBC.getProjectMap(projectId)[branch].slice(4);
-                        for (taskNo of projectTaskNos) {
-                            const assignedInterns = RIBC.getAssignedInterns(projectId, branch, taskNo)
-                            if (Array.isArray(assignedInterns) && assignedInterns.includes(myFloID)) {
-                                assignedProjectsList.push(projectId)
-                                break nextProject;
+                const allTasks = RIBC.getAllTasks()
+                for (const taskKey in allTasks) {
+                    const [projectId, branch, taskNo] = taskKey.split('_')
+                    const assignedInterns = RIBC.getAssignedInterns(projectId, branch, taskNo)
+                    if (Array.isArray(assignedInterns) && assignedInterns.includes(myFloID)) {
+                        assignedProjectsList.add(projectId)
+                        console.log(RIBC.getTaskStatus(projectId, branch, taskNo))
+                        if (RIBC.getTaskStatus(projectId, branch, taskNo) === 'incomplete') {
+                            floGlobals.assignedTasks[floCrypto.randString(16, true)] = {
+                                projectId,
+                                projectBranch: branch,
+                                task: taskNo
                             }
                         }
                     }
-                })
-
-                // store all the tasks assigned to intern in array
-                assignedProjectsList.forEach(project => {
-                    for (const branch in RIBC.getProjectMap(project)) {
-                        branchTasks = RIBC.getProjectMap(project)[branch].slice(4);
-                        branchTasks.forEach(task => {
-                            if (RIBC.getTaskStatus(project, branch, task) === 'incomplete') {
-                                floGlobals.assignedTasks[floCrypto.randString(16, true)] = {
-                                    projectId: project,
-                                    projectBranch: branch,
-                                    task
-                                }
-                            }
-                        })
-                    }
-                })
+                }
 
                 let parent = document.getElementById('assigned_task_list');
                 if (!Object.keys(floGlobals.assignedTasks).length) {
@@ -2633,7 +2623,6 @@
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.add('hidden')
                 })
-                document.getElementById('pinned_project_section').classList.remove('hidden')
             }
 
             // admin view
@@ -2754,12 +2743,9 @@
                 return render.internCard(internName, floId, rating)
             })}`);
 
-            // displays recent projects
-            render.dashProjects(getRef('project_list'), RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse())
-
             if (typeOfUser === 'intern') {
-                render.projectList(getRef('my_projects'), assignedProjectsList)
-                sortedProjectList = sortedProjectList.filter(val => !assignedProjectsList.includes(val));
+                render.projectList(getRef('my_projects'), [...assignedProjectsList])
+                sortedProjectList = sortedProjectList.filter(val => !assignedProjectsList.has(val));
             }
             if (sortedProjectList.length > 0) {
                 getRef('other_projects').previousElementSibling.classList.remove('hidden')

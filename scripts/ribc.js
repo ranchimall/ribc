@@ -104,6 +104,26 @@
     Ribc.getInternList = () => _.internList;
     Ribc.getInternRating = (floID) => _.internRating[floID];
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
+    Ribc.getAllTasks = () => _.projectTaskDetails
+    // Ribc.updateProjectIds = () => {
+    //     for (const projectKey in _.projectTaskStatus) {
+    //         const splitTaskKey = projectKey.split("_")
+    //         updateObjectKey(_.projectTaskStatus, projectKey, splitTaskKey.slice(0, 3).join("-") + '_' + splitTaskKey.slice(3).join('_'))
+    //     }
+    // }
+    // Ribc.showProjectMap = () => {
+    //     for (const projectKey in _.projectTaskStatus) {
+    //         console.log(projectKey)
+    //     }
+    // }
+
+    // function updateObjectKey(object, oldKey, newKey) {
+    //     if (oldKey !== newKey) {
+    //         Object.defineProperty(object, newKey,
+    //             Object.getOwnPropertyDescriptor(object, oldKey));
+    //         delete object[oldKey];
+    //     }
+    // }
 
     Admin.updateObjects = () => new Promise((resolve, reject) => {
         floCloudAPI.updateObjectData("RIBC")
@@ -219,10 +239,8 @@
     }
 
     Admin.unassignInternFromTask = function (floID, projectCode, branch, taskNumber) {
-        var index = projectCode + "_" + branch + "_" + taskNumber
-        var pos = _.internsAssigned[index].indexOf(floID)
-        if (pos > -1)
-            _.internsAssigned[index].splice(pos, 1)
+        const index = projectCode + "_" + branch + "_" + taskNumber
+        _.internsAssigned[index] = _.internsAssigned[index].filter(id => id != floID)
     }
 
     Admin.putTaskStatus = function (taskStatus, projectCode, branch, taskNumber) {
@@ -316,8 +334,9 @@
         //Checking for links elsewhere 
         var otherBranches = Object.keys(_.projectMap[projectCode]);
         //Remove the native branch and mainLine from otherBranches list
-        otherBranches.splice(otherBranches.indexOf(branch), 1);
-        otherBranches.splice(otherBranches.indexOf("mainLine"), 1);
+        // otherBranches.splice(otherBranches.indexOf(branch), 1);
+        // otherBranches.splice(otherBranches.indexOf("mainLine"), 1);
+        otherBranches = otherBranches.filter(currBranch => currBranch !== branch || currBranch !== "mainLine");
 
         //Checking the link other branches
         for (var i = 0; i < otherBranches.length; i++) {
@@ -355,7 +374,7 @@
             }
         } // end function
         //Now splice the element
-        arr.splice(currentIndex, 1);
+        arr = arr.slice(currentIndex, 1);
         arr[1] = arr[1] - 1;
     }
 
