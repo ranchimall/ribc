@@ -73,29 +73,31 @@
             <theme-toggle></theme-toggle>
         </header>
         <div id="landing" class="grid inner-page hidden">
-            <div class="flex flex-wrap space-between gap-1-5 landing__card">
-                <div class="grid gap-1-5">
-                    <h1 class="calistoga" style="max-width: 26rem;">
-                        Blockchain based <br> Internship Platform
-                    </h1>
-                    <div class="flex gap-0-3">
-                        <a href="#/sign_up" class="button"
-                            style="background-color: rgba( 0 0 0 / 0.3); padding: 0.8rem;">Get
-                            started</a>
-                        <a href="#/sign_in" class="button button--primary">Sign In</a>
+            <sm-carousel indicator>
+                <div class="flex flex-wrap space-between gap-1-5 landing__card">
+                    <div class="grid gap-1-5">
+                        <h1 class="calistoga" style="max-width: 26rem;">
+                            Blockchain based <br> Internship Platform
+                        </h1>
+                        <div class="flex gap-0-3">
+                            <a href="#/sign_up" class="button"
+                                style="background-color: rgba( 0 0 0 / 0.3); padding: 0.8rem;">Get
+                                started</a>
+                            <a href="#/sign_in" class="button button--primary">Sign In</a>
+                        </div>
+                    </div>
+                    <img src="assets/working-intern.svg" alt="">
+                </div>
+                <div class="flex flex-wrap space-between gap-1-5 landing__card">
+                    <img src="assets/paper-plane.svg" alt="">
+                    <div class="grid gap-0-5 text-align-right">
+                        <p>Work from place and time that suits <b class="uppercase">you</b></p>
+                        <h1 class="calistoga" style="max-width: 26rem;">
+                            Flexible, <br> Remote Work
+                        </h1>
                     </div>
                 </div>
-                <img src="assets/working-intern.svg" alt="">
-            </div>
-            <div class="flex flex-wrap space-between gap-1-5 landing__card">
-                <img src="assets/paper-plane.svg" alt="">
-                <div class="grid gap-0-5 text-align-right">
-                    <p>Work from place and time that suits <b class="uppercase">you</b></p>
-                    <h1 class="calistoga" style="max-width: 26rem;">
-                        Flexible, <br> Remote Work
-                    </h1>
-                </div>
-            </div>
+            </sm-carousel>
         </div>
         <article id="sign_in" class="inner-page hidden">
             <section>
@@ -718,8 +720,8 @@
             <h3 id="intern_info__name">Intern name</h3>
             <sm-copy id="intern_info__flo_id"></sm-copy>
             <div id="update_intern_score" class="flex align-center space-between">
-                <div class="flex">
-                    <svg class="icon gold-fill margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                <div class="flex align-center">
+                    <svg class="icon icon--star margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                         width="24" height="24">
                         <path fill="none" d="M0 0h24v24H0z" />
                         <path
@@ -827,15 +829,16 @@
             <h3>Create a new branch</h3>
         </header>
         <sm-form>
-            <sm-input id="branch_start_point" placeholder="Start point" type="number" required></sm-input>
-            <sm-input id="branch_merge_point" placeholder="Merge point" type="number"></sm-input>
-            <sm-button id="create_branch_btn" variant="primary">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" />
+            <sm-input id="branch_start_point" placeholder="Start point ID" type="number" required></sm-input>
+            <sm-input id="branch_merge_point" placeholder="Merge point ID" type="number"></sm-input>
+            <button id="create_branch_btn" class="button button--primary" type="submit">
+                <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
+                    width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
                 </svg>
                 Create
-            </sm-button>
+            </button>
         </sm-form>
     </sm-popup>
     <sm-popup id="post_update_popup">
@@ -1699,7 +1702,7 @@
                         <div class="intern-card__name capitalize">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
                             <h4 class="intern-card__score">${internPoints}</h4>
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
+                            <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
                         </div>
                     </li>`;
             },
@@ -1766,9 +1769,7 @@
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
                 let assignedInternsCards
                 if (assignedInterns) {
-                    assignedInternsCards = assignedInterns.filter(v => v).map((internFloId) => {
-                        return render.assignedInternCard(internFloId, true);
-                    })
+                    assignedInternsCards = assignedInterns.filter(v => v).map((internFloId) => render.assignedInternCard(internFloId, true))
                 }
                 const branches = getAllBranches(appState.params.id)
                 for (const branch of branches) {
@@ -1786,9 +1787,12 @@
                 return html.for(ref, `${appState.params.id}_${appState.params.branch}_${taskNo}`)`
                     <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
                         <div class="flex align-center gap-0-3">
-                            <sm-checkbox ?checked=${status === 'completed'}>
-                                <p class="margin-left-0-5">Mark as complete</p>
-                            </sm-checkbox>
+                            <div class="flex align-center gap-0-5">
+                                <sm-checkbox ?checked=${status === 'completed'}>
+                                    <p class="margin-left-0-5">Mark as complete</p>
+                                </sm-checkbox>
+                                <div class="task-list-item__task-number">ID: ${taskNo}</div>
+                            </div>
                             <button class="button--danger icon-only margin-left-auto"onclick="removeThisTask()">
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
                             </button>
@@ -1876,6 +1880,7 @@
                 `;
             },
             dashProject(projectId, ref) {
+                projectId = projectId.replaceAll('_', '-')
                 const { projectName } = RIBC.getProjectDetails(projectId)
                 const projectMap = RIBC.getProjectMap(projectId)
                 const projectTasks = []
@@ -2512,19 +2517,16 @@
             getRef('update_filters_wrapper').classList.toggle('hide-on-mobile')
         }
         // Event listeners
+        delegate(getRef('top_interns'), 'click', '.intern-card', e => {
+            showInternInfo(e.delegateTarget.dataset.internFloId)
+        })
+        delegate(getRef('all_interns_page'), 'click', '.intern-card', e => {
+            showInternInfo(e.delegateTarget.dataset.internFloId)
+        })
+        delegate(getRef('admin_page__intern_list'), 'click', '.intern-card', e => {
+            showInternInfo(e.delegateTarget.dataset.internFloId)
+        })
 
-        document.getElementById('top_interns').addEventListener('click', (event) => {
-            if (event.target.closest('.intern-card'))
-                showInternInfo(event.target.closest('.intern-card').dataset.internFloId)
-        })
-        document.getElementById('all_interns_page').addEventListener('click', (event) => {
-            if (event.target.closest('.intern-card'))
-                showInternInfo(event.target.closest('.intern-card').dataset.internFloId)
-        })
-        document.getElementById('admin_page__intern_list').addEventListener('click', (event) => {
-            if (event.target.closest('.intern-card'))
-                showInternInfo(event.target.closest('.intern-card').dataset.internFloId)
-        })
         document.addEventListener('popupopened', e => {
             switch (e.detail.popup.id) {
                 case 'intern_list_popup':
