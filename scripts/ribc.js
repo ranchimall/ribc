@@ -4,13 +4,13 @@
 
     Ribc.init = function (isSubAdmin = false) {
         return new Promise((resolve, reject) => {
-            Promise.all([refreshObjectData(), refreshGeneralData(isSubAdmin)])
+            Ribc.refreshGeneralData(isSubAdmin)
                 .then(results => resolve(results))
                 .catch(error => reject(error))
         })
     }
 
-    function refreshObjectData() {
+    Ribc.refreshObjectData = () => {
         return new Promise((resolve, reject) => {
             floCloudAPI.requestObjectData("RIBC").then(result => {
                 if (!floGlobals.appObjects.RIBC)
@@ -28,7 +28,7 @@
         })
     }
 
-    function refreshGeneralData(isSubAdmin) {
+    Ribc.refreshGeneralData = (isSubAdmin) => {
         return new Promise((resolve, reject) => {
             var generalDataList = ["InternUpdates"],
                 subAdminOnlyList = [],

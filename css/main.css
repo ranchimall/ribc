@@ -302,6 +302,10 @@ sm-select {
   --padding: 0.8rem;
   font-size: 0.9rem;
   --min-width: fit-content;
+  --select-border-radius: 0.5rem;
+}
+sm-select[open] {
+  z-index: 10;
 }
 
 sm-option {
@@ -332,10 +336,6 @@ sm-button[variant=primary] .icon {
 }
 sm-button[disabled] .icon {
   fill: rgba(var(--text-color), 0.6);
-}
-
-sm-select[open] {
-  z-index: 10;
 }
 
 ul {
@@ -388,6 +388,10 @@ ul {
 
 .flex-1 {
   flex: 1;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
 }
 
 .grid {
@@ -1025,6 +1029,7 @@ ul {
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 0.7rem;
 }
 .task .right .apply-cont {
   width: 100%;
@@ -1034,9 +1039,11 @@ ul {
 .task .right .apply-cont h4 {
   flex: 1;
 }
+.task .right:last-child {
+  margin-bottom: 1rem;
+}
 .task h4 {
   margin-top: 0.4rem;
-  margin-bottom: 1rem;
 }
 .task .assigned-interns .assigned-intern {
   padding: 0.4rem;
@@ -1288,8 +1295,7 @@ ul {
   font-size: 0.85rem;
   font-weight: 500;
 }
-
-.active-branch {
+.branch-button--active {
   opacity: 1;
   color: white;
   background: var(--accent-color);
@@ -1371,7 +1377,6 @@ ul {
 .assigned-interns {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
   gap: 0.5rem;
 }
 .assigned-interns .assigned-intern {
@@ -1483,6 +1488,9 @@ ul {
   align-content: flex-start;
   padding: 1rem;
 }
+#project_explorer__right p {
+  line-height: 1.7;
+}
 
 #pin_project_button {
   margin-left: 1rem;
@@ -1491,15 +1499,16 @@ ul {
 #admin_page {
   position: relative;
   display: grid;
-  gap: 0;
   padding: 0;
   height: 100%;
+  overflow: hidden;
+  grid-template-rows: auto 1fr;
 }
 
 #admin_views {
   display: grid;
-  gap: 1rem;
   height: 100%;
+  overflow-y: hidden;
 }
 #admin_views > * {
   grid-area: 1/1;
@@ -1507,29 +1516,14 @@ ul {
 
 #project_editing_panel {
   position: relative;
-  padding: max(4vw, 1rem);
   height: 100%;
+  padding: 0 max(4vw, 1rem);
   overflow-y: auto;
-  padding-bottom: 3rem;
+  padding-bottom: 2rem;
+  flex: 1;
 }
-
-.fab {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  right: 0;
-  bottom: 0;
-  background-color: var(--accent-color);
-  box-shadow: 0 0.5rem 0.8rem rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s;
-  -webkit-tap-highlight-color: transparent;
-  color: rgba(var(--background-color), 1);
-  margin: 1rem;
-}
-.fab .icon {
-  fill: rgba(var(--background-color), 1);
+#project_editing_panel p {
+  line-height: 1.7;
 }
 
 #update_of_project {
@@ -1596,6 +1590,12 @@ ul {
   fill: var(--accent-color);
 }
 
+.temp-task {
+  padding: 1rem;
+  background-color: rgba(var(--foreground-color), 1);
+  border-radius: 0.5rem;
+}
+
 #internship_requests_list {
   padding-bottom: 2rem;
 }
@@ -1628,16 +1628,22 @@ ul {
   fill: var(--yellow);
 }
 
-#admin_page__left {
+#projects_container {
+  display: flex;
   height: 100%;
   overflow-y: hidden;
 }
-#admin_page__left .list-container {
+
+#projects_container__left {
+  height: 100%;
+  overflow-y: auto;
+}
+#projects_container__left .list-container {
   height: 100%;
   overflow-y: auto;
   padding-bottom: 2rem;
 }
-#admin_page__left .empty-state {
+#projects_container__left .empty-state {
   padding: 1rem;
   text-align: center;
 }
@@ -1817,9 +1823,9 @@ input[type=date]:focus {
   }
   #admin_page {
     padding: 0;
-    grid-template-columns: 18rem minmax(0, 1fr);
   }
-  #admin_page__left {
+  #projects_container__left {
+    width: 18rem;
     background-color: rgba(var(--foreground-color), 0.5);
   }
   #edit_data_fig {

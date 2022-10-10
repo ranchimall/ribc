@@ -36,6 +36,13 @@
             routeTo('loading')
             document.body.classList.remove('hidden')
             floDapps.setCustomPrivKeyInput(getSignedIn);
+            floDapps.setMidStartup(() =>
+                new Promise((resolve) => {
+                    RIBC.refreshObjectData().then(() => {
+                        resolve()
+                    })
+                })
+            )
             floDapps.launchStartUp().then(result => {
                 console.log(result)
                 console.log(`Welcome FLO_ID: ${myFloID}`)
@@ -438,15 +445,26 @@
                 </div>
             </section>
             <section id="admin_page" class="inner-page hidden">
-                <section id="admin_page__left" class="flex flex-direction-column">
+                <div class="flex align-center space-between">
                     <strip-select id="admin_view_selector">
                         <strip-option value="0" selected>Projects</strip-option>
                         <strip-option value="1">Interns</strip-option>
                         <strip-option value="2">Requests</strip-option>
                     </strip-select>
-                    <div id="admin_views">
-                        <section id="projects_container" class="flex flex-direction-column">
-                            <button class="button button--small margin-left-auto margin-block-0-5"
+                    <button class="button button--small button--primary admin-option" onclick="commitToChanges()">
+                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M7 19v-6h10v6h2V7.828L16.172 5H5v14h2zM4 3h13l4 4v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm5 12v4h6v-4H9z" />
+                        </svg>
+                        Save changes
+                    </button>
+                </div>
+                <div id="admin_views">
+                    <section id="projects_container">
+                        <div id="projects_container__left" class="flex flex-direction-column">
+                            <button class="button button--colored justify-content-start margin-block-0-5"
                                 onclick="openPopup('add_project_popup')">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24" width="24" height="24">
@@ -459,120 +477,115 @@
                             </button>
                             <div id="admin_page__project_list" class="list-container observe-empty-state"></div>
                             <h4 class="empty-state">No project added</h4>
-                        </section>
-                        <section id="interns_container" class="flex flex-direction-column hidden">
-                            <button class="button button--small margin-left-auto margin-block-0-5"
-                                onclick="openPopup('add_intern_popup')">
-                                <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24" width="24" height="24">
+                        </div>
+                        <section id="project_editing_panel" class="hidden">
+                            <div id="project_details_wrapper"
+                                class="flex flex-direction-column gap-1 margin-bottom-2 align-items-start">
+                                <a class="button icon-only hide-on-desktop" href="#/admin_page">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px"
+                                        viewBox="0 0 24 24" width="24px" fill="#000000">
+                                        <path d="M0 0h24v24H0V0z" fill="none"></path>
+                                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z">
+                                        </path>
+                                    </svg>
+                                </a>
+                                <div class="flex flex-wrap align-items-start">
+                                    <h2 id="editing_panel__title" data-editable></h2>
+                                    <button class="button button--small button--transparent admin-option"
+                                        title="Edit this title" onclick="makeEditable(this.previousElementSibling)">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px"
+                                            viewBox="0 0 24 24" width="24px" fill="#000000">
+                                            <path d="M0 0h24v24H0V0z" fill="none" />
+                                            <path
+                                                d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="flex flex-wrap align-items-start">
+                                    <p id="editing_panel__description" data-editable></p>
+                                    <button class="button button--small button--transparent admin-option"
+                                        title="Edit this description"
+                                        onclick="makeEditable(this.previousElementSibling)">
+                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px"
+                                            viewBox="0 0 24 24" width="24px" fill="#000000">
+                                            <path d="M0 0h24v24H0V0z" fill="none" />
+                                            <path
+                                                d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="grid gap-0-3">
+                                <h4>Branches</h4>
+                                <div id="branch_container"></div>
+                            </div>
+                            <h4>Tasks</h4>
+                            <ul id="task_list" class="grid observe-empty-state"></ul>
+                            <h4 class="empty-state padding-block-1">No tasks added yet, tasks will appear here after
+                                adding
+                                them.</h4>
+                            <button id="add_task" class="button " onclick="addPlaceholderTask()">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                                    height="24">
                                     <path fill="none" d="M0 0h24v24H0z" />
-                                    <path
-                                        d="M14 14.252v2.09A6 6 0 0 0 6 22l-2-.001a8 8 0 0 1 10-7.748zM12 13c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm6 6v-3h2v3h3v2h-3v3h-2v-3h-3v-2h3z" />
+                                    <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" />
                                 </svg>
-                                Add intern
+                                Add task
                             </button>
-                            <ul id="admin_page__intern_list" class="list-container observe-empty-state"></ul>
-                            <h4 class="empty-state">No interns added</h4>
+                            <ul id="task_context" class="hidden">
+                                <li tabindex="0" class="interact" onclick="toggleEditing('title')">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                                        height="24">
+                                        <path fill="none" d="M0 0h24v24H0z" />
+                                        <path
+                                            d="M15.728 9.686l-1.414-1.414L5 17.586V19h1.414l9.314-9.314zm1.414-1.414l1.414-1.414-1.414-1.414-1.414 1.414 1.414 1.414zM7.242 21H3v-4.243L16.435 3.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 21z" />
+                                    </svg>
+                                    Edit title
+                                </li>
+                                <li tabindex="0" class="interact" onclick="toggleEditing()">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                                        height="24">
+                                        <path fill="none" d="M0 0h24v24H0z" />
+                                        <path
+                                            d="M15.728 9.686l-1.414-1.414L5 17.586V19h1.414l9.314-9.314zm1.414-1.414l1.414-1.414-1.414-1.414-1.414 1.414 1.414 1.414zM7.242 21H3v-4.243L16.435 3.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 21z" />
+                                    </svg>
+                                    Edit description
+                                </li>
+                                <li onclick="showNewBranchPopup()" tabindex="0" class="interact">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                                        height="24">
+                                        <path fill="none" d="M0 0h24v24H0z" />
+                                        <path
+                                            d="M7.105 15.21A3.001 3.001 0 1 1 5 15.17V8.83a3.001 3.001 0 1 1 2 0V12c.836-.628 1.874-1 3-1h4a3.001 3.001 0 0 0 2.895-2.21 3.001 3.001 0 1 1 2.032.064A5.001 5.001 0 0 1 14 13h-4a3.001 3.001 0 0 0-2.895 2.21zM6 17a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM6 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
+                                    </svg>
+                                    Create new Branch
+                                </li>
+                            </ul>
                         </section>
-                        <section class="flex flex-direction-column hidden">
-                            <strip-select id="request_type_selector" class="margin-left-auto margin-block-0-5">
-                                <strip-option value="task" selected>Task</strip-option>
-                                <strip-option value="intern">Internship</strip-option>
-                            </strip-select>
-                            <ul id="requests_list" class="list-container observe-empty-state"></ul>
-                            <h4 class="empty-state">No pending requests</h4>
-                        </section>
-                    </div>
-                </section>
-                <section id="project_editing_panel" class="hidden">
-                    <div id="project_details_wrapper"
-                        class="flex flex-direction-column gap-1 margin-bottom-2 align-items-start">
-                        <a class="button icon-only hide-on-desktop" href="#/admin_page">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
-                                width="24px" fill="#000000">
-                                <path d="M0 0h24v24H0V0z" fill="none"></path>
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
-                            </svg>
-                        </a>
-                        <div class="flex flex-wrap align-items-start">
-                            <h2 id="editing_panel__title" data-editable></h2>
-                            <button class="button button--small button--transparent admin-option"
-                                title="Edit this title" onclick="makeEditable(this.previousElementSibling)">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
-                                    width="24px" fill="#000000">
-                                    <path d="M0 0h24v24H0V0z" fill="none" />
-                                    <path
-                                        d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="flex flex-wrap align-items-start">
-                            <p id="editing_panel__description" data-editable></p>
-                            <button class="button button--small button--transparent admin-option"
-                                title="Edit this description" onclick="makeEditable(this.previousElementSibling)">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
-                                    width="24px" fill="#000000">
-                                    <path d="M0 0h24v24H0V0z" fill="none" />
-                                    <path
-                                        d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="grid gap-0-3">
-                        <h4>Branches</h4>
-                        <div id="branch_container"></div>
-                    </div>
-                    <h4>Tasks</h4>
-                    <ul id="task_list" class="grid observe-empty-state"></ul>
-                    <h4 class="empty-state padding-block-1">No tasks added yet, tasks will appear here after adding
-                        them.</h4>
-                    <button id="add_task" class="button " onclick="addPlaceholderTask()">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" />
-                        </svg>
-                        Add task
-                    </button>
-                    <ul id="task_context" class="hidden">
-                        <li tabindex="0" class="interact" onclick="toggleEditing('title')">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
+                    </section>
+                    <section id="interns_container" class="flex flex-direction-column hidden">
+                        <button class="button justify-content-start margin-block-0-5"
+                            onclick="openPopup('add_intern_popup')">
+                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                width="24" height="24">
                                 <path fill="none" d="M0 0h24v24H0z" />
                                 <path
-                                    d="M15.728 9.686l-1.414-1.414L5 17.586V19h1.414l9.314-9.314zm1.414-1.414l1.414-1.414-1.414-1.414-1.414 1.414 1.414 1.414zM7.242 21H3v-4.243L16.435 3.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 21z" />
+                                    d="M14 14.252v2.09A6 6 0 0 0 6 22l-2-.001a8 8 0 0 1 10-7.748zM12 13c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm6 6v-3h2v3h3v2h-3v3h-2v-3h-3v-2h3z" />
                             </svg>
-                            Edit title
-                        </li>
-                        <li tabindex="0" class="interact" onclick="toggleEditing()">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M15.728 9.686l-1.414-1.414L5 17.586V19h1.414l9.314-9.314zm1.414-1.414l1.414-1.414-1.414-1.414-1.414 1.414 1.414 1.414zM7.242 21H3v-4.243L16.435 3.322a1 1 0 0 1 1.414 0l2.829 2.829a1 1 0 0 1 0 1.414L7.243 21z" />
-                            </svg>
-                            Edit description
-                        </li>
-                        <li onclick="showNewBranchPopup()" tabindex="0" class="interact">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                                height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M7.105 15.21A3.001 3.001 0 1 1 5 15.17V8.83a3.001 3.001 0 1 1 2 0V12c.836-.628 1.874-1 3-1h4a3.001 3.001 0 0 0 2.895-2.21 3.001 3.001 0 1 1 2.032.064A5.001 5.001 0 0 1 14 13h-4a3.001 3.001 0 0 0-2.895 2.21zM6 17a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM6 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                            </svg>
-                            Create new Branch
-                        </li>
-                    </ul>
-                </section>
-                <button class="fab admin-option" onclick="commitToChanges()">
-                    <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                        height="24">
-                        <path fill="none" d="M0 0h24v24H0z" />
-                        <path
-                            d="M7 19v-6h10v6h2V7.828L16.172 5H5v14h2zM4 3h13l4 4v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm5 12v4h6v-4H9z" />
-                    </svg>
-                    Commit changes
-                </button>
+                            Add intern
+                        </button>
+                        <ul id="admin_page__intern_list" class="list-container observe-empty-state"></ul>
+                        <h4 class="empty-state">No interns added</h4>
+                    </section>
+                    <section class="flex flex-direction-column hidden">
+                        <strip-select id="request_type_selector" class="margin-left-auto margin-block-0-5">
+                            <strip-option value="task" selected>Task</strip-option>
+                            <strip-option value="intern">Internship</strip-option>
+                        </strip-select>
+                        <ul id="requests_list" class="list-container observe-empty-state"></ul>
+                        <h4 class="empty-state">No pending requests</h4>
+                    </section>
+                </div>
             </section>
             <section id="updates_page" class="inner-page hidden">
                 <button class="button hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</button>
@@ -661,31 +674,15 @@
                         <h4>FLO address</h4>
                         <sm-copy id="user_flo_id"></sm-copy>
                     </div>
-                    <div class="flex gap-0-5 flex-wrap">
-                        <button class="button" onclick="downloadCredentials()">
-                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
-                                enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
-                                fill="#000000">
-                                <g>
-                                    <rect fill="none" height="24" width="24" />
-                                </g>
-                                <g>
-                                    <path
-                                        d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M17,11l-1.41-1.41L13,12.17V4h-2v8.17L8.41,9.59L7,11l5,5 L17,11z" />
-                                </g>
-                            </svg>
-                            Download credentials
-                        </button>
-                        <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
-                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                width="24" height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" />
-                            </svg>
-                            Sign out
-                        </button>
-                    </div>
+                    <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
+                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" />
+                        </svg>
+                        Sign out
+                    </button>
                 </section>
                 <div class="grid gap-1 card">
                     <div class="grid gap-0-5">
@@ -943,27 +940,86 @@
     <!-- Templates -->
     <template id="placeholder_task_card_template">
         <div class="temp-task grid gap-0-5">
-            <sm-input class="placeholder-task__title" placeholder="Title"></sm-input>
-            <sm-textarea class="placeholder-task__description" placeholder="Description" rows="4"></sm-textarea>
-            <div class="flex align-center gap-0-3">
-                <button class="button cancel-task-button">
-                    <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                        height="24">
-                        <path fill="none" d="M0 0h24v24H0z" />
-                        <path
-                            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
-                    </svg>
-                    Cancel
-                </button>
-                <button class="button button--primary add-task-button">
-                    <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                        height="24">
-                        <path fill="none" d="M0 0h24v24H0z" />
-                        <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" />
-                    </svg>
-                    Add
-                </button>
-            </div>
+            <sm-form style="--gap: 0.5rem;">
+                <sm-input class="temp-task__title" placeholder="Title" animate required></sm-input>
+                <sm-textarea class="temp-task__description" placeholder="Description" rows="4" required>
+                </sm-textarea>
+                <tags-input class="temp-task__links" placeholder="Related links(separate by comma)"></tags-input>
+                <div class="grid gap-0-5" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+                    <sm-select class="temp-task__category" label="Category: ">
+                        <sm-option value="creative-writing" selected>Creative Writing</sm-option>
+                        <sm-option value="marketing">Marketing</sm-option>
+                        <sm-option value="design">Design</sm-option>
+                        <sm-option value="development">Development</sm-option>
+                        <sm-option value="social-media-management">Social Media Management</sm-option>
+                        <sm-option value="video-making">Video Making</sm-option>
+                    </sm-select>
+                    <sm-input class="temp-task__max-slots flex-1" placeholder="Max slots available" type="number"
+                        animate>
+                    </sm-input>
+                    <div class="flex flex-1">
+                        <sm-input class="temp-task__duration flex-1" placeholder="Duration" type="number"
+                            style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);"
+                            animate>
+                            <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg"
+                                enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
+                                fill="#000000">
+                                <g>
+                                    <rect fill="none" height="24" width="24" />
+                                </g>
+                                <g>
+                                    <g>
+                                        <g>
+                                            <path
+                                                d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z" />
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </sm-input>
+                        <sm-select class="temp-task__duration-type flex-shrink-0"
+                            style="--select-border-radius: 0 0.5rem 0.5rem 0;">
+                            <sm-option value="days" selected>Days</sm-option>
+                            <sm-option value="months">Months</sm-option>
+                        </sm-select>
+                    </div>
+                    <sm-input class="temp-task__reward flex-1" type="number" placeholder="Reward" animate>
+                        <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg"
+                            enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
+                            fill="#000000">
+                            <g>
+                                <rect fill="none" height="24" width="24"></rect>
+                            </g>
+                            <g>
+                                <g>
+                                    <path
+                                        d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z">
+                                    </path>
+                                </g>
+                            </g>
+                        </svg>
+                    </sm-input>
+                </div>
+                <div class="flex align-center gap-0-3">
+                    <button class="button cancel-task-button">
+                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                        </svg>
+                        Cancel
+                    </button>
+                    <button type="submit" class="button button--primary add-task-button">
+                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="24" height="24">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" />
+                        </svg>
+                        Add
+                    </button>
+                </div>
+            </sm-form>
         </div>
     </template>
     <script>
@@ -1343,11 +1399,11 @@
                             if (branch) {
                                 renderBranchTasks()
                             }
-                            getRef('admin_page__left').classList.add('hide-on-mobile')
+                            getRef('projects_container__left').classList.add('hide-on-mobile')
                             getRef('project_editing_panel').classList.remove('hidden')
                         }
                     } else {
-                        getRef('admin_page__left').classList.remove('hide-on-mobile')
+                        getRef('projects_container__left').classList.remove('hide-on-mobile')
                         getRef('project_editing_panel').classList.add('hidden')
                         history.replaceState(null, '', '#/admin_page')
                     }
@@ -1636,6 +1692,14 @@
             target.type = target.type === 'password' ? 'text' : 'password';
             target.focusIn()
         }
+        function filteredMap(array, mapFn) {
+            const result = [];
+            array.forEach((element, index) => {
+                const mapped = mapFn(element, index)
+                if (mapped) result.push(mapped)
+            })
+            return result;
+        }
     </script>
     <script id="UI_functions">
         // Method object for creating various UI elements
@@ -1646,33 +1710,30 @@
                 return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>`
             },
             taskCard(taskNo) {
-                const { taskTitle, taskDescription } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
-                const branches = getAllBranches(appState.params.id)
-                const frag = document.createDocumentFragment()
-                for (const branch of branches) {
+                const projectId = appState.params.id.replaceAll('_', '-')
+                const taskDetails = { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectId, appState.params.branch, taskNo)
+                const branches = getAllBranches(projectId)
+                const branchesButtons = filteredMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === appState.params.branch && startPoint === taskNo) {
-                        frag.append(
-                            render.branchButton({
-                                projectId: appState.params.id,
-                                branch: branchName,
-                                page: 'project_explorer'
-                            })
-                        )
+                        return render.branchButton({
+                            projectId,
+                            branch: branchName,
+                            page: 'project_explorer'
+                        })
                     }
-                }
-                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo).filter(v => v)
-                const assignedInternsCards = assignedInterns.map((internFloId) => render.assignedInternCard(internFloId));
-                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
+                })
+                const assignedInterns = RIBC.getAssignedInterns(projectId, appState.params.branch, taskNo) || []
+                const assignedInternsCards = filteredMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId));
+                const status = RIBC.getTaskStatus(projectId, appState.params.branch, taskNo)
                 let applyButton
                 if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
-                    console.log(assignedInterns, myFloID)
                     const taskRequests = RIBC.getTaskRequests();
                     const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
-                        return `${projectCode}_${branch}_${task}` === `${appState.params.id}_${appState.params.branch}_${taskNo}`
+                        return `${projectCode}_${branch}_${task}` === `${projectId}_${appState.params.branch}_${taskNo}`
                     })
                     applyButton = html`
-                        <button class="button apply-button" .dataset=${{ projectCode: appState.params.id, branch: appState.params.branch, taskNo }} ?disabled=${hasApplied}>
+                        <button class="button button--primary apply-button" .dataset=${{ projectCode: projectId, branch: appState.params.branch, taskNo }} ?disabled=${hasApplied}>
                             ${hasApplied ? 'Applied' : 'Apply'}
                         </button>`;
                 }
@@ -1687,9 +1748,9 @@
                                 <h4 class="timeline-task__title capitalize">${taskTitle}</h4>
                                 ${applyButton}
                             </div>
-                            <div class="assigned-interns">${assignedInternsCards}</div>
+                            ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
                             <p class="timeline-task__description">${taskDescription}</p>
-                            <div class="task__branch_container">${frag}</div>
+                            ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -1741,10 +1802,10 @@
                     </li>`;
             },
             branchButton(obj = {}) {
-                const { projectId, branch, page, innerHTML } = obj
-                return html.node`
-                    <a class="branch-button" href=${`#/${page}/project?id=${projectId}&branch=${branch}`}>
-                       ${innerHTML ? html`${innerHTML}` : branch}
+                const { projectId, branch, page, active = false } = obj
+                return html`
+                    <a class=${`branch-button ${active ? 'branch-button--active' : ''}`} href=${`#/${page}/project?id=${projectId}&branch=${branch}`}>
+                       ${branch}
                     </a>
                 `;
             },
@@ -1764,26 +1825,23 @@
             },
             taskListItem(taskNo, ref) {
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo)
-                const frag = document.createDocumentFragment()
-                const { taskTitle, taskDescription } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
+                const taskDetails = { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
                 let assignedInternsCards
                 if (assignedInterns) {
-                    assignedInternsCards = assignedInterns.filter(v => v).map((internFloId) => render.assignedInternCard(internFloId, true))
+                    assignedInternsCards = filteredMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId, true))
                 }
                 const branches = getAllBranches(appState.params.id)
-                for (const branch of branches) {
+                const branchesButtons = filteredMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === appState.params.branch && startPoint === taskNo) {
-                        frag.append(
-                            render.branchButton({
-                                projectId: appState.params.id,
-                                branch: branchName,
-                                page: 'admin_page'
-                            })
-                        )
+                        return render.branchButton({
+                            projectId: appState.params.id,
+                            branch: branchName,
+                            page: 'admin_page'
+                        })
                     }
-                }
+                })
                 return html.for(ref, `${appState.params.id}_${appState.params.branch}_${taskNo}`)`
                     <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
                         <div class="flex align-center gap-0-3">
@@ -1809,7 +1867,7 @@
                             ${assignedInternsCards}
                         </div>
                         <p class="task-description" data-editable>${taskDescription}</p>
-                        <div class="task__branch_container">${frag}</div>
+                        <div class="task__branch_container">${branchesButtons}</div>
                     </li>
                 `;
             },
@@ -2088,47 +2146,37 @@
 
         // opens a popup containing various project information
         function showProjectInfo(projectId) {
-            const frag = document.createDocumentFragment();
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('project_explorer__project_title').textContent = projectName; // project name
             getRef('project_explorer__project_description').textContent = projectDescription;
             getRef('project_explorer__project_updates').href = `#/updates_page?projectId=${projectId}&internId=all`;
-            getRef('explorer_branch_container').innerHTML = ``;
-            RIBC.getProjectBranches(projectId).forEach((branch) => {
-                frag.append(render.branchButton({ projectId, branch, page: 'project_explorer' }))
-            })
-            getRef('explorer_branch_container').append(frag);
+            renderBranches();
         }
 
         let currentTask = '';
         function renderAdminProjectView(projectId) {
             const allProjects = getRef('admin_page__project_list').querySelectorAll('.project-card');
-            const branchList = document.querySelectorAll('.branch-button');
-            const frag = document.createDocumentFragment();
             allProjects.forEach(project => project.classList.remove('project-card--active'))
             const targetProject = Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))
             if (targetProject)
                 targetProject.classList.add('project-card--active')
-            getRef('branch_container').innerHTML = '';
-            branchList.forEach((branch) => {
-                branch.classList.remove('active-branch')
-            })
             const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
             getRef('editing_panel__title').textContent = projectName;
             getRef('editing_panel__description').textContent = projectDescription;
-            RIBC.getProjectBranches(appState.params.id).forEach((branch) => {
-                frag.append(render.branchButton({ projectId: appState.params.id, branch, page: 'admin_page' }))
+            renderBranches()
+        }
+        function renderBranches() {
+            const { id: projectId, branch } = appState.params
+            const taskListContainer = appState.openPage === 'admin_page' ? 'branch_container' : 'explorer_branch_container';
+            const branchList = filteredMap(RIBC.getProjectBranches(appState.params.id), (branch) => {
+                return render.branchButton({ projectId, branch, page: appState.openPage, active: branch === appState.params.branch })
             })
-            getRef('branch_container').appendChild(frag)
+            renderElem(getRef(taskListContainer), html`${branchList}`)
         }
         function renderBranchTasks() {
             const { id: projectId, branch } = appState.params
             const taskListContainer = appState.openPage === 'admin_page' ? 'task_list' : 'explorer_task_list';
             let branchTasks = RIBC.getProjectMap(appState.params.id)[appState.params.branch];
-            getRef(appState.openPage).querySelectorAll('.branch-button').forEach((branchButton) => {
-                branchButton.classList.remove('active-branch')
-            })
-            getRef(appState.openPage).querySelector(`.branch-button[href="#/${appState.openPage}/project?id=${projectId}&branch=${branch}"]`).classList.add('active-branch')
             if (branchTasks[1] && !taskListContainer === 'task_list') {
                 getRef(taskListContainer).textContent = "No tasks added yet, Please explore other projects"
             } else {
@@ -2150,19 +2198,15 @@
         function getAllBranches(projectId) {
             const projectMap = RIBC.getProjectMap(projectId)
             const projectBranches = RIBC.getProjectBranches(projectId)
-            const branchPoints = []
-            projectBranches.forEach((branch, index) => {
-                if (index > 0) {
-                    const [parentBranch, , startPoint, endPoint] = projectMap[branch]
-                    branchPoints.push({
-                        branchName: branch,
-                        parentBranch,
-                        startPoint,
-                        endPoint
-                    })
+            return projectBranches.slice(1).map((branchName, index) => {
+                const [parentBranch, , startPoint, endPoint] = projectMap[branchName]
+                return {
+                    branchName,
+                    parentBranch,
+                    startPoint,
+                    endPoint
                 }
             })
-            return branchPoints
         }
 
         let currentViewIndex = 0;
@@ -2269,18 +2313,34 @@
             }
             else if (e.target.closest('.add-task-button')) {
                 const card = e.target.closest('.temp-task')
-                const titleContent = card.querySelector('.placeholder-task__title').value.trim(),
-                    descriptionContent = card.querySelector('.placeholder-task__description').value.trim();
-                if (titleContent === '') {
-                    notify('Please enter task title', 'error')
-                    return
+                const taskTitle = card.querySelector('.temp-task__title').value.trim();
+                const taskDescription = card.querySelector('.temp-task__description').value.trim();
+                const links = card.querySelector('.temp-task__links').value
+                const category = card.querySelector('.temp-task__category').value.trim();
+                const maxSlots = parseInt(card.querySelector('.temp-task__max-slots').value.trim());
+                const duration = parseInt(card.querySelector('.temp-task__duration').value.trim());
+                const durationType = card.querySelector('.temp-task__duration-type').value.trim();
+                const reward = parseInt(card.querySelector('.temp-task__reward').value.trim());
+                if (taskTitle === '') {
+                    return notify('Please enter task title', 'error')
                 }
-                if (descriptionContent === '') {
-                    notify('Please enter description of the task', 'error')
-                    return
+                if (taskDescription === '') {
+                    return notify('Please enter description of the task', 'error')
+
                 }
+                const taskDetails = {
+                    taskTitle,
+                    taskDescription,
+                    links,
+                    category,
+                    maxSlots,
+                    duration,
+                    durationType,
+                    reward
+                }
+                console.log(taskDetails)
                 const taskNo = RIBC.admin.addTaskInMap(appState.params.id, appState.params.branch)
-                RIBC.admin.editTaskDetails({ taskTitle: titleContent, taskDescription: descriptionContent }, appState.params.id, appState.params.branch, taskNo)
+                RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, taskNo)
                 RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, taskNo)
                 card.remove()
                 renderBranchTasks()
@@ -2292,7 +2352,7 @@
             const placeholderTask = getRef('placeholder_task_card_template').content.cloneNode(true)
             getRef('task_list').append(placeholderTask)
             getRef('task_list').lastElementChild.scrollIntoView({ behavior: 'smooth' })
-            getRef('task_list').querySelector('.placeholder-task__title').focusIn()
+            getRef('task_list').querySelector('.temp-task__title').focusIn()
             getRef('add_task').classList.add('hidden')
         }
         function commitToChanges() {
@@ -2358,7 +2418,7 @@
             const mergePoint = (userMergePoint === '') ? startPoint : parseInt(userMergePoint)
             const branchName = RIBC.admin.addBranch(appState.params.id, appState.params.branch, startPoint, mergePoint);
             notify(`Branch added ${branchName}`, 'success')
-            currentTask.querySelector('.task__branch_container').append(render.branchButton({ projectId: appState.params.id, branch: branchName, page: 'admin_page' }))
+            renderBranches()
             closePopup()
         }
 
@@ -2921,17 +2981,6 @@
                         location.reload();
                     }
                 });
-        }
-
-        async function downloadCredentials() {
-            try {
-                if (floDapps.user.id) {
-                    const privKey = await floDapps.user.private;
-                    generateTxtFile(`FLO address: ${floDapps.user.id}\n\nFLO Private Key: ${privKey} `, 'FLO credentials');
-                }
-            } catch (err) {
-                notify(err, 'error');
-            }
         }
         function downloadGeneratedCredentials() {
             const floAddress = getRef('generated_flo_address').value;
