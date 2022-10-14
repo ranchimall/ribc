@@ -18,7 +18,7 @@
         /* Constants for FLO blockchain operations !!Make sure to add this at begining!! */
         const floGlobals = {
             blockchain: "FLO",
-            adminID: "FMyRTrz9CG4TFNM6rCQgy3VQ5NF23bY2xD", 
+            adminID: "FMyRTrz9CG4TFNM6rCQgy3VQ5NF23bY2xD",
             application: "InternManage"
         }
     </script>
@@ -1280,13 +1280,13 @@
                 case 'task_details':
                     if (!params || !params.id) return;
                     const [projectCode, branch, task] = params.id.split('_')
-                    const { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
+                    const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
                     renderElem(getRef('task_details_wrapper'), html`
                         <div class="grid gap-1">
                             <h5 class="capitalize">${floGlobals.taskCategories[category] || category?.replaceAll('-', ' ')}</h5>
                             <div class="grid gap-0-5">
-                                <h2 id="task_title">${taskTitle}</h2>
-                                <p id="task_description" class="ws-pre-line">${taskDescription}</p>
+                                <h2 id="task_title">${title}</h2>
+                                <p id="task_description" class="ws-pre-line">${description}</p>
                             </div>
                             <div class="display-task__details flex flex-wrap gap-0-3">
                                 ${duration ? html`
@@ -1730,7 +1730,7 @@
         const render = {
             displayTaskCard(projectCode, branch, task) {
                 projectCode = projectCode.replaceAll('_', '-')
-                const taskDetails = { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
+                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
                 return html`
                     <li class=${`display-task`}>
                         <div class="flex align-center space-between">
@@ -1740,8 +1740,8 @@
                                 <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
                             </a> 
                         </div>
-                        <h4 class="display-task__title">${taskTitle}</h4>
-                        <p class="display-task__description ws-pre-line">${taskDescription}</p>
+                        <h4 class="display-task__title">${title}</h4>
+                        <p class="display-task__description ws-pre-line">${description}</p>
                         <div class="display-task__details flex flex-wrap gap-0-3">
                             ${duration ? html`
                                 <div class="display-task__detail">
@@ -1769,7 +1769,6 @@
                 if (appState.currentPage !== 'landing') return;
                 const allTasks = RIBC.getAllTasks()
                 const filterCategory = category === 'all' ? false : category;
-                console.log(filterCategory)
                 const filtered = []
                 for (const taskKey in allTasks) {
                     const [projectCode, branch, task] = taskKey.split('_')
@@ -1788,7 +1787,7 @@
             },
             taskCard(taskNo) {
                 const projectId = appState.params.id.replaceAll('_', '-')
-                const taskDetails = { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectId, appState.params.branch, taskNo)
+                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectId, appState.params.branch, taskNo)
                 const branches = getAllBranches(projectId)
                 const branchesButtons = filteredMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
@@ -1822,11 +1821,11 @@
                         </div>
                         <div class="right">
                             <div class="apply-container flex space-between align-items-start">
-                                <h4 class="timeline-task__title capitalize">${taskTitle}</h4>
+                                <h4 class="timeline-task__title capitalize">${title}</h4>
                                 ${applyButton}
                             </div>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
-                            <p class="timeline-task__description ws-pre-line">${taskDescription}</p>
+                            <p class="timeline-task__description ws-pre-line">${description}</p>
                             ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                         </div>
                     </div>
@@ -1847,7 +1846,7 @@
             internUpdateCard(update) {
                 let { floID, time, note, update: { projectId, projectBranch, task, topic, description, link } } = update
                 if (!topic) {
-                    topic = `${RIBC.getProjectDetails(projectId.replaceAll('_', '-')).projectName} / ${RIBC.getTaskDetails(projectId.replaceAll('_', '-'), projectBranch, task).taskTitle}`
+                    topic = `${RIBC.getProjectDetails(projectId.replaceAll('_', '-')).projectName} / ${RIBC.getTaskDetails(projectId.replaceAll('_', '-'), projectBranch, task).title}`
                 }
                 const internName = RIBC.getInternList()[floID]
                 let replyButton
@@ -1902,7 +1901,7 @@
             },
             taskListItem(taskNo, ref) {
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo)
-                const taskDetails = { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
+                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
                 let assignedInternsCards
                 if (assignedInterns) {
@@ -1935,7 +1934,7 @@
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /> </svg>
                             </button>
                         </div>
-                        <h4 class="task-title capitalize" data-editable>${taskTitle}</h4>
+                        <h4 class="task-title capitalize" data-editable>${title}</h4>
                         <div class="assigned-interns">
                             <button class="button--outlined button--small button--colored" onclick="currentTask=this.closest('.task-list-item');openPopup('intern_list_popup')">
                                 <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zM5 18c.2-.63 2.57-1.68 4.96-1.94l2.04-2c-.39-.04-.68-.06-1-.06-2.67 0-8 1.34-8 4v2h9l-2-2H5zm15.6-5.5l-5.13 5.17-2.07-2.08L12 17l3.47 3.5L22 13.91z"/></svg>
@@ -1943,7 +1942,7 @@
                             </button>
                             ${assignedInternsCards}
                         </div>
-                        <p class="task-description ws-pre-line" data-editable>${taskDescription}</p>
+                        <p class="task-description ws-pre-line" data-editable>${description}</p>
                         <div class="display-task__details flex flex-wrap gap-0-3">
                             ${category ? html`
                                 <div class="display-task__detail">
@@ -1981,7 +1980,7 @@
                     <li class="request-card" .dataset=${{ vectorClock, type: 'task' }}>
                         <p class="request-card__description">
                             <b class="capitalize">${internName}</b> applied for 
-                            <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).taskTitle}</b> from 
+                            <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).title}</b> from 
                             <b class="capitalize">${branch}</b> of
                             <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
                         </p>
@@ -2024,14 +2023,14 @@
             },
             internTaskCard(taskObj) {
                 const { uniqueId, projectId, projectBranch, task } = taskObj
-                const { taskTitle, taskDescription } = RIBC.getTaskDetails(projectId, projectBranch, task)
+                const { title, description } = RIBC.getTaskDetails(projectId, projectBranch, task)
                 const projectName = RIBC.getProjectDetails(projectId).projectName
                 return html`
                     <li class="task-card" data-unique-id="${uniqueId}">
                         <span class="task__project-title">${projectName}</span>
                         <div>
-                            <h4 class="task__title">${taskTitle}</h4>
-                            <p class="task__description ws-pre-line">${taskDescription}</p>
+                            <h4 class="task__title">${title}</h4>
+                            <p class="task__description ws-pre-line">${description}</p>
                         </div>
                         <button class="send-update-button button--small margin-left-auto">
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
@@ -2113,7 +2112,7 @@
                     details = html`
                     <p class="status-card__details">
                         You applied for 
-                        <b class="capitalize">${RIBC.getTaskDetails(projectCode.replaceAll('_', '-'), branch, task).taskTitle}</b> from 
+                        <b class="capitalize">${RIBC.getTaskDetails(projectCode.replaceAll('_', '-'), branch, task).title}</b> from 
                         <b class="capitalize">${branch}</b> of
                         <b class="capitalize">${RIBC.getProjectDetails(projectCode.replaceAll('_', '-')).projectName}</b>
                     </p>`;
@@ -2338,14 +2337,14 @@
             if (e.target.isContentEditable) {
                 e.target.contentEditable = false
                 if (e.target.innerText.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerText.trim())) {
-                    const { taskTitle, taskDescription } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+                    const { title, description } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     const taskDetails = {}
                     if (e.target.closest('.task-description')) {
-                        taskDetails['taskTitle'] = taskTitle
-                        taskDetails['taskDescription'] = DOMPurify.sanitize(e.target.innerText.trim())
+                        taskDetails['title'] = title
+                        taskDetails['description'] = DOMPurify.sanitize(e.target.innerText.trim())
                     } else if (e.target.closest('.task-title')) {
-                        taskDetails['taskTitle'] = DOMPurify.sanitize(e.target.innerText.trim())
-                        taskDetails['taskDescription'] = taskDescription
+                        taskDetails['title'] = DOMPurify.sanitize(e.target.innerText.trim())
+                        taskDetails['description'] = description
                     }
                     RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     notify('Changes saved locally, commit the changes to make them permanent', 'success')
@@ -2419,24 +2418,24 @@
             }
             else if (e.target.closest('.add-task-button')) {
                 const card = e.target.closest('.temp-task')
-                const taskTitle = card.querySelector('.temp-task__title').value.trim();
-                const taskDescription = card.querySelector('.temp-task__description').value.trim();
+                const title = card.querySelector('.temp-task__title').value.trim();
+                const description = card.querySelector('.temp-task__description').value.trim();
                 const links = card.querySelector('.temp-task__links').value
                 const category = card.querySelector('.temp-task__category').value.trim();
                 const maxSlots = parseInt(card.querySelector('.temp-task__max-slots').value.trim());
                 const duration = parseInt(card.querySelector('.temp-task__duration').value.trim());
                 const durationType = card.querySelector('.temp-task__duration-type').value.trim();
                 const reward = parseInt(card.querySelector('.temp-task__reward').value.trim());
-                if (taskTitle === '') {
+                if (title === '') {
                     return notify('Please enter task title', 'error')
                 }
-                if (taskDescription === '') {
+                if (description === '') {
                     return notify('Please enter description of the task', 'error')
 
                 }
                 const taskDetails = {
-                    taskTitle,
-                    taskDescription,
+                    title,
+                    description,
                     links,
                     category,
                     maxSlots,
@@ -2824,7 +2823,7 @@
                         currentTaskId = taskCard.dataset.uniqueId
                         const { projectId, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
                         getRef('update_of_project').textContent = RIBC.getProjectDetails(projectId).projectName
-                        getRef('update_of_task').textContent = RIBC.getTaskDetails(projectId, projectBranch, task).taskTitle
+                        getRef('update_of_task').textContent = RIBC.getTaskDetails(projectId, projectBranch, task).title
                         openPopup('post_update_popup')
                     }
                 })
