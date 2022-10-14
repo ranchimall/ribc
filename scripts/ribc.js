@@ -374,7 +374,7 @@
             }
         } // end function
         //Now splice the element
-        arr = arr.slice(currentIndex, 1);
+        arr.splice(currentIndex, 1);
         arr[1] = arr[1] - 1;
     }
 
@@ -502,7 +502,7 @@
 
     Admin.editTaskDetails = function (taskDetails, projectCode, branch, taskNumber) {
         //add taskDetails
-        _.projectTaskDetails[projectCode + "_" + branch + "_" + taskNumber] = taskDetails;
+        _.projectTaskDetails[projectCode + "_" + branch + "_" + taskNumber] = { ..._.projectTaskDetails[projectCode + "_" + branch + "_" + taskNumber], ...taskDetails };
     }
 
     Admin.addTaskInMap = function (projectCode, branchName) {

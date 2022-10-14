@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -40,6 +41,7 @@
                 new Promise((resolve) => {
                     RIBC.refreshObjectData().then(() => {
                         resolve()
+                        routeTo(window.location.hash);
                     })
                 })
             )
@@ -105,6 +107,34 @@
                     </div>
                 </div>
             </sm-carousel>
+            <div class="flex flex-wrap gap-2 justify-center">
+                <div class="grid gap-1" style="min-width: 12rem; align-content: start;">
+                    <h4>Filters</h4>
+                    <div class="flex flex-direction-column gap-0-5">
+                        <h5>Category</h5>
+                        <sm-select id="task_category_selector"></sm-select>
+                    </div>
+                </div>
+                <div class="grid gap-1">
+                    <h3>
+                        Available Tasks
+                    </h3>
+                    <ul id="display_task_list" class="flex flex-direction-column gap-0-5">
+                        <sm-spinner></sm-spinner>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="task_details" class="inner-page hidden align-content-start">
+            <a href="#/landing" class="button icon-only align-self-start" title="Go back">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                    fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none"></path>
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z">
+                    </path>
+                </svg>
+            </a>
+            <div id="task_details_wrapper" class="flex flex-direction-column gap-1-5"></div>
         </div>
         <article id="sign_in" class="inner-page hidden">
             <section>
@@ -311,7 +341,7 @@
             <theme-toggle class="hide-on-mobile"></theme-toggle>
         </nav>
         <article id="sub_page_container">
-            <section id="dashboard_page" class="inner-page">
+            <section id="dashboard_page" class="inner-page hidden">
                 <div class="flex flex-direction-column gap-2">
                     <div id="application_card" class="card flex align-center space-between general-only hidden">
                         <div>
@@ -481,7 +511,7 @@
                         <section id="project_editing_panel" class="hidden">
                             <div id="project_details_wrapper"
                                 class="flex flex-direction-column gap-1 margin-bottom-2 align-items-start">
-                                <a class="button icon-only hide-on-desktop" href="#/admin_page">
+                                <a class="button icon-only hide-on-desktop" href="#/admin_page" title="Go back">
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px"
                                         viewBox="0 0 24 24" width="24px" fill="#000000">
                                         <path d="M0 0h24v24H0V0z" fill="none"></path>
@@ -649,7 +679,7 @@
                 </div>
                 <section id="project_explorer__right" class="grid hide-on-mobile">
                     <header class="flex flex-direction-column gap-0-5 align-items-start">
-                        <a class="button icon-only hide-on-desktop" href="#/project_explorer">
+                        <a class="button icon-only hide-on-desktop" href="#/project_explorer" title="Go back">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
                                 width="24px" fill="#000000">
                                 <path d="M0 0h24v24H0V0z" fill="none"></path>
@@ -899,7 +929,7 @@
     </sm-popup>
     <sm-popup id="secure_pwd_popup">
         <header slot="header" class="popup__header">
-            <button class="popup__header__close justify-self-start">
+            <button class="popup__header__close justify-self-start" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
                     fill="#000000">
                     <path d="M0 0h24v24H0V0z" fill="none" />
@@ -936,92 +966,6 @@
             </button>
         </sm-form>
     </sm-popup>
-
-    <!-- Templates -->
-    <template id="placeholder_task_card_template">
-        <div class="temp-task grid gap-0-5">
-            <sm-form style="--gap: 0.5rem;">
-                <sm-input class="temp-task__title" placeholder="Title" animate required></sm-input>
-                <sm-textarea class="temp-task__description" placeholder="Description" rows="4" required>
-                </sm-textarea>
-                <tags-input class="temp-task__links" placeholder="Related links(separate by comma)"></tags-input>
-                <div class="grid gap-0-5" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
-                    <sm-select class="temp-task__category" label="Category: ">
-                        <sm-option value="creative-writing" selected>Creative Writing</sm-option>
-                        <sm-option value="marketing">Marketing</sm-option>
-                        <sm-option value="design">Design</sm-option>
-                        <sm-option value="development">Development</sm-option>
-                        <sm-option value="social-media-management">Social Media Management</sm-option>
-                        <sm-option value="video-making">Video Making</sm-option>
-                    </sm-select>
-                    <sm-input class="temp-task__max-slots flex-1" placeholder="Max slots available" type="number"
-                        animate>
-                    </sm-input>
-                    <div class="flex flex-1">
-                        <sm-input class="temp-task__duration flex-1" placeholder="Duration" type="number"
-                            style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);"
-                            animate>
-                            <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg"
-                                enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
-                                fill="#000000">
-                                <g>
-                                    <rect fill="none" height="24" width="24" />
-                                </g>
-                                <g>
-                                    <g>
-                                        <g>
-                                            <path
-                                                d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z" />
-                                        </g>
-                                    </g>
-                                </g>
-                            </svg>
-                        </sm-input>
-                        <sm-select class="temp-task__duration-type flex-shrink-0"
-                            style="--select-border-radius: 0 0.5rem 0.5rem 0;">
-                            <sm-option value="days" selected>Days</sm-option>
-                            <sm-option value="months">Months</sm-option>
-                        </sm-select>
-                    </div>
-                    <sm-input class="temp-task__reward flex-1" type="number" placeholder="Reward" animate>
-                        <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg"
-                            enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
-                            fill="#000000">
-                            <g>
-                                <rect fill="none" height="24" width="24"></rect>
-                            </g>
-                            <g>
-                                <g>
-                                    <path
-                                        d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z">
-                                    </path>
-                                </g>
-                            </g>
-                        </svg>
-                    </sm-input>
-                </div>
-                <div class="flex align-center gap-0-3">
-                    <button class="button cancel-task-button">
-                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
-                        </svg>
-                        Cancel
-                    </button>
-                    <button type="submit" class="button button--primary add-task-button">
-                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" />
-                        </svg>
-                        Add
-                    </button>
-                </div>
-            </sm-form>
-        </div>
-    </template>
     <script>
         /*jshint esversion: 8 */
         /**
@@ -1275,8 +1219,10 @@
         const appState = {
             params: {},
         }
+        const generalPages = ['sign_up', 'sign_in', 'loading', 'landing', 'task_details']
         function routeTo(targetPage, options = {}) {
             const { firstLoad, hashChange } = options
+            const routingAnimation = { in: null, out: null }
             let pageId
             let subPageId1
             let searchParams
@@ -1286,7 +1232,7 @@
                     if (floDapps.user.id)
                         pageId = 'dashboard_page'
                 } catch (e) {
-                    pageId = 'sign_in'
+                    pageId = 'landing'
                 }
             } else {
                 if (targetPage.includes('/')) {
@@ -1304,14 +1250,14 @@
 
             if (!document.querySelector(`#${pageId}`)?.classList.contains('inner-page')) return
             try {
-                if (floDapps.user.id && (['sign_up', 'sign_in', 'loading', 'landing'].includes(pageId))) {
+                if (floDapps.user.id && (generalPages.includes(pageId))) {
                     history.replaceState(null, null, '#/dashboard_page');
                     pageId = 'dashboard_page'
                 }
             } catch (e) {
-                if (!(['sign_up', 'sign_in', 'loading', 'landing'].includes(pageId))) return
+                if (!(generalPages.includes(pageId))) return
             }
-            appState.openPage = pageId
+            appState.currentPage = pageId
 
             if (searchParams) {
                 const urlSearchParams = new URLSearchParams('?' + searchParams);
@@ -1320,6 +1266,52 @@
             if (params)
                 appState.params = params
             switch (pageId) {
+                case 'landing':
+                    if (!params) {
+                        params = { category: 'all' }
+                    }
+                    const categories = [html`<sm-option value='all' ?selected=${params.category === 'all'}>All</sm-option>`];
+                    for (const categoryID in floGlobals.taskCategories) {
+                        categories.push(html`<sm-option value=${categoryID} ?selected=${params.category === categoryID}>${floGlobals.taskCategories[categoryID]}</sm-option>`)
+                    }
+                    renderElem(getRef('task_category_selector'), html`${categories}`)
+                    render.displayTasks(params.category)
+                    break;
+                case 'task_details':
+                    if (!params || !params.id) return;
+                    const [projectCode, branch, task] = params.id.split('_')
+                    const { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
+                    renderElem(getRef('task_details_wrapper'), html`
+                        <div class="grid gap-1">
+                            <h5 class="capitalize">${floGlobals.taskCategories[category] || category?.replaceAll('-', ' ')}</h5>
+                            <div class="grid gap-0-5">
+                                <h2 id="task_title">${taskTitle}</h2>
+                                <p id="task_description" class="ws-pre-line">${taskDescription}</p>
+                            </div>
+                            <div class="display-task__details flex flex-wrap gap-0-3">
+                                ${duration ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Duration: </span>
+                                        <span class="display-task__detail__value">${duration} ${durationType}</span>
+                                    </div>
+                                `: ''}
+                                ${maxSlots ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Slots: </span>
+                                        <span class="display-task__detail__value">${maxSlots}</span>
+                                    </div>
+                                `: ''}
+                                ${reward ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Reward: </span>
+                                        <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                                    </div>
+                                `: ''}    
+                            </div>
+                        </div>
+                        <button class="button button--primary">Apply Now</button>
+                    `)
+                    break;
                 case 'sign_in':
                     setTimeout(() => {
                         getRef('private_key_field').focusIn()
@@ -1409,6 +1401,20 @@
                     }
                     break;
             }
+            switch (`${appState.lastPage}->${pageId}`) {
+                case 'landing->task_details':
+                    routingAnimation.in = slideInLeft;
+                    routingAnimation.out = slideOutLeft;
+                    break;
+                case 'task_details->landing':
+                    routingAnimation.in = slideInRight;
+                    routingAnimation.out = slideOutRight;
+                    break;
+                default:
+                    routingAnimation.in = slideInUp;
+                    routingAnimation.out = slideOutUp;
+                    break;
+            }
             if (appState.lastPage !== pageId) {
                 if (document.querySelector('.nav-list__item--active'))
                     document.querySelector('.nav-list__item--active').classList.remove('nav-list__item--active');
@@ -1417,26 +1423,17 @@
                     targetListItem.classList.add('nav-list__item--active')
                 document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'))
                 getRef(pageId).closest('.page').classList.remove('hidden')
-                document.querySelectorAll('.inner-page').forEach(page => page.classList.add('hidden'))
-                getRef(pageId).classList.remove('hidden')
                 let ogOverflow = getRef(pageId).parentNode.style.overflow
-                getRef(pageId).parentNode.style.overflow = 'hidden'
-                getRef(pageId).animate([
-                    {
-                        opacity: 0,
-                        transform: 'translateY(1rem)'
-                    },
-                    {
-                        opacity: 1,
-                        transform: 'translateY(0)'
-                    },
-                ],
-                    {
-                        duration: 300,
-                        easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                    }).onfinish = () => {
-                        getRef(pageId).parentNode.style.overflow = ogOverflow
+                getRef(pageId).parentNode.style.overflow = 'hidden';
+                if (appState.lastPage) {
+                    getRef(appState.lastPage).animate(routingAnimation.out, { duration: 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
+                        e.target.effect.target.classList.add('hidden')
                     }
+                }
+                getRef(pageId).classList.remove('hidden')
+                getRef(pageId).animate(routingAnimation.in, { duration: 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
+                    getRef(pageId).parentNode.style.overflow = ogOverflow;
+                }
                 appState.lastPage = pageId
             }
         }
@@ -1642,6 +1639,26 @@
                 transform: 'translateY(0)'
             },
         ]
+        const slideOutDown = [
+            {
+                opacity: 1,
+                transform: 'translateY(0)'
+            },
+            {
+                opacity: 0,
+                transform: 'translateY(1rem)'
+            },
+        ]
+        const slideInUp = [
+            {
+                opacity: 0,
+                transform: 'translateY(1rem)'
+            },
+            {
+                opacity: 1,
+                transform: 'translateY(0)'
+            },
+        ]
         const slideOutUp = [
             {
                 opacity: 1,
@@ -1702,8 +1719,68 @@
         }
     </script>
     <script id="UI_functions">
-        // Method object for creating various UI elements
+        floGlobals.taskCategories = {
+            c00: 'Creative Writing',
+            c01: 'Marketing',
+            c02: 'Design',
+            c03: 'Development',
+            c04: 'Social Media Management',
+            c05: 'Video Making',
+        }
         const render = {
+            displayTaskCard(projectCode, branch, task) {
+                projectCode = projectCode.replaceAll('_', '-')
+                const taskDetails = { taskTitle, taskDescription, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
+                return html`
+                    <li class=${`display-task`}>
+                        <div class="flex align-center space-between">
+                            <div class="display-task__category">${category?.replaceAll('-', ' ')}</div>
+                            <a href=${`#/task_details?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
+                                View details
+                                <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
+                            </a> 
+                        </div>
+                        <h4 class="display-task__title">${taskTitle}</h4>
+                        <p class="display-task__description ws-pre-line">${taskDescription}</p>
+                        <div class="display-task__details flex flex-wrap gap-0-3">
+                            ${duration ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Duration: </span>
+                                    <span class="display-task__detail__value">${duration} ${durationType}</span>
+                                </div>
+                            `: ''}
+                            ${maxSlots ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Slots: </span>
+                                    <span class="display-task__detail__value">${maxSlots}</span>
+                                </div>
+                            `: ''}
+                            ${reward ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Reward: </span>
+                                    <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                                </div>
+                            `: ''}
+                        </div>
+                    </li>
+                `;
+            },
+            displayTasks(category) {
+                if (appState.currentPage !== 'landing') return;
+                const allTasks = RIBC.getAllTasks()
+                const filterCategory = category === 'all' ? false : category;
+                console.log(filterCategory)
+                const filtered = []
+                for (const taskKey in allTasks) {
+                    const [projectCode, branch, task] = taskKey.split('_')
+                    const { category } = RIBC.getTaskDetails(projectCode, branch, task)
+                    if (RIBC.getTaskStatus(projectCode, branch, task) === 'incomplete') {
+                        if (filterCategory && category !== filterCategory) continue;
+                        filtered.unshift(render.displayTaskCard(projectCode, branch, task))
+                    }
+                }
+                renderElem(getRef('display_task_list'), html`${filtered}`)
+            },
             projectCard(projectCode, isAdmin = false, ref) {
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
@@ -1749,7 +1826,7 @@
                                 ${applyButton}
                             </div>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
-                            <p class="timeline-task__description">${taskDescription}</p>
+                            <p class="timeline-task__description ws-pre-line">${taskDescription}</p>
                             ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                         </div>
                     </div>
@@ -1785,7 +1862,7 @@
                 if (note) {
                     adminReply = html`<div class="admin-reply grid">
                         <h4 class="admin-reply__title">Admin</h4>
-                        <p class="admin-reply__description">${note}</p>
+                        <p class="admin-reply__description ws-pre-line">${note}</p>
                     </div>`
                 }
                 return html.node`
@@ -1795,7 +1872,7 @@
                             <span class="update__time">${getFormattedTime(time)}</span>
                         </div>
                         <h4 class="update__topic">${topic}</h4>
-                        <p class="update__message">${description}</p>
+                        <p class="update__message ws-pre-line">${description}</p>
                         ${providedLink}
                         ${replyButton}
                         ${adminReply}
@@ -1866,8 +1943,34 @@
                             </button>
                             ${assignedInternsCards}
                         </div>
-                        <p class="task-description" data-editable>${taskDescription}</p>
-                        <div class="task__branch_container">${branchesButtons}</div>
+                        <p class="task-description ws-pre-line" data-editable>${taskDescription}</p>
+                        <div class="display-task__details flex flex-wrap gap-0-3">
+                            ${category ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Category: </span>
+                                    <span class="display-task__detail__value">${floGlobals.taskCategories[category]}</span>
+                                </div>
+                            `: ''}
+                            ${duration ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Duration: </span>
+                                    <span class="display-task__detail__value">${duration} ${durationType}</span>
+                                </div>
+                            `: ''}
+                            ${maxSlots ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Slots: </span>
+                                    <span class="display-task__detail__value">${maxSlots}</span>
+                                </div>
+                            `: ''}
+                            ${reward ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Reward: </span>
+                                    <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                                </div>
+                            `: ''}    
+                        </div>
+                        ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                     </li>
                 `;
             },
@@ -1928,7 +2031,7 @@
                         <span class="task__project-title">${projectName}</span>
                         <div>
                             <h4 class="task__title">${taskTitle}</h4>
-                            <p class="task__description">${taskDescription}</p>
+                            <p class="task__description ws-pre-line">${taskDescription}</p>
                         </div>
                         <button class="send-update-button button--small margin-left-auto">
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
@@ -2068,7 +2171,10 @@
             return renderedIntensColor[floId]
         }
 
-        //helper functions
+        getRef('task_category_selector').addEventListener('change', (e) => {
+            window.location.hash = `#/landing?category=${e.target.value}`;
+        })
+
         let allInternsList = [];
         let highPerformingInterns = [];
         let pinnedProjects = [];
@@ -2167,15 +2273,15 @@
         }
         function renderBranches() {
             const { id: projectId, branch } = appState.params
-            const taskListContainer = appState.openPage === 'admin_page' ? 'branch_container' : 'explorer_branch_container';
+            const taskListContainer = appState.currentPage === 'admin_page' ? 'branch_container' : 'explorer_branch_container';
             const branchList = filteredMap(RIBC.getProjectBranches(appState.params.id), (branch) => {
-                return render.branchButton({ projectId, branch, page: appState.openPage, active: branch === appState.params.branch })
+                return render.branchButton({ projectId, branch, page: appState.currentPage, active: branch === appState.params.branch })
             })
             renderElem(getRef(taskListContainer), html`${branchList}`)
         }
         function renderBranchTasks() {
             const { id: projectId, branch } = appState.params
-            const taskListContainer = appState.openPage === 'admin_page' ? 'task_list' : 'explorer_task_list';
+            const taskListContainer = appState.currentPage === 'admin_page' ? 'task_list' : 'explorer_task_list';
             let branchTasks = RIBC.getProjectMap(appState.params.id)[appState.params.branch];
             if (branchTasks[1] && !taskListContainer === 'task_list') {
                 getRef(taskListContainer).textContent = "No tasks added yet, Please explore other projects"
@@ -2184,7 +2290,7 @@
                 if (branch !== 'mainLine') {
                     const { startPoint, parentBranch } = getAllBranches(projectId).find(({ branchName }) => branchName === branch)
                     tasks.push(html`<p class="margin-bottom-0-5">
-                        Branched off from <a href=${`#/${appState.openPage}/project?id=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
+                        Branched off from <a href=${`#/${appState.currentPage}/project?id=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
                     </p>`)
                 }
                 if (taskListContainer === 'task_list') {
@@ -2349,11 +2455,52 @@
             }
         })
         function addPlaceholderTask() {
-            const placeholderTask = getRef('placeholder_task_card_template').content.cloneNode(true)
+            const categories = [];
+            let first = true;
+            for (const categoryID in floGlobals.taskCategories) {
+                categories.push(html`<sm-option value=${categoryID} ?selected=${first}>${floGlobals.taskCategories[categoryID]}</sm-option>`)
+                first = false;
+            }
+            const placeholderTask = html.node`
+                <div class="temp-task grid gap-0-5">
+                    <sm-form style="--gap: 0.5rem;">
+                        <sm-input class="temp-task__title" placeholder="Title" animate required></sm-input>
+                        <sm-textarea class="temp-task__description" placeholder="Description" rows="4" required></sm-textarea>
+                        <tags-input class="temp-task__links" placeholder="Related links(separate by comma)"></tags-input>
+                        <div class="grid gap-0-5" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+                            <sm-select class="temp-task__category" label="Category: ">${categories}</sm-select>
+                            <sm-input class="temp-task__max-slots flex-1" placeholder="Max slots available" type="number" animate> </sm-input>
+                            <div class="flex flex-1">
+                                <sm-input class="temp-task__duration flex-1" placeholder="Duration" type="number" style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);" animate>
+                                    <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24" /> </g> <g> <g> <g> <path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z" /> </g> </g> </g> </svg>
+                                </sm-input>
+                                <sm-select class="temp-task__duration-type flex-shrink-0"
+                                    style="--select-border-radius: 0 0.5rem 0.5rem 0;">
+                                    <sm-option value="days" selected>Days</sm-option>
+                                    <sm-option value="months">Months</sm-option>
+                                </sm-select>
+                            </div>
+                            <sm-input class="temp-task__reward flex-1" type="number" placeholder="Reward" animate>
+                                <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <path d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z"> </path> </g> </g> </svg>
+                            </sm-input>
+                        </div>
+                        <div class="flex align-center gap-0-3">
+                            <button class="button cancel-task-button">
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" /> </svg>
+                                Cancel
+                            </button>
+                            <button type="submit" class="button button--primary add-task-button">
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" /> </svg>
+                                Add
+                            </button>
+                        </div>
+                    </sm-form>
+                </div>
+            `;
             getRef('task_list').append(placeholderTask)
-            getRef('task_list').lastElementChild.scrollIntoView({ behavior: 'smooth' })
             getRef('task_list').querySelector('.temp-task__title').focusIn()
             getRef('add_task').classList.add('hidden')
+            getRef('task_list').lastElementChild.scrollIntoView({ behavior: "smooth" });
         }
         function commitToChanges() {
             getConfirmation("Do you want to commit to changes?").then((result) => {
@@ -2369,6 +2516,7 @@
         function removeThisTask() {
             getConfirmation("Are you sure to delete this task?", { confirmText: 'Delete' }).then((result) => {
                 if (result) {
+                    console.log(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     RIBC.admin.deleteTaskInMap(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     renderBranchTasks()
                 }
@@ -2507,7 +2655,7 @@
                     replayBox.replaceWith(html.node`
                         <div class="admin-reply grid">
                             <h4 class="admin-reply__title">Admin</h4>
-                            <p class="admin-reply__description">${replyText}</p>
+                            <p class="admin-reply__description ws-pre-line">${replyText}</p>
                         </div>`)
                 }).catch(err => {
                     notify(err, 'error')
@@ -2919,7 +3067,6 @@
 
         function getSignedIn(passwordType) {
             return new Promise((resolve, reject) => {
-                routeTo('landing')
                 try {
                     getPromptInput('Enter password', '', {
                         isPassword: true,
@@ -2942,9 +3089,7 @@
                         getRef('private_key_field').customValidation = floCrypto.getPubKeyHex;
                         getRef('secure_pwd_button').closest('.card').classList.remove('hidden');
                     }
-                    if (window.location.hash.includes('sign_in') || window.location.hash.includes('sign_up')) {
-                        routeTo(window.location.hash);
-                    } else {
+                    if (!generalPages.find(page => window.location.hash.includes(page))) {
                         location.hash = floGlobals.isPrivKeySecured ? '#/sign_in' : `#/landing`;
                     }
                     getRef('sign_in_button').onclick = () => {
@@ -3000,4 +3145,4 @@
     </script>
 </body>
 
-</html>
+</htm>
