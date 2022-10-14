@@ -471,7 +471,10 @@
                         <h4>Leaderboard</h4>
                         <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
                     </div>
-                    <div id="top_interns"></div>
+                    <div id="top_interns" class="observe-empty-state"></div>
+                    <div class="empty-state">
+                        <h4>There are no interns</h4>
+                    </div>
                 </div>
             </section>
             <section id="admin_page" class="inner-page hidden">
@@ -1277,7 +1280,7 @@
                     renderElem(getRef('task_category_selector'), html`${categories}`)
                     render.displayTasks(params.category)
                     break;
-                case 'task_details':
+                case 'task_details': {
                     if (!params || !params.id) return;
                     const [projectCode, branch, task] = params.id.split('_')
                     const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
@@ -1311,7 +1314,7 @@
                         </div>
                         <button class="button button--primary">Apply Now</button>
                     `)
-                    break;
+                } break;
                 case 'sign_in':
                     setTimeout(() => {
                         getRef('private_key_field').focusIn()
@@ -1327,21 +1330,21 @@
                     // displays recent projects
                     render.dashProjects(getRef('project_list'), RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse())
                     break;
-                case 'updates_page':
+                case 'updates_page': {
                     if (!getRef('updates_page__project_selector').children.length) {
                         renderProjectSelectorOptions()
                         renderInternSelectorOptions()
                     }
-                    const { projectId, internId, date } = params || getUpdateFilters()
+                    const { projectCode, internId, date } = params || getUpdateFilters()
                     if (params) {
-                        setUpdateFilters({ projectId, internId, date })
-                    } else if (projectId) {
+                        setUpdateFilters({ projectCode, internId, date })
+                    } else if (projectCode) {
                         const dateParam = date !== '' ? `&date=${date}` : ''
-                        history.replaceState(null, null, `#/updates_page?projectId=${projectId}&internId=${internId}${dateParam}`)
+                        history.replaceState(null, null, `#/updates_page?projectCode=${projectCode}&internId=${internId}${dateParam}`)
                     }
                     let matchedUpdates
-                    if (projectId !== 'all') {
-                        matchedUpdates = getUpdatesByProject(projectId)
+                    if (projectCode !== 'all') {
+                        matchedUpdates = getUpdatesByProject(projectCode)
                     }
                     if (internId !== 'all') {
                         matchedUpdates = getUpdatesByIntern(internId, matchedUpdates)
@@ -1350,7 +1353,7 @@
                         matchedUpdates = getUpdatesByDate(date, matchedUpdates)
                     }
                     renderInternUpdates(matchedUpdates)
-                    break;
+                } break;
                 case 'applications':
                     render.internApplications()
                     break;
@@ -1360,12 +1363,12 @@
                 case 'project_explorer':
                     if (subPageId1) {
                         if (params) {
-                            const { id: projectId, branch } = params
-                            if (appState.params.projectId !== projectId) {
-                                showProjectInfo(projectId)
+                            const { id: projectCode, branch } = params
+                            if (appState.params.projectCode !== projectCode) {
+                                showProjectInfo(projectCode)
                                 const allProjects = getRef('project_explorer__left').querySelectorAll('.project-card');
                                 allProjects.forEach(project => project.classList.remove('project-card--active'))
-                                const targetProject = [...allProjects].find(project => project.getAttribute('href').includes(projectId))
+                                const targetProject = [...allProjects].find(project => project.getAttribute('href').includes(projectCode))
                                 if (targetProject)
                                     targetProject.classList.add('project-card--active')
                             }
@@ -1386,8 +1389,8 @@
                 case 'admin_page':
                     if (subPageId1) {
                         if (params && RIBC.getProjectList().includes(params.id)) {
-                            const { id: projectId, branch } = params
-                            renderAdminProjectView(projectId)
+                            const { id: projectCode, branch } = params
+                            renderAdminProjectView(projectCode)
                             if (branch) {
                                 renderBranchTasks()
                             }
@@ -1729,7 +1732,7 @@
         }
         const render = {
             displayTaskCard(projectCode, branch, task) {
-                projectCode = projectCode.replaceAll('_', '-')
+                projectCode = projectCode
                 const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
                 return html`
                     <li class=${`display-task`}>
@@ -1786,30 +1789,29 @@
                 return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>`
             },
             taskCard(taskNo) {
-                const projectId = appState.params.id.replaceAll('_', '-')
-                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectId, appState.params.branch, taskNo)
-                const branches = getAllBranches(projectId)
+                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
+                const branches = getAllBranches(appState.params.id)
                 const branchesButtons = filteredMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === appState.params.branch && startPoint === taskNo) {
                         return render.branchButton({
-                            projectId,
+                            projectCode: appState.params.id,
                             branch: branchName,
                             page: 'project_explorer'
                         })
                     }
                 })
-                const assignedInterns = RIBC.getAssignedInterns(projectId, appState.params.branch, taskNo) || []
+                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo) || []
                 const assignedInternsCards = filteredMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId));
-                const status = RIBC.getTaskStatus(projectId, appState.params.branch, taskNo)
+                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
                 let applyButton
                 if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
                     const taskRequests = RIBC.getTaskRequests();
-                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
-                        return `${projectCode}_${branch}_${task}` === `${projectId}_${appState.params.branch}_${taskNo}`
+                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode: requestProjectCode, branch, task }) => {
+                        return `${appState.params.id}_${branch}_${task}` === `${requestProjectCode}_${appState.params.branch}_${taskNo}`
                     })
                     applyButton = html`
-                        <button class="button button--primary apply-button" .dataset=${{ projectCode: projectId, branch: appState.params.branch, taskNo }} ?disabled=${hasApplied}>
+                        <button class="button button--primary apply-button" .dataset=${{ projectCode: appState.params.id, branch: appState.params.branch, taskNo }} ?disabled=${hasApplied}>
                             ${hasApplied ? 'Applied' : 'Apply'}
                         </button>`;
                 }
@@ -1831,11 +1833,11 @@
                     </div>
                 `;
             },
-            internCard(internName, internFloID, internPoints) {
+            internCard(internName, internFloId, internPoints) {
                 const initials = internName.split(' ').map(v => v.charAt(0)).join('');
                 return html`
-                    <li class="intern-card grid align-center interact" .dataset=${{ internFloId: internFloID }} title="Intern Information">
-                        <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloID)})`}>${initials}</div>
+                    <li class="intern-card grid align-center interact" .dataset=${{ internFloId }} title="Intern Information">
+                        <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                         <div class="intern-card__name capitalize">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
                             <h4 class="intern-card__score">${internPoints}</h4>
@@ -1844,10 +1846,8 @@
                     </li>`;
             },
             internUpdateCard(update) {
-                let { floID, time, note, update: { projectId, projectBranch, task, topic, description, link } } = update
-                if (!topic) {
-                    topic = `${RIBC.getProjectDetails(projectId.replaceAll('_', '-')).projectName} / ${RIBC.getTaskDetails(projectId.replaceAll('_', '-'), projectBranch, task).title}`
-                }
+                const { floID, time, note, update: { projectCode, projectBranch, task, description, link } } = update
+                let topic = `${RIBC.getProjectDetails(projectCode).projectName} / ${RIBC.getTaskDetails(projectCode, projectBranch, task).title}`
                 const internName = RIBC.getInternList()[floID]
                 let replyButton
                 if (typeOfUser === 'admin' && !note) {
@@ -1878,9 +1878,9 @@
                     </li>`;
             },
             branchButton(obj = {}) {
-                const { projectId, branch, page, active = false } = obj
+                const { projectCode, branch, page, active = false } = obj
                 return html`
-                    <a class=${`branch-button ${active ? 'branch-button--active' : ''}`} href=${`#/${page}/project?id=${projectId}&branch=${branch}`}>
+                    <a class=${`branch-button ${active ? 'branch-button--active' : ''}`} href=${`#/${page}/project?id=${projectCode}&branch=${branch}`}>
                        ${branch}
                     </a>
                 `;
@@ -1912,7 +1912,7 @@
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === appState.params.branch && startPoint === taskNo) {
                         return render.branchButton({
-                            projectId: appState.params.id,
+                            projectCode: appState.params.id,
                             branch: branchName,
                             page: 'admin_page'
                         })
@@ -2022,9 +2022,9 @@
                 `;
             },
             internTaskCard(taskObj) {
-                const { uniqueId, projectId, projectBranch, task } = taskObj
-                const { title, description } = RIBC.getTaskDetails(projectId, projectBranch, task)
-                const projectName = RIBC.getProjectDetails(projectId).projectName
+                const { uniqueId, projectCode, projectBranch, task } = taskObj
+                const { title, description } = RIBC.getTaskDetails(projectCode, projectBranch, task)
+                const projectName = RIBC.getProjectDetails(projectCode).projectName
                 return html`
                     <li class="task-card" data-unique-id="${uniqueId}">
                         <span class="task__project-title">${projectName}</span>
@@ -2039,32 +2039,31 @@
                     </li>
                 `;
             },
-            dashProject(projectId, ref) {
-                projectId = projectId.replaceAll('_', '-')
-                const { projectName } = RIBC.getProjectDetails(projectId)
-                const projectMap = RIBC.getProjectMap(projectId)
+            dashProject(projectCode, ref) {
+                const { projectName } = RIBC.getProjectDetails(projectCode)
+                const projectMap = RIBC.getProjectMap(projectCode)
                 const projectTasks = []
-                RIBC.getProjectBranches(projectId).forEach(branch => {
+                RIBC.getProjectBranches(projectCode).forEach(branch => {
                     projectMap[branch].slice(4).forEach((task) => {
-                        projectTasks.push(RIBC.getTaskStatus(projectId, branch, task))
+                        projectTasks.push(RIBC.getTaskStatus(projectCode, branch, task))
                     })
                 })
                 const completedTasks = projectTasks.filter(task => task === 'completed').length
                 let completePercent = parseFloat(((completedTasks / projectTasks.length) * 100).toFixed(2))
-                const isPinned = pinnedProjects.includes(projectId);
+                const isPinned = pinnedProjects.includes(projectCode);
                 let pinIcon = ''
                 if (isPinned) {
                     pinIcon = html`<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 6.2V4H7V2H17V4H16V12L18 14V16H17.8L14 12.2V4H10V8.2L8 6.2ZM20 20.7L18.7 22L12.8 16.1V22H11.2V16H6V14L8 12V11.3L2 5.3L3.3 4L20 20.7ZM8.8 14H10.6L9.7 13.1L8.8 14Z"/> </svg>`;
                 } else {
                     pinIcon = html`<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"/> </svg>`;
                 }
-                return html.for(ref, projectId)`
-                    <div class="pinned-card" data-id=${projectId}>
+                return html.for(ref, projectCode)`
+                    <div class="pinned-card" data-id=${projectCode}>
                         <div class="project-icon">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
                         </div>
                         <div class="flex space-between align-items-start">
-                            <a class="project__title" href=${`#/project_explorer/project?id=${projectId}&branch=mainLine`}>${projectName}</a>
+                            <a class="project__title" href=${`#/project_explorer/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>
                             <button class="icon-only pin-project" title=${`${isPinned ? 'Unpin' : 'Pin'} this project`} onclick="pinProject(this)" data-pinned=${isPinned}>${pinIcon}</button>
                         </div>
                         <div class="progress-bar">
@@ -2112,9 +2111,9 @@
                     details = html`
                     <p class="status-card__details">
                         You applied for 
-                        <b class="capitalize">${RIBC.getTaskDetails(projectCode.replaceAll('_', '-'), branch, task).title}</b> from 
+                        <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).title}</b> from 
                         <b class="capitalize">${branch}</b> of
-                        <b class="capitalize">${RIBC.getProjectDetails(projectCode.replaceAll('_', '-')).projectName}</b>
+                        <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
                     </p>`;
                 }
                 return html`
@@ -2184,8 +2183,8 @@
         // Adds interns to the database **Only SubAdmins can add interns
         function addInternToList() {
             let internName = getRef('intern_name_field').value.trim(),
-                internFloID = getRef('intern_flo_id_field').value.trim();
-            if (RIBC.admin.addIntern(internFloID, internName)) {
+                internFloId = getRef('intern_flo_id_field').value.trim();
+            if (RIBC.admin.addIntern(internFloId, internName)) {
                 renderElem(getRef('admin_page__intern_list'), filterInterns(''))
                 closePopup();
                 notify(`${internName} added as an intern.`, 'success')
@@ -2250,36 +2249,36 @@
         }
 
         // opens a popup containing various project information
-        function showProjectInfo(projectId) {
-            const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
+        function showProjectInfo(projectCode) {
+            const { projectName, projectDescription } = RIBC.getProjectDetails(projectCode);
             getRef('project_explorer__project_title').textContent = projectName; // project name
             getRef('project_explorer__project_description').textContent = projectDescription;
-            getRef('project_explorer__project_updates').href = `#/updates_page?projectId=${projectId}&internId=all`;
+            getRef('project_explorer__project_updates').href = `#/updates_page?projectCode=${projectCode}&internId=all`;
             renderBranches();
         }
 
         let currentTask = '';
-        function renderAdminProjectView(projectId) {
+        function renderAdminProjectView(projectCode) {
             const allProjects = getRef('admin_page__project_list').querySelectorAll('.project-card');
             allProjects.forEach(project => project.classList.remove('project-card--active'))
-            const targetProject = Array.from(allProjects).find(project => project.getAttribute('href').includes(projectId))
+            const targetProject = Array.from(allProjects).find(project => project.getAttribute('href').includes(projectCode))
             if (targetProject)
                 targetProject.classList.add('project-card--active')
-            const { projectName, projectDescription } = RIBC.getProjectDetails(projectId);
+            const { projectName, projectDescription } = RIBC.getProjectDetails(projectCode);
             getRef('editing_panel__title').textContent = projectName;
             getRef('editing_panel__description').textContent = projectDescription;
             renderBranches()
         }
         function renderBranches() {
-            const { id: projectId, branch } = appState.params
+            const { id: projectCode, branch } = appState.params
             const taskListContainer = appState.currentPage === 'admin_page' ? 'branch_container' : 'explorer_branch_container';
             const branchList = filteredMap(RIBC.getProjectBranches(appState.params.id), (branch) => {
-                return render.branchButton({ projectId, branch, page: appState.currentPage, active: branch === appState.params.branch })
+                return render.branchButton({ projectCode, branch, page: appState.currentPage, active: branch === appState.params.branch })
             })
             renderElem(getRef(taskListContainer), html`${branchList}`)
         }
         function renderBranchTasks() {
-            const { id: projectId, branch } = appState.params
+            const { id: projectCode, branch } = appState.params
             const taskListContainer = appState.currentPage === 'admin_page' ? 'task_list' : 'explorer_task_list';
             let branchTasks = RIBC.getProjectMap(appState.params.id)[appState.params.branch];
             if (branchTasks[1] && !taskListContainer === 'task_list') {
@@ -2287,9 +2286,9 @@
             } else {
                 let tasks = []
                 if (branch !== 'mainLine') {
-                    const { startPoint, parentBranch } = getAllBranches(projectId).find(({ branchName }) => branchName === branch)
+                    const { startPoint, parentBranch } = getAllBranches(projectCode).find(({ branchName }) => branchName === branch)
                     tasks.push(html`<p class="margin-bottom-0-5">
-                        Branched off from <a href=${`#/${appState.currentPage}/project?id=${projectId}&branch=${parentBranch}`}> ${parentBranch} </a>    
+                        Branched off from <a href=${`#/${appState.currentPage}/project?id=${projectCode}&branch=${parentBranch}`}> ${parentBranch} </a>    
                     </p>`)
                 }
                 if (taskListContainer === 'task_list') {
@@ -2300,9 +2299,9 @@
                 renderElem(getRef(taskListContainer), html`${tasks}`)
             }
         }
-        function getAllBranches(projectId) {
-            const projectMap = RIBC.getProjectMap(projectId)
-            const projectBranches = RIBC.getProjectBranches(projectId)
+        function getAllBranches(projectCode) {
+            const projectMap = RIBC.getProjectMap(projectCode)
+            const projectBranches = RIBC.getProjectBranches(projectCode)
             return projectBranches.slice(1).map((branchName, index) => {
                 const [parentBranch, , startPoint, endPoint] = projectMap[branchName]
                 return {
@@ -2585,15 +2584,11 @@
             renderElem(getRef('updates_page__intern_selector'), html`${options}`)
         }
 
-        function getUpdatesByProject(projectId) {
-            const projectName = RIBC.getProjectDetails(projectId).projectName
+        function getUpdatesByProject(projectCode) {
+            const projectName = RIBC.getProjectDetails(projectCode).projectName
             const allUpdates = RIBC.getInternUpdates()
-            const filteredUpdates = allUpdates.filter(({ update: { topic, projectId } }) => {
-                if (topic) {
-                    return topic.includes(projectName)
-                } else if (projectId) {
-                    return projectId === projectId
-                }
+            const filteredUpdates = allUpdates.filter(({ update: { projectCode: updateProjectCode } }) => {
+                return projectCode === updateProjectCode
             })
             return filteredUpdates
         }
@@ -2663,21 +2658,21 @@
             }
         }
         function setUpdateFilters(filters) {
-            const { projectId, internId, date } = filters || getUpdateFilters()
+            const { projectCode, internId, date } = filters || getUpdateFilters()
             if (filters) {
-                getRef('updates_page__project_selector').value = projectId
+                getRef('updates_page__project_selector').value = projectCode
                 getRef('updates_page__intern_selector').value = internId
                 getRef('updates_page__date_selector').value = date || ''
             } else {
                 const dateParam = date !== '' ? `&date=${date}` : ''
-                location.hash = `/updates_page?projectId=${projectId}&internId=${internId}${dateParam}`
+                location.hash = `/updates_page?projectCode=${projectCode}&internId=${internId}${dateParam}`
             }
         }
         function getUpdateFilters() {
-            const projectId = getRef('updates_page__project_selector').value || 'all'
+            const projectCode = getRef('updates_page__project_selector').value || 'all'
             const internId = getRef('updates_page__intern_selector').value || 'all'
             const date = getRef('updates_page__date_selector').value || ''
-            return { projectId, internId, date }
+            return { projectCode, internId, date }
         }
 
         function clearFilter() {
@@ -2691,12 +2686,12 @@
         getRef('updates_page__intern_selector').addEventListener('change', e => setUpdateFilters())
         getRef('updates_page__date_selector').addEventListener('change', e => setUpdateFilters())
         function pinProject(thisBtn) {
-            const projectId = thisBtn.closest('.pinned-card').dataset.id;
+            const projectCode = thisBtn.closest('.pinned-card').dataset.id;
             pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
-            if (pinnedProjects.includes(projectId)) {
-                pinnedProjects = pinnedProjects.filter(project => project !== projectId)
+            if (pinnedProjects.includes(projectCode)) {
+                pinnedProjects = pinnedProjects.filter(project => project !== projectCode)
             } else {
-                pinnedProjects.push(projectId)
+                pinnedProjects.push(projectCode)
             }
             localStorage.setItem(`${myFloID}_pinned_projects`, pinnedProjects.join())
             render.dashProjects(getRef('pinned_projects'), pinnedProjects)
@@ -2786,14 +2781,14 @@
                 // store all the projects assigned to interns in array
                 const allTasks = RIBC.getAllTasks()
                 for (const taskKey in allTasks) {
-                    const [projectId, branch, taskNo] = taskKey.split('_')
-                    const assignedInterns = RIBC.getAssignedInterns(projectId, branch, taskNo)
+                    const [projectCode, branch, taskNo] = taskKey.split('_')
+                    const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, taskNo)
                     if (Array.isArray(assignedInterns) && assignedInterns.includes(myFloID)) {
-                        assignedProjectsList.add(projectId)
-                        console.log(RIBC.getTaskStatus(projectId, branch, taskNo))
-                        if (RIBC.getTaskStatus(projectId, branch, taskNo) === 'incomplete') {
+                        assignedProjectsList.add(projectCode)
+                        console.log(RIBC.getTaskStatus(projectCode, branch, taskNo))
+                        if (RIBC.getTaskStatus(projectCode, branch, taskNo) === 'incomplete') {
                             floGlobals.assignedTasks[floCrypto.randString(16, true)] = {
-                                projectId,
+                                projectCode,
                                 projectBranch: branch,
                                 task: taskNo
                             }
@@ -2821,9 +2816,9 @@
                     if (e.target.closest('.send-update-button')) {
                         const taskCard = e.target.closest('.task-card')
                         currentTaskId = taskCard.dataset.uniqueId
-                        const { projectId, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
-                        getRef('update_of_project').textContent = RIBC.getProjectDetails(projectId).projectName
-                        getRef('update_of_task').textContent = RIBC.getTaskDetails(projectId, projectBranch, task).title
+                        const { projectCode, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
+                        getRef('update_of_project').textContent = RIBC.getProjectDetails(projectCode).projectName
+                        getRef('update_of_task').textContent = RIBC.getTaskDetails(projectCode, projectBranch, task).title
                         openPopup('post_update_popup')
                     }
                 })
@@ -2974,13 +2969,13 @@
         getRef('request_type_selector').addEventListener('change', render.internRequests)
 
         function postUpdate() {
-            const { projectId, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
+            const { projectCode, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
             const description = getRef('update__brief').value.trim()
             const linkText = getRef('update__link').value.trim()
             const link = linkText !== '' ? linkText : null
             console.log(link)
             if (description !== '') {
-                RIBC.postInternUpdate({ projectId, projectBranch, task, description, link })
+                RIBC.postInternUpdate({ projectCode, projectBranch, task, description, link })
                     .then((result) => {
                         notify('Update posted', 'success')
                         closePopup()
