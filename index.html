@@ -15,7 +15,7 @@
         rel="stylesheet">
     <script src="components.js" defer></script>
     <script id="floGlobals">
-        /* Constants for FLO blockchain operations !!Make sure to add this at begining!! */
+        /* Constants for FLO blockchain operations !!Make sure to add this at beginning!! */
         const floGlobals = {
             blockchain: "FLO",
             adminID: "FMyRTrz9CG4TFNM6rCQgy3VQ5NF23bY2xD",
@@ -29,7 +29,7 @@
     <script src="scripts/floCloudAPI.js"></script>
     <script src="scripts/floDapps.js"></script>
     <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script> -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.0/dist/purify.min.js" defer></script>
     <script src="scripts/ribc.js"></script>
     <script id="onLoadStartUp">
@@ -107,8 +107,8 @@
                     </div>
                 </div>
             </sm-carousel>
-            <div class="flex flex-wrap gap-2 justify-center">
-                <div class="grid gap-1" style="min-width: 12rem; align-content: start;">
+            <div id="task_display_wrapper" class="flex flex-wrap gap-2 justify-center">
+                <div id="display_task_filters" class="grid gap-1">
                     <h4>Filters</h4>
                     <div class="flex flex-direction-column gap-0-5">
                         <h5>Category</h5>
@@ -119,9 +119,10 @@
                     <h3>
                         Available Tasks
                     </h3>
-                    <ul id="display_task_list" class="flex flex-direction-column gap-0-5">
-                        <sm-spinner></sm-spinner>
-                    </ul>
+                    <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state"></ul>
+                    <div class="empty-state">
+                        <h4>Nothing to see here</h4>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1286,7 +1287,7 @@
                     const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
                     renderElem(getRef('task_details_wrapper'), html`
                         <div class="grid gap-1">
-                            <h5 class="capitalize">${floGlobals.taskCategories[category] || category?.replaceAll('-', ' ')}</h5>
+                            <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
                             <div class="grid gap-0-5">
                                 <h2 id="task_title">${title}</h2>
                                 <p id="task_description" class="ws-pre-line">${description}</p>
@@ -1312,7 +1313,7 @@
                                 `: ''}    
                             </div>
                         </div>
-                        <button class="button button--primary">Apply Now</button>
+                        <button class="button button--primary" dataset=${{ projectCode, branch, task }} onclick="requestForTask(this)">Apply Now</button>
                     `)
                 } break;
                 case 'sign_in':
@@ -1737,14 +1738,13 @@
                 return html`
                     <li class=${`display-task`}>
                         <div class="flex align-center space-between">
-                            <div class="display-task__category">${category?.replaceAll('-', ' ')}</div>
+                            <div class="display-task__category">${floGlobals.taskCategories[category]}</div>
                             <a href=${`#/task_details?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
                                 View details
                                 <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
                             </a> 
                         </div>
                         <h4 class="display-task__title">${title}</h4>
-                        <p class="display-task__description ws-pre-line">${description}</p>
                         <div class="display-task__details flex flex-wrap gap-0-3">
                             ${duration ? html`
                                 <div class="display-task__detail">
@@ -1788,12 +1788,12 @@
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
                 return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>`
             },
-            taskCard(taskNo) {
-                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
+            taskCard(task) {
+                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
                 const branches = getAllBranches(appState.params.id)
                 const branchesButtons = filteredMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
-                    if (parentBranch === appState.params.branch && startPoint === taskNo) {
+                    if (parentBranch === appState.params.branch && startPoint === task) {
                         return render.branchButton({
                             projectCode: appState.params.id,
                             branch: branchName,
@@ -1801,17 +1801,17 @@
                         })
                     }
                 })
-                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo) || []
+                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task) || []
                 const assignedInternsCards = filteredMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId));
-                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
+                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let applyButton
                 if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
                     const taskRequests = RIBC.getTaskRequests();
                     const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode: requestProjectCode, branch, task }) => {
-                        return `${appState.params.id}_${branch}_${task}` === `${requestProjectCode}_${appState.params.branch}_${taskNo}`
+                        return `${appState.params.id}_${branch}_${task}` === `${requestProjectCode}_${appState.params.branch}_${task}`
                     })
                     applyButton = html`
-                        <button class="button button--primary apply-button" .dataset=${{ projectCode: appState.params.id, branch: appState.params.branch, taskNo }} ?disabled=${hasApplied}>
+                        <button class="button button--primary apply-button" .dataset=${{ projectCode: appState.params.id, branch: appState.params.branch, task }} ?disabled=${hasApplied}>
                             ${hasApplied ? 'Applied' : 'Apply'}
                         </button>`;
                 }
@@ -1846,8 +1846,8 @@
                     </li>`;
             },
             internUpdateCard(update) {
-                const { floID, time, note, update: { projectCode, projectBranch, task, description, link } } = update
-                let topic = `${RIBC.getProjectDetails(projectCode).projectName} / ${RIBC.getTaskDetails(projectCode, projectBranch, task).title}`
+                const { floID, time, note, update: { projectCode, branch, task, description, link } } = update
+                let topic = `${RIBC.getProjectDetails(projectCode).projectName} / ${RIBC.getTaskDetails(projectCode, branch, task).title}`
                 const internName = RIBC.getInternList()[floID]
                 let replyButton
                 if (typeOfUser === 'admin' && !note) {
@@ -1899,10 +1899,10 @@
                     </span>
                 `
             },
-            taskListItem(taskNo, ref) {
-                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, taskNo)
-                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, taskNo)
-                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, taskNo)
+            taskListItem(task, ref) {
+                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task)
+                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
+                const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let assignedInternsCards
                 if (assignedInterns) {
                     assignedInternsCards = filteredMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId, true))
@@ -1910,7 +1910,7 @@
                 const branches = getAllBranches(appState.params.id)
                 const branchesButtons = filteredMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
-                    if (parentBranch === appState.params.branch && startPoint === taskNo) {
+                    if (parentBranch === appState.params.branch && startPoint === task) {
                         return render.branchButton({
                             projectCode: appState.params.id,
                             branch: branchName,
@@ -1918,14 +1918,14 @@
                         })
                     }
                 })
-                return html.for(ref, `${appState.params.id}_${appState.params.branch}_${taskNo}`)`
-                    <li class="task-list-item" .dataset=${{ taskId: taskNo }}>
+                return html.for(ref, `${appState.params.id}_${appState.params.branch}_${task}`)`
+                    <li class="task-list-item" .dataset=${{ taskId: task }}>
                         <div class="flex align-center gap-0-3">
                             <div class="flex align-center gap-0-5">
                                 <sm-checkbox ?checked=${status === 'completed'}>
                                     <p class="margin-left-0-5">Mark as complete</p>
                                 </sm-checkbox>
-                                <div class="task-list-item__task-number">ID: ${taskNo}</div>
+                                <div class="task-list-item__task-number">ID: ${task}</div>
                             </div>
                             <button class="button--danger icon-only margin-left-auto"onclick="removeThisTask()">
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
@@ -2022,8 +2022,8 @@
                 `;
             },
             internTaskCard(taskObj) {
-                const { uniqueId, projectCode, projectBranch, task } = taskObj
-                const { title, description } = RIBC.getTaskDetails(projectCode, projectBranch, task)
+                const { uniqueId, projectCode, branch, task } = taskObj
+                const { title, description } = RIBC.getTaskDetails(projectCode, branch, task)
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 return html`
                     <li class="task-card" data-unique-id="${uniqueId}">
@@ -2292,9 +2292,9 @@
                     </p>`)
                 }
                 if (taskListContainer === 'task_list') {
-                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskListItem(taskNo, getRef(taskListContainer))))
+                    branchTasks.slice(4).forEach((task) => tasks.push(render.taskListItem(task, getRef(taskListContainer))))
                 } else {
-                    branchTasks.slice(4).forEach((taskNo) => tasks.push(render.taskCard(taskNo)))
+                    branchTasks.slice(4).forEach((task) => tasks.push(render.taskCard(task)))
                 }
                 renderElem(getRef(taskListContainer), html`${tasks}`)
             }
@@ -2443,9 +2443,9 @@
                     reward
                 }
                 console.log(taskDetails)
-                const taskNo = RIBC.admin.addTaskInMap(appState.params.id, appState.params.branch)
-                RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, taskNo)
-                RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, taskNo)
+                const task = RIBC.admin.addTaskInMap(appState.params.id, appState.params.branch)
+                RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, task)
+                RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, task)
                 card.remove()
                 renderBranchTasks()
                 getRef('add_task').classList.remove('hidden')
@@ -2700,19 +2700,25 @@
 
         let sessionTaskRequests = new Set();
         function requestForTask(btn) {
-            getConfirmation('Do you want to apply for this task?', { confirmText: 'Apply' }).then((result) => {
-                if (result) {
-                    btn.textContent = 'Applied'
-                    btn.disabled = true
-                    const { projectCode, branch, taskNo } = btn.dataset
-                    RIBC.applyForTask(projectCode, branch, taskNo).then((result) => {
-                        notify('Applied successfully.', 'success')
-                        sessionTaskRequests.add({ projectCode, branch, task: taskNo })
-                    })
-                }
-            }).catch((error) => {
-                notify(error, 'error')
-            })
+            try {
+                floDapps.user.id
+                getConfirmation('Do you want to apply for this task?', { confirmText: 'Apply' }).then((result) => {
+                    if (result) {
+                        btn.textContent = 'Applied'
+                        btn.disabled = true
+                        const { projectCode, branch, task } = btn.dataset
+                        RIBC.applyForTask(projectCode, branch, task).then((result) => {
+                            notify('Applied successfully.', 'success')
+                            sessionTaskRequests.add({ projectCode, branch, task })
+                        })
+                    }
+                }).catch((error) => {
+                    notify(error, 'error')
+                })
+            } catch (err) {
+                floGlobals.tempUserTaskRequest = { projectCode, branch, task }
+                notify('Please login to apply for task.', 'error')
+            }
         }
 
         function toggleFilter() {
@@ -2781,16 +2787,16 @@
                 // store all the projects assigned to interns in array
                 const allTasks = RIBC.getAllTasks()
                 for (const taskKey in allTasks) {
-                    const [projectCode, branch, taskNo] = taskKey.split('_')
-                    const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, taskNo)
+                    const [projectCode, branch, task] = taskKey.split('_')
+                    const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task)
                     if (Array.isArray(assignedInterns) && assignedInterns.includes(myFloID)) {
                         assignedProjectsList.add(projectCode)
-                        console.log(RIBC.getTaskStatus(projectCode, branch, taskNo))
-                        if (RIBC.getTaskStatus(projectCode, branch, taskNo) === 'incomplete') {
+                        console.log(RIBC.getTaskStatus(projectCode, branch, task))
+                        if (RIBC.getTaskStatus(projectCode, branch, task) === 'incomplete') {
                             floGlobals.assignedTasks[floCrypto.randString(16, true)] = {
                                 projectCode,
-                                projectBranch: branch,
-                                task: taskNo
+                                branch: branch,
+                                task
                             }
                         }
                     }
@@ -2816,9 +2822,9 @@
                     if (e.target.closest('.send-update-button')) {
                         const taskCard = e.target.closest('.task-card')
                         currentTaskId = taskCard.dataset.uniqueId
-                        const { projectCode, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
+                        const { projectCode, branch, task } = floGlobals.assignedTasks[currentTaskId]
                         getRef('update_of_project').textContent = RIBC.getProjectDetails(projectCode).projectName
-                        getRef('update_of_task').textContent = RIBC.getTaskDetails(projectCode, projectBranch, task).title
+                        getRef('update_of_task').textContent = RIBC.getTaskDetails(projectCode, branch, task).title
                         openPopup('post_update_popup')
                     }
                 })
@@ -2969,13 +2975,13 @@
         getRef('request_type_selector').addEventListener('change', render.internRequests)
 
         function postUpdate() {
-            const { projectCode, projectBranch, task } = floGlobals.assignedTasks[currentTaskId]
+            const { projectCode, branch, task } = floGlobals.assignedTasks[currentTaskId]
             const description = getRef('update__brief').value.trim()
             const linkText = getRef('update__link').value.trim()
             const link = linkText !== '' ? linkText : null
             console.log(link)
             if (description !== '') {
-                RIBC.postInternUpdate({ projectCode, projectBranch, task, description, link })
+                RIBC.postInternUpdate({ projectCode, branch, task, description, link })
                     .then((result) => {
                         notify('Update posted', 'success')
                         closePopup()
@@ -3011,12 +3017,7 @@
                     return render.internCard(internName, floId, RIBC.getInternRating(floId))
                 })
             } else {
-                const options = {
-                    keys: ['internName'],
-                    threshold: 0.2
-                }
-                const fuse = new Fuse(arrayOfInterns, options)
-                filtered = fuse.search(searchKey).map(v => v.item).map(({ internName, floId }) => {
+                filtered = arrayOfInterns.filter(({ internName }) => internName.toLowerCase().includes(searchKey.toLowerCase())).map(({ internName, floId }) => {
                     return render.internCard(internName, floId, RIBC.getInternRating(floId))
                 })
             }

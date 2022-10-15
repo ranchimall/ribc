@@ -796,6 +796,7 @@ ul {
   padding: 0 1rem;
   overflow-y: auto;
   padding-bottom: 3rem;
+  align-content: flex-start;
 }
 #landing sm-carousel {
   width: min(100%, 64rem);
@@ -844,6 +845,19 @@ ul {
 .landing__card:nth-of-type(2) p {
   margin-top: auto;
   color: rgba(255, 255, 255, 0.9);
+}
+
+#task_display_wrapper {
+  margin: 0 auto;
+  width: min(100%, 64rem);
+}
+#task_display_wrapper > :first-child {
+  width: min(14rem, 100%);
+  align-content: start;
+}
+#task_display_wrapper > :last-child {
+  width: 32rem;
+  flex: 1;
 }
 
 #sign_in,
@@ -984,8 +998,7 @@ ul {
   padding: max(2vw, 1rem);
   border-radius: 0.5rem;
   background-color: rgba(var(--foreground-color), 1);
-  margin: 0 auto;
-  width: min(100%, 48rem);
+  width: 100%;
   border: solid 0.2rem rgba(var(--text-color), 0.8);
 }
 .display-task__category {
