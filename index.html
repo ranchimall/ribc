@@ -344,12 +344,11 @@
         <article id="sub_page_container">
             <section id="dashboard_page" class="inner-page hidden">
                 <div class="flex flex-direction-column gap-2">
-                    <div id="application_card" class="card flex align-center space-between general-only hidden">
+                    <!-- <div id="application_card" class="card flex align-center space-between general-only hidden">
                         <div>
                             <h2 class="margin-bottom-0-5">Looking for an internship?</h2>
                             <p class="margin-bottom-1">Apply for internships at RanchiMall</p>
-                            <button class="button button--primary"
-                                onclick="openPopup('apply_for_internship_popup')">Apply
+                            <button class="button button--primary" onclick="openPopup('apply_for_task_popup')">Apply
                                 Now</button>
                         </div>
                         <svg class="illustration" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
@@ -438,7 +437,7 @@
                                 transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
                             <circle cx="386.2497" cy="616.61448" r="34" fill="#e6e6e6" />
                         </svg>
-                    </div>
+                    </div> -->
                     <section id="pinned_project_section" class="w-100">
                         <h4>Pinned</h4>
                         <div id="pinned_projects" class="observe-empty-state"></div>
@@ -835,10 +834,10 @@
             <h3>Add new intern</h3>
         </header>
         <sm-form>
-            <sm-input id="intern_name_field" placeholder="Name" required></sm-input>
             <sm-input id="intern_flo_id_field" placeholder="FLO address" error-text="Invalid FLO address" data-flo-id
-                required>
+                required autofocus>
             </sm-input>
+            <sm-input id="intern_name_field" placeholder="Name" required></sm-input>
             <sm-button variant="primary" onclick="addInternToList()" disabled>
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -902,7 +901,7 @@
         </sm-form>
     </sm-popup>
 
-    <sm-popup id="apply_for_internship_popup">
+    <sm-popup id="apply_for_task_popup">
         <header slot="header" class="popup__header">
             <button class="popup__header__close" onclick="closePopup()">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -911,12 +910,18 @@
                         d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
                 </svg>
             </button>
-            <h3>Apply for internship</h3>
+            <h3>Apply for task</h3>
         </header>
         <sm-form>
+            <div class="grid">
+                <h5>Applying for</h5>
+                <h3 id="intern_apply__task"></h3>
+            </div>
             <sm-input id="intern_apply__name" placeholder="Full name" autofocus required animate></sm-input>
             <sm-textarea id="intern_apply__brief" placeholder="Tell us about yourself" rows="6" required></sm-textarea>
-            <sm-input id="intern_apply__link" placeholder="Link to your portfolio (optional)" animate></sm-input>
+            <sm-input id="intern_apply__resume_link" placeholder="Resume link" animate required></sm-input>
+            <sm-input id="intern_apply__portfolio_link" placeholder="Portfolio link (optional)" animate>
+            </sm-input>
             <div class="multi-state-button">
                 <sm-button id="intern_apply__button" title="post this update" variant="primary" disabled
                     onclick="applyForInternship()">
@@ -1168,7 +1173,7 @@
                     },
                 ],
                 {
-                    duration: 600,
+                    duration: floGlobals.prefersReducedMotion ? 0 : 600,
                     fill: "forwards",
                     easing: "ease-out",
                 }
@@ -1225,7 +1230,7 @@
         }
         const generalPages = ['sign_up', 'sign_in', 'loading', 'landing', 'task_details']
         function routeTo(targetPage, options = {}) {
-            const { firstLoad, hashChange } = options
+            const { firstLoad } = options
             const routingAnimation = { in: null, out: null }
             let pageId
             let subPageId1
@@ -1269,6 +1274,32 @@
             }
             if (params)
                 appState.params = params
+            if (firstLoad && floGlobals.tempUserTaskRequest && RIBC.getAllTasks()[floGlobals.tempUserTaskRequest]) {
+                if (typeOfUser === 'general') {
+                    getRef('intern_apply__task').textContent = RIBC.getAllTasks()[floGlobals.tempUserTaskRequest].title
+                    openPopup('apply_for_task_popup', true)
+                } else if (typeOfUser === 'intern') {
+                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
+                        return floGlobals.tempUserTaskRequest === `${projectCode}_${branch}_${task}`
+                    })
+                    if (hasApplied) {
+                        notify('You have already applied for this task', 'error')
+                    } else {
+                        const [projectCode, branch, task] = floGlobals.tempUserTaskRequest.split('_')
+                        const { title } = RIBC.getTaskDetails(projectCode, branch, task)
+                        getConfirmation(`Do you want to apply for "${title}"`, { confirmText: 'Apply' }).then((result) => {
+                            if (result) {
+                                RIBC.applyForTask(projectCode, branch, task).then((result) => {
+                                    notify('Applied successfully.', 'success')
+                                    sessionTaskRequests.add({ projectCode, branch, task })
+                                })
+                            }
+                        }).catch((error) => {
+                            notify(error, 'error')
+                        })
+                    }
+                }
+            }
             switch (pageId) {
                 case 'landing':
                     if (!params) {
@@ -1313,14 +1344,9 @@
                                 `: ''}    
                             </div>
                         </div>
-                        <button class="button button--primary" dataset=${{ projectCode, branch, task }} onclick="requestForTask(this)">Apply Now</button>
+                        <button class="button button--primary" .dataset=${{ taskId: params.id }} onclick="requestForTask(this)">Apply Now</button>
                     `)
                 } break;
-                case 'sign_in':
-                    setTimeout(() => {
-                        getRef('private_key_field').focusIn()
-                    }, 0);
-                    break;
                 case 'sign_up':
                     const { floID, privKey } = floCrypto.generateNewID()
                     getRef('generated_flo_address').value = floID
@@ -1430,13 +1456,19 @@
                 let ogOverflow = getRef(pageId).parentNode.style.overflow
                 getRef(pageId).parentNode.style.overflow = 'hidden';
                 if (appState.lastPage) {
-                    getRef(appState.lastPage).animate(routingAnimation.out, { duration: 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
+                    getRef(appState.lastPage).animate(routingAnimation.out, { duration: floGlobals.prefersReducedMotion ? 0 : 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
                         e.target.effect.target.classList.add('hidden')
                     }
                 }
                 getRef(pageId).classList.remove('hidden')
-                getRef(pageId).animate(routingAnimation.in, { duration: 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
+                getRef(pageId).animate(routingAnimation.in, { duration: floGlobals.prefersReducedMotion ? 0 : 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
                     getRef(pageId).parentNode.style.overflow = ogOverflow;
+                    switch (pageId) {
+                        case 'sign_in':
+                            getRef('private_key_field').focusIn()
+
+                            break;
+                    }
                 }
                 appState.lastPage = pageId
             }
@@ -1560,7 +1592,7 @@
             const button = typeof id === 'string' ? getRef(id) : id;
             button.disabled = show;
             const animOptions = {
-                duration: 200,
+                duration: floGlobals.prefersReducedMotion ? 0 : 200,
                 fill: 'forwards',
                 easing: 'ease'
             }
@@ -1678,7 +1710,7 @@
             return new Promise((resolve) => {
                 const { mobileView = false, entry, exit } = options
                 const animOptions = {
-                    duration: 150,
+                    duration: floGlobals.prefersReducedMotion ? 0 : 150,
                     easing: 'ease',
                     fill: 'forwards'
                 }
@@ -1721,6 +1753,11 @@
             })
             return result;
         }
+        const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        reduceMotionQuery.addEventListener('change', () => {
+            floGlobals.prefersReducedMotion = reduceMotionQuery.matches
+        });
+        floGlobals.prefersReducedMotion = reduceMotionQuery.matches
     </script>
     <script id="UI_functions">
         floGlobals.taskCategories = {
@@ -1807,11 +1844,11 @@
                 let applyButton
                 if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
                     const taskRequests = RIBC.getTaskRequests();
-                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode: requestProjectCode, branch, task }) => {
-                        return `${appState.params.id}_${branch}_${task}` === `${requestProjectCode}_${appState.params.branch}_${task}`
+                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task: taskId }) => {
+                        return `${appState.params.id}_${appState.params.branch}_${task}` === `${projectCode}_${branch}_${taskId}`
                     })
                     applyButton = html`
-                        <button class="button button--primary apply-button" .dataset=${{ projectCode: appState.params.id, branch: appState.params.branch, task }} ?disabled=${hasApplied}>
+                        <button class="button button--primary apply-button" .dataset=${{ taskId: `${appState.params.id}_${branch}_${task}` }} ?disabled=${hasApplied}>
                             ${hasApplied ? 'Applied' : 'Apply'}
                         </button>`;
                 }
@@ -2021,8 +2058,8 @@
                     </li>            
                 `;
             },
-            internTaskCard(taskObj) {
-                const { uniqueId, projectCode, branch, task } = taskObj
+            internTaskCard(uniqueId) {
+                const { projectCode, branch, task } = RIBC.getAllTasks()[uniqueId]
                 const { title, description } = RIBC.getTaskDetails(projectCode, branch, task)
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 return html`
@@ -2375,7 +2412,7 @@
                         opacity: '1'
                     },
                 ], {
-                    duration: 200,
+                    duration: floGlobals.prefersReducedMotion ? 0 : 200,
                     easing: 'ease'
                 })
                     .onfinish = () => {
@@ -2392,7 +2429,7 @@
                                     opacity: '0'
                                 },
                             ], {
-                                duration: 100,
+                                duration: floGlobals.prefersReducedMotion ? 0 : 100,
                                 easing: 'ease'
                             }).onfinish = () => {
                                 getRef('task_context').classList.add('hidden')
@@ -2700,13 +2737,13 @@
 
         let sessionTaskRequests = new Set();
         function requestForTask(btn) {
+            const [projectCode, branch, task] = btn.dataset.taskId
             try {
                 floDapps.user.id
                 getConfirmation('Do you want to apply for this task?', { confirmText: 'Apply' }).then((result) => {
                     if (result) {
                         btn.textContent = 'Applied'
                         btn.disabled = true
-                        const { projectCode, branch, task } = btn.dataset
                         RIBC.applyForTask(projectCode, branch, task).then((result) => {
                             notify('Applied successfully.', 'success')
                             sessionTaskRequests.add({ projectCode, branch, task })
@@ -2716,7 +2753,8 @@
                     notify(error, 'error')
                 })
             } catch (err) {
-                floGlobals.tempUserTaskRequest = { projectCode, branch, task }
+                floGlobals.tempUserTaskRequest = btn.dataset.taskId;
+                location.hash = '#/sign_in'
                 notify('Please login to apply for task.', 'error')
             }
         }
@@ -2751,7 +2789,7 @@
             }
         })
 
-        floGlobals.assignedTasks = {}
+        floGlobals.assignedTasks = new Set()
 
         function renderAllElements() {
 
@@ -2777,7 +2815,7 @@
 
             // Intern's view
 
-            let assignedProjectsList = new Set();
+            floGlobals.assignedProjectsList = new Set();
             if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
@@ -2790,31 +2828,19 @@
                     const [projectCode, branch, task] = taskKey.split('_')
                     const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task)
                     if (Array.isArray(assignedInterns) && assignedInterns.includes(myFloID)) {
-                        assignedProjectsList.add(projectCode)
-                        console.log(RIBC.getTaskStatus(projectCode, branch, task))
+                        floGlobals.assignedProjectsList.add(projectCode)
                         if (RIBC.getTaskStatus(projectCode, branch, task) === 'incomplete') {
-                            floGlobals.assignedTasks[floCrypto.randString(16, true)] = {
-                                projectCode,
-                                branch: branch,
-                                task
-                            }
+                            floGlobals.assignedTasks.add(taskKey);
                         }
                     }
                 }
 
-                let parent = document.getElementById('assigned_task_list');
-                if (!Object.keys(floGlobals.assignedTasks).length) {
-                    parent.textContent = 'No task assigned yet.';
-                } else {
-                    // Render assigned task cards
-                    const taskCards = []
-                    for (const task in floGlobals.assignedTasks) {
-                        taskCards.push(render.internTaskCard({
-                            'uniqueId': task,
-                            ...floGlobals.assignedTasks[task]
-                        }))
-                    }
+                // Render assigned task cards
+                if (floGlobals.assignedTasks.size) {
+                    const taskCards = floGlobals.assignedTasks.map(id => render.internTaskCard(task))
                     renderElem(getRef('assigned_task_list'), html`${taskCards}`)
+                } else {
+                    getRef('assigned_task_list').textContent = 'No task assigned yet.';
                 }
 
                 // Event delegate clicks on intern tasks
@@ -2822,7 +2848,7 @@
                     if (e.target.closest('.send-update-button')) {
                         const taskCard = e.target.closest('.task-card')
                         currentTaskId = taskCard.dataset.uniqueId
-                        const { projectCode, branch, task } = floGlobals.assignedTasks[currentTaskId]
+                        const { projectCode, branch, task } = floGlobals.assignedTasks.get(currentTaskId)
                         getRef('update_of_project').textContent = RIBC.getProjectDetails(projectCode).projectName
                         getRef('update_of_task').textContent = RIBC.getTaskDetails(projectCode, branch, task).title
                         openPopup('post_update_popup')
@@ -2849,7 +2875,7 @@
                             opacity: 0
                         },
                     ], {
-                        duration: 300,
+                        duration: floGlobals.prefersReducedMotion ? 0 : 300,
                         easing: 'ease'
                     }).onfinish = () => {
                         requestCard.remove()
@@ -2938,15 +2964,15 @@
                     elem.classList.remove('hidden')
                 })
             }
-            if (typeOfUser === 'general') {
-                const internshipRequests = RIBC.getInternRequests(false).reverse()
-                const hasPendingApplication = internshipRequests.find(request => !request.status)
-                if (internshipRequests.length === 0 || !hasPendingApplication) {
-                    getRef('application_card').classList.remove('hidden')
-                } else {
-                    getRef('application_card').classList.add('hidden')
-                }
-            }
+            // if (typeOfUser === 'general') {
+            //     const internshipRequests = RIBC.getInternRequests(false).reverse()
+            //     const hasPendingApplication = internshipRequests.find(request => !request.status)
+            //     if (internshipRequests.length === 0 || !hasPendingApplication) {
+            //         getRef('application_card').classList.remove('hidden')
+            //     } else {
+            //         getRef('application_card').classList.add('hidden')
+            //     }
+            // }
 
             renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 4).map((intern) => {
                 const { internName, floId, rating } = intern
@@ -2954,8 +2980,8 @@
             })}`);
 
             if (typeOfUser === 'intern') {
-                render.projectList(getRef('my_projects'), [...assignedProjectsList])
-                sortedProjectList = sortedProjectList.filter(val => !assignedProjectsList.has(val));
+                render.projectList(getRef('my_projects'), [...floGlobals.assignedProjectsList])
+                sortedProjectList = sortedProjectList.filter(val => !floGlobals.assignedProjectsList.has(val));
             }
             if (sortedProjectList.length > 0) {
                 getRef('other_projects').previousElementSibling.classList.remove('hidden')
@@ -2975,7 +3001,7 @@
         getRef('request_type_selector').addEventListener('change', render.internRequests)
 
         function postUpdate() {
-            const { projectCode, branch, task } = floGlobals.assignedTasks[currentTaskId]
+            const { projectCode, branch, task } = floGlobals.assignedTasks.get(currentTaskId)
             const description = getRef('update__brief').value.trim()
             const linkText = getRef('update__link').value.trim()
             const link = linkText !== '' ? linkText : null
@@ -3037,15 +3063,18 @@
             buttonLoader(getRef('intern_apply__button'), true)
             const name = getRef('intern_apply__name').value.trim();
             const brief = getRef('intern_apply__brief').value.trim();
-            const link = getRef('intern_apply__link').value.trim();
+            const resumeLink = getRef('intern_apply__resume_link').value.trim();
+            const portfolioLink = getRef('intern_apply__portfolio_link').value.trim();
             const details = {
                 brief,
-                link
+                resumeLink,
+                portfolioLink: portfolioLink !== '' ? portfolioLink : null,
+                task: floGlobals.tempUserTaskRequest
             }
             RIBC.applyForIntern(name, details)
                 .then((result) => {
                     notify('Application submitted', 'success')
-                    getRef('application_card').classList.add('hidden')
+                    // getRef('application_card').classList.add('hidden')
                     closePopup()
                 })
                 .catch((error) => {

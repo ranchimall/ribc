@@ -105,25 +105,6 @@
     Ribc.getInternRating = (floID) => _.internRating[floID];
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
     Ribc.getAllTasks = () => _.projectTaskDetails
-    // Ribc.updateProjectIds = () => {
-    //     for (const projectKey in _.projectTaskStatus) {
-    //         const splitTaskKey = projectKey.split("_")
-    //         updateObjectKey(_.projectTaskStatus, projectKey, splitTaskKey.slice(0, 3).join("-") + '_' + splitTaskKey.slice(3).join('_'))
-    //     }
-    // }
-    // Ribc.showProjectMap = () => {
-    //     for (const projectKey in _.projectTaskStatus) {
-    //         console.log(projectKey)
-    //     }
-    // }
-
-    // function updateObjectKey(object, oldKey, newKey) {
-    //     if (oldKey !== newKey) {
-    //         Object.defineProperty(object, newKey,
-    //             Object.getOwnPropertyDescriptor(object, oldKey));
-    //         delete object[oldKey];
-    //     }
-    // }
 
     Admin.updateObjects = () => new Promise((resolve, reject) => {
         floCloudAPI.updateObjectData("RIBC")
