@@ -1292,6 +1292,7 @@
                                 RIBC.applyForTask(projectCode, branch, task).then((result) => {
                                     notify('Applied successfully.', 'success')
                                     sessionTaskRequests.add({ projectCode, branch, task })
+                                    floGlobals.tempUserTaskRequest = null
                                 })
                             }
                         }).catch((error) => {
@@ -2746,7 +2747,8 @@
                         btn.disabled = true
                         RIBC.applyForTask(projectCode, branch, task).then((result) => {
                             notify('Applied successfully.', 'success')
-                            sessionTaskRequests.add({ projectCode, branch, task })
+                            sessionTaskRequests.add({ projectCode, branch, task });
+                            floGlobals.tempUserTaskRequests = null;
                         })
                     }
                 }).catch((error) => {
@@ -3081,6 +3083,7 @@
                     notify(error, 'error')
                 }).finally(() => {
                     buttonLoader(getRef('intern_apply__button'), false)
+                    floGlobals.tempUserTaskRequest = null
                 })
         }
 
