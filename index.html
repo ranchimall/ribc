@@ -786,7 +786,9 @@
                         d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
                 </svg>
             </button>
-            <h3 class="medium-block-0-5">Choose an intern</h3>
+            <h3 class="medium-block-0-5">Select interns</h3>
+            <button id="assign_interns_button" class="button button--primary" onclick="assignSelectedInterns()"
+                disabled>Assign</button>
         </header>
         <sm-input id="intern_search_field" placeholder="Search for interns" type="search" autofocus>
             <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -795,7 +797,7 @@
                     d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
             </svg>
         </sm-input>
-        <ul id="intern_list_container" class="observe-empty-state"></ul>
+        <div id="intern_list_container" class="observe-empty-state"></div>
         <h4 class="empty-state">No intern found</h4>
     </sm-popup>
 
@@ -1279,6 +1281,7 @@
                     getRef('intern_apply__task').textContent = RIBC.getAllTasks()[floGlobals.tempUserTaskRequest].title
                     openPopup('apply_for_task_popup', true)
                 } else if (typeOfUser === 'intern') {
+                    const taskRequests = RIBC.getTaskRequests();
                     const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
                         return floGlobals.tempUserTaskRequest === `${projectCode}_${branch}_${task}`
                     })
@@ -1849,7 +1852,7 @@
                         return `${appState.params.id}_${appState.params.branch}_${task}` === `${projectCode}_${branch}_${taskId}`
                     })
                     applyButton = html`
-                        <button class="button button--primary apply-button" .dataset=${{ taskId: `${appState.params.id}_${branch}_${task}` }} ?disabled=${hasApplied}>
+                        <button class="button button--primary apply-button" .dataset=${{ taskId: `${appState.params.id}_${appState.params.branch}_${task}` }} ?disabled=${hasApplied}>
                             ${hasApplied ? 'Applied' : 'Apply'}
                         </button>`;
                 }
@@ -1871,17 +1874,20 @@
                     </div>
                 `;
             },
-            internCard(internName, internFloId, internPoints) {
+            internCard(internFloId, { selectable = false } = {}) {
+                const internName = RIBC.getInternList()[internFloId]
+                const internPoints = RIBC.getInternRating(internFloId)
                 const initials = internName.split(' ').map(v => v.charAt(0)).join('');
                 return html`
-                    <li class="intern-card grid align-center interact" .dataset=${{ internFloId }} title="Intern Information">
+                    <label class="intern-card align-center interact" .dataset=${{ internFloId }} title="Intern Information">
+                        ${selectable ? html`<input type="checkbox" class="intern-card__checkbox" value=${internFloId}>` : ''}
                         <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                         <div class="intern-card__name capitalize">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
                             <h4 class="intern-card__score">${internPoints}</h4>
                             <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
                         </div>
-                    </li>`;
+                    </label>`;
             },
             internUpdateCard(update) {
                 const { floID, time, note, update: { projectCode, branch, task, description, link } } = update
@@ -2210,9 +2216,6 @@
         getRef('task_category_selector').addEventListener('change', (e) => {
             window.location.hash = `#/landing?category=${e.target.value}`;
         })
-
-        let allInternsList = [];
-        let highPerformingInterns = [];
         let pinnedProjects = [];
         let currentIntern;
         let currentTaskId;
@@ -2552,24 +2555,29 @@
         function removeThisTask() {
             getConfirmation("Are you sure to delete this task?", { confirmText: 'Delete' }).then((result) => {
                 if (result) {
-                    console.log(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     RIBC.admin.deleteTaskInMap(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     renderBranchTasks()
                 }
             })
         }
-        delegate(getRef('intern_list_container'), 'click', '.intern-card', (e) => {
+        floGlobals.selectedInterns = new Set()
+        delegate(getRef('intern_list_container'), 'change', '.intern-card', (e) => {
             const floId = e.target.closest('.intern-card').dataset.internFloId;
-            const internName = RIBC.getInternList()[floId]
-            const { projectName } = RIBC.getProjectDetails(appState.params.id)
-            if (RIBC.admin.assignInternToTask(floId, appState.params.id, appState.params.branch, currentTask.dataset.taskId)) {
-                notify(`${internName} assigned to ${projectName}`, 'success')
-                renderBranchTasks()
+            if (e.target.checked) {
+                floGlobals.selectedInterns.add(floId)
             } else {
-                notify('intern already assigned', 'error')
+                floGlobals.selectedInterns.delete(floId)
             }
-            closePopup()
+            getRef('assign_interns_button').disabled = !floGlobals.selectedInterns.size
         })
+        function assignSelectedInterns() {
+            floGlobals.selectedInterns.forEach(floId => {
+                RIBC.admin.assignInternToTask(floId, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+                renderBranchTasks()
+            })
+            notify(`Assigned task`, 'success')
+            closePopup()
+        }
 
         function renderAllInterns() {
             renderElem(getRef('all_interns_list'), filterInterns('', { sortByRating: true }))
@@ -2787,6 +2795,8 @@
                 case 'intern_list_popup':
                     renderElem(getRef('intern_list_container'), html``)
                     getRef('intern_search_field').value = ''
+                    floGlobals.selectedInterns.clear()
+                    getRef('assign_interns_button').disabled = true
                     break;
             }
         })
@@ -2802,23 +2812,10 @@
 
             pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
 
-            //creates cards for highest performing interns
-            //sort interns earned points
-            allInternsList = RIBC.getInternList();
-            highPerformingInterns = [];
-            for (let intern in allInternsList) {
-                highPerformingInterns.push({
-                    floId: intern,
-                    internName: allInternsList[intern],
-                    rating: RIBC.getInternRating(intern)
-                })
-            }
-            highPerformingInterns.sort((a, b) => b.rating - a.rating);
-
             // Intern's view
 
             floGlobals.assignedProjectsList = new Set();
-            if (allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
+            if (RIBC.getInternList()[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.remove('hidden')
@@ -2947,7 +2944,7 @@
             }
 
             // General only view for non admin and non intern
-            if (!allInternsList[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
+            if (!RIBC.getInternList()[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 document.querySelectorAll('.general-only').forEach((elem) => {
                     elem.classList.remove('hidden')
                 })
@@ -2975,11 +2972,12 @@
             //         getRef('application_card').classList.add('hidden')
             //     }
             // }
-
-            renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 4).map((intern) => {
-                const { internName, floId, rating } = intern
-                return render.internCard(internName, floId, rating)
-            })}`);
+            //creates cards for highest performing interns
+            //sort interns earned points
+            const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => {
+                return RIBC.getInternRating(b) - RIBC.getInternRating(a)
+            });
+            renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 4).map((floId) => render.internCard(floId))}`);
 
             if (typeOfUser === 'intern') {
                 render.projectList(getRef('my_projects'), [...floGlobals.assignedProjectsList])
@@ -3028,25 +3026,25 @@
                 availableInternsOnly = false
             } = options
             let filtered = [];
-            const allInterns = RIBC.getInternList()
-            let arrayOfInterns = []
-            for (const intern in allInterns) {
-                arrayOfInterns.push({
-                    floId: intern,
-                    internName: allInternsList[intern]
-                })
-            }
-            arrayOfInterns.sort((a, b) => a.internName.toLowerCase().localeCompare(b.internName.toLowerCase()))
+            const allInterns = RIBC.getInternList();
+            const highPerformingInterns = Object.keys(allInterns).sort((a, b) => {
+                return RIBC.getInternRating(b) - RIBC.getInternRating(a)
+            });
+            let arrayOfInterns = Object.keys(allInterns).sort((a, b) => {
+                return allInterns[a].toLowerCase().localeCompare(allInterns[b].toLowerCase())
+            })
             if (availableInternsOnly) {
-                arrayOfInterns = arrayOfInterns.filter(intern => !RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId).includes(intern.floId))
+                arrayOfInterns = arrayOfInterns.filter(intern => !RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId)?.includes(intern))
             }
             if (searchKey === '') {
-                filtered = (sortByRating ? highPerformingInterns : arrayOfInterns).map(({ internName, floId }) => {
-                    return render.internCard(internName, floId, RIBC.getInternRating(floId))
+                filtered = (sortByRating ? highPerformingInterns : arrayOfInterns).map(floId => {
+                    return render.internCard(floId, { selectable: availableInternsOnly })
                 })
             } else {
-                filtered = arrayOfInterns.filter(({ internName }) => internName.toLowerCase().includes(searchKey.toLowerCase())).map(({ internName, floId }) => {
-                    return render.internCard(internName, floId, RIBC.getInternRating(floId))
+                filtered = filteredMap(arrayOfInterns, (floId) => {
+                    if (allInterns[floId].toLowerCase().includes(searchKey.toLowerCase())) {
+                        return render.internCard(floId, { selectable: availableInternsOnly })
+                    }
                 })
             }
             return html`${filtered}`
