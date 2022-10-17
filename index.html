@@ -127,14 +127,14 @@
             </div>
         </div>
         <div id="task_details" class="inner-page hidden align-content-start">
-            <a href="#/landing" class="button icon-only align-self-start" title="Go back">
+            <button class="button icon-only align-self-start" onclick="history.back()" title="Go back">
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
                     fill="#000000">
                     <path d="M0 0h24v24H0V0z" fill="none"></path>
                     <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z">
                     </path>
                 </svg>
-            </a>
+            </button>
             <div id="task_details_wrapper" class="flex flex-direction-column gap-1-5"></div>
         </div>
         <article id="sign_in" class="inner-page hidden">
@@ -198,22 +198,7 @@
                         <sm-copy id="generated_private_key"></sm-copy>
                     </div>
                 </div>
-                <div class="flex gap-0-5">
-                    <button class="button" style="flex-shrink: 0;" onclick="downloadGeneratedCredentials()">
-                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg"
-                            enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px"
-                            fill="#000000">
-                            <g>
-                                <rect fill="none" height="24" width="24" />
-                            </g>
-                            <g>
-                                <path
-                                    d="M18,15v3H6v-3H4v3c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2v-3H18z M17,11l-1.41-1.41L13,12.17V4h-2v8.17L8.41,9.59L7,11l5,5 L17,11z" />
-                            </g>
-                        </svg>
-                        Download</button>
-                    <button id="sign_up_button" class="button button--primary w-100">Sign in with these</button>
-                </div>
+                <button id="sign_up_button" class="button button--primary w-100">Sign in with these credentials</button>
                 <p class="margin-top-1">You can use these FLO credentials with other RanchiMall apps
                     too. </p>
             </section>
@@ -344,100 +329,6 @@
         <article id="sub_page_container">
             <section id="dashboard_page" class="inner-page hidden">
                 <div class="flex flex-direction-column gap-2">
-                    <!-- <div id="application_card" class="card flex align-center space-between general-only hidden">
-                        <div>
-                            <h2 class="margin-bottom-0-5">Looking for an internship?</h2>
-                            <p class="margin-bottom-1">Apply for internships at RanchiMall</p>
-                            <button class="button button--primary" onclick="openPopup('apply_for_task_popup')">Apply
-                                Now</button>
-                        </div>
-                        <svg class="illustration" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg"
-                            width="753.87469" height="703.82827" viewBox="0 0 753.87469 703.82827"
-                            xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <path
-                                d="M578.47505,103.95771l-23.06843,12.58664L271.19846,271.61447,248.13,284.2011a48.1793,48.1793,0,0,0-19.1955,65.29607L440.57765,737.39072a48.17922,48.17922,0,0,0,65.296,19.19561l.05958-.03251L836.15907,576.37545l.05958-.03251a48.17924,48.17924,0,0,0,19.19553-65.296L643.77106,123.15338A48.17929,48.17929,0,0,0,578.47505,103.95771Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#f2f2f2" />
-                            <path
-                                d="M585.11115,116.11916l-27.323,14.908L282.08828,281.455,254.7657,296.36278a34.30947,34.30947,0,0,0-13.66965,46.4988L452.73916,730.75513a34.30947,34.30947,0,0,0,46.4988,13.66952l.05958-.0325L829.5234,564.21377l.06-.03274a34.30935,34.30935,0,0,0,13.66926-46.49851L631.60954,129.789A34.30936,34.30936,0,0,0,585.11115,116.11916Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#fff" />
-                            <path
-                                d="M589.66653,236.52147,466.505,303.72109a8.01411,8.01411,0,1,1-7.677-14.07012l123.16157-67.19962a8.01411,8.01411,0,1,1,7.677,14.07012Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#f2f2f2" />
-                            <path
-                                d="M631.641,244.43106,479.45984,327.46442a8.01411,8.01411,0,0,1-7.677-14.07012l152.18119-83.03336a8.01411,8.01411,0,1,1,7.677,14.07012Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#f2f2f2" />
-                            <path
-                                d="M415.87223,275.74837l-113.5479,61.95419a3.84082,3.84082,0,0,0-1.53151,5.21006L349.14436,431.53a3.84075,3.84075,0,0,0,5.21,1.5317l113.5479-61.95419a3.84075,3.84075,0,0,0,1.53153-5.21l-48.35154-88.61735A3.84081,3.84081,0,0,0,415.87223,275.74837Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#f2f2f2" />
-                            <path
-                                d="M650.7763,348.96263,483.723,440.11051a8.01411,8.01411,0,1,1-7.677-14.07012l167.05327-91.14788a8.01411,8.01411,0,1,1,7.677,14.07012Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#f2f2f2" />
-                            <path
-                                d="M692.7508,356.87223,496.67791,463.85384a8.01411,8.01411,0,0,1-7.677-14.07012L685.07384,342.80211a8.01411,8.01411,0,1,1,7.677,14.07012Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#f2f2f2" />
-                            <circle cx="197.03853" cy="382.67177" r="34" fill="#f2f2f2" />
-                            <path
-                                d="M928.81234,263.78816H552.494a48.17927,48.17927,0,0,0-48.125,48.12512V753.78907a48.17922,48.17922,0,0,0,48.125,48.12506H928.81234a48.17922,48.17922,0,0,0,48.125-48.12506V311.91328A48.17927,48.17927,0,0,0,928.81234,263.78816Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <path
-                                d="M928.81283,277.64235H552.494a34.30947,34.30947,0,0,0-34.271,34.27093V753.78907A34.30947,34.30947,0,0,0,552.494,788.06H928.81283a34.30936,34.30936,0,0,0,34.27051-34.27088V311.91328A34.30937,34.30937,0,0,0,928.81283,277.64235Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#fff" />
-                            <path
-                                d="M875.14319,385.51745H734.84151a8.01411,8.01411,0,0,1,0-16.02823H875.14319a8.01412,8.01412,0,1,1,0,16.02823Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#6c63ff" />
-                            <path
-                                d="M908.20141,412.56508H734.84151a8.01411,8.01411,0,1,1,0-16.02822h173.3599a8.01411,8.01411,0,0,1,0,16.02822Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#6c63ff" />
-                            <path
-                                d="M703.79234,336.71073H574.44224a3.8408,3.8408,0,0,0-3.83984,3.84v100.95a3.84075,3.84075,0,0,0,3.83984,3.84h129.3501a3.84076,3.84076,0,0,0,3.83984-3.84v-100.95A3.84081,3.84081,0,0,0,703.79234,336.71073Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <path
-                                d="M609.92406,398.70111a34.087,34.087,0,0,1-8.804,23.076c-5.656,6.20712-14.07618,10.3236-22.57327,8.62043-7.82416-1.56829-14.18219-8.4067-13.389-16.6795a12.356,12.356,0,0,1,15.2668-11.09515c7.43265,1.92885,10.39415,12.64095,4.20051,17.669-1.4862,1.2065-3.62136-.90359-2.12132-2.12132,4.0944-3.32385,2.8295-10.5954-2.11244-12.419-5.75371-2.12311-11.84978,2.44324-12.26355,8.32554-.49057,6.97428,4.85221,12.22646,11.40422,13.463,7.08789,1.3377,14.11532-2.29,18.91808-7.29718a30.95507,30.95507,0,0,0,8.474-21.54183,1.5009,1.5009,0,0,1,3,0Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#2f2e41" />
-                            <circle cx="416.15529" cy="266.1673" r="53.51916" fill="#6c63ff" />
-                            <path
-                                d="M636.47981,387.08916l-.05566-2c3.7207-.10352,7.001-.33692,9.46582-2.1377a6.14794,6.14794,0,0,0,2.38134-4.52832,3.51432,3.51432,0,0,0-1.15283-2.89453c-1.63623-1.38184-4.269-.93457-6.188-.05469l-1.65478.75879,3.17334-23.19043,1.98144.27149-2.69922,19.72656c2.60743-.7666,5.02344-.43652,6.67823.96094a5.471,5.471,0,0,1,1.86035,4.49218,8.13264,8.13264,0,0,1-3.2002,6.07325C643.90266,386.88115,639.78694,386.99638,636.47981,387.08916Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#2f2e41" />
-                            <rect x="431.16715" y="256.92907" width="10.77148" height="2" fill="#2f2e41" />
-                            <rect x="397.16715" y="256.92907" width="10.77148" height="2" fill="#2f2e41" />
-                            <path
-                                d="M609.57212,445.34074a53.00636,53.00636,0,0,1,12.89014-5.93,8.56789,8.56789,0,0,1,.02-4.71,9.42609,9.42609,0,0,1,9.12988-6.63h13.04a9.45955,9.45955,0,0,1,9.15039,6.64,8.532,8.532,0,0,1,.01953,4.7,53.16732,53.16732,0,0,1,12.89014,5.93Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#2f2e41" />
-                            <path
-                                d="M700.52232,344.39072a11.57143,11.57143,0,0,0-3.52979-2.87,8.36739,8.36739,0,0,0-3.8501-.95,8.77158,8.77158,0,0,0-5.10986,1.72c-4.07031,2.88-6.89014,9.09-6.89014,16.28,0,9.02,4.43995,16.5,10.21,17.80005a8.25321,8.25321,0,0,0,1.79.2c6.60987,0,12-8.07,12-18C705.14243,352.81077,703.33238,347.68076,700.52232,344.39072Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#3f3d56" />
-                            <path
-                                d="M590.6024,341.86076h-.00977a8.57836,8.57836,0,0,0-4.4502-1.29,8.36738,8.36738,0,0,0-3.85009.95,11.57143,11.57143,0,0,0-3.52979,2.87l-.01025.01c-2.79981,3.29-4.60987,8.42-4.60987,14.17,0,7.76,3.27979,14.38,7.87989,16.91a8.54175,8.54175,0,0,0,4.12011,1.09,7.72431,7.72431,0,0,0,.96-.06h.00976c6.16016-.74,11.03027-8.5,11.03027-17.94C598.14243,351.01072,595.01255,344.52073,590.6024,341.86076Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#3f3d56" />
-                            <path
-                                d="M582.77242,373.76a1.50127,1.50127,0,0,0,1.42151-1.98,58.49864,58.49864,0,1,1,112.68726-6.5747,1.50006,1.50006,0,0,0,2.93554.61914A61.50091,61.50091,0,1,0,581.35116,372.739,1.50077,1.50077,0,0,0,582.77242,373.76Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#3f3d56" />
-                            <path
-                                d="M666.10324,329.57746c2.11924,2.89278,1.07447,6.79121-1.15837,9.28528-2.90548,3.24541-7.53877,3.45016-11.5618,2.8478-4.51431-.67591-9.3026-2.7909-13.87293-1.3656-3.89537,1.2148-6.67418,4.74793-10.7211,5.63537-3.589.787-7.88081-.25477-9.139-4.08016-.60459-1.83823,2.29142-2.6261,2.89284-.79751.81395,2.47478,4.32865,2.42543,6.34145,1.74012,3.22689-1.09867,5.71374-3.77105,8.8854-5.04749,3.73933-1.50491,7.79621-.82549,11.60323.03181,3.58831.808,7.718,2.006,11.29267.49665,2.64515-1.1169,4.74985-4.635,2.84717-7.23211-1.14219-1.5591,1.45985-3.05738,2.59042-1.51416Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#2f2e41" />
-                            <path
-                                d="M874.932,513.49157H684.63034a8.01411,8.01411,0,1,1,0-16.02823H874.932a8.01412,8.01412,0,0,1,0,16.02823Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <path
-                                d="M907.99023,540.5392H684.63034a8.01412,8.01412,0,1,1,0-16.02823H907.99023a8.01412,8.01412,0,1,1,0,16.02823Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <path
-                                d="M874.932,610.705H684.63034a8.01411,8.01411,0,1,1,0-16.02822H874.932a8.01411,8.01411,0,1,1,0,16.02822Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <path
-                                d="M907.99023,637.75267H684.63034a8.01411,8.01411,0,1,1,0-16.02823H907.99023a8.01411,8.01411,0,1,1,0,16.02823Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <circle cx="386.2497" cy="420.61448" r="34" fill="#e6e6e6" />
-                            <circle cx="386.2497" cy="518.61448" r="34" fill="#e6e6e6" />
-                            <path
-                                d="M874.932,708.705H684.63034a8.01411,8.01411,0,1,1,0-16.02822H874.932a8.01411,8.01411,0,1,1,0,16.02822Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <path
-                                d="M907.99023,735.75267H684.63034a8.01411,8.01411,0,1,1,0-16.02823H907.99023a8.01411,8.01411,0,1,1,0,16.02823Z"
-                                transform="translate(-223.06266 -98.08587)" fill="#e6e6e6" />
-                            <circle cx="386.2497" cy="616.61448" r="34" fill="#e6e6e6" />
-                        </svg>
-                    </div> -->
                     <section id="pinned_project_section" class="w-100">
                         <h4>Pinned</h4>
                         <div id="pinned_projects" class="observe-empty-state"></div>
@@ -611,10 +502,6 @@
                         <h4 class="empty-state">No interns added</h4>
                     </section>
                     <section class="flex flex-direction-column hidden">
-                        <strip-select id="request_type_selector" class="margin-left-auto margin-block-0-5">
-                            <strip-option value="task" selected>Task</strip-option>
-                            <strip-option value="intern">Internship</strip-option>
-                        </strip-select>
                         <ul id="requests_list" class="list-container observe-empty-state"></ul>
                         <h4 class="empty-state">No pending requests</h4>
                     </section>
@@ -645,18 +532,12 @@
                 </section>
             </section>
             <section id="applications" class="inner-page hidden align-content-start">
-                <p>Check status of your applications</p>
-                <div class="grid gap-0-5 hidden">
-                    <h4>Task applications</h4>
-                    <ul id="task_requests_list" class="grid gap-0-5 observe-empty-state"></ul>
-                    <h4 class="empty-state">No task requests</h4>
+                <div class="grid gap-0-3">
+                    <h3>Task applications</h3>
+                    <p>Check status of your applications</p>
                 </div>
-                <div class="grid gap-0-5">
-                    <h4>Internship applications</h4>
-                    <ul id="internship_requests_list" class="grid gap-0-5 observe-empty-state"></ul>
-                    <h4 class="empty-state">No applications</h4>
-                </div>
-
+                <ul id="task_requests_list" class="grid gap-0-5 observe-empty-state margin-top-1"></ul>
+                <h4 class="empty-state">No task requests</h4>
             </section>
             <section id="all_interns_page" class="inner-page hidden flex flex-direction-column align-start">
                 <div id="all_interns_page__header" class="grid gap-0-5">
@@ -920,8 +801,10 @@
                 <h3 id="intern_apply__task"></h3>
             </div>
             <sm-input id="intern_apply__name" placeholder="Full name" autofocus required animate></sm-input>
-            <sm-textarea id="intern_apply__brief" placeholder="Tell us about yourself" rows="6" required></sm-textarea>
-            <sm-input id="intern_apply__resume_link" placeholder="Resume link" animate required></sm-input>
+            <sm-input id="intern_apply__contact" placeholder="WhatsApp mobile number" pattern="[6789][0-9]{9}"
+                error-text="Please provide valid indian mobile number" required animate></sm-input>
+            <sm-textarea id="intern_apply__brief" placeholder="Educational background" rows="4" required></sm-textarea>
+            <!-- <sm-input id="intern_apply__resume_link" placeholder="Resume link (optional)" animate></sm-input> -->
             <sm-input id="intern_apply__portfolio_link" placeholder="Portfolio link (optional)" animate>
             </sm-input>
             <div class="multi-state-button">
@@ -1102,10 +985,10 @@
                     options.pinned = true
                     break;
             }
-            getRef("notification_drawer").push(message, { icon, ...options });
             if (mode === 'error') {
                 console.error(message)
             }
+            return getRef("notification_drawer").push(message, { icon, ...options });
         }
 
         // detect browser version
@@ -1261,7 +1144,7 @@
 
             if (!document.querySelector(`#${pageId}`)?.classList.contains('inner-page')) return
             try {
-                if (floDapps.user.id && (generalPages.includes(pageId))) {
+                if (floDapps.user.id && (['sign_up', 'sign_in', 'loading', 'landing'].includes(pageId))) {
                     history.replaceState(null, null, '#/dashboard_page');
                     pageId = 'dashboard_page'
                 }
@@ -1277,32 +1160,7 @@
             if (params)
                 appState.params = params
             if (firstLoad && floGlobals.tempUserTaskRequest && RIBC.getAllTasks()[floGlobals.tempUserTaskRequest]) {
-                if (typeOfUser === 'general') {
-                    getRef('intern_apply__task').textContent = RIBC.getAllTasks()[floGlobals.tempUserTaskRequest].title
-                    openPopup('apply_for_task_popup', true)
-                } else if (typeOfUser === 'intern') {
-                    const taskRequests = RIBC.getTaskRequests();
-                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task }) => {
-                        return floGlobals.tempUserTaskRequest === `${projectCode}_${branch}_${task}`
-                    })
-                    if (hasApplied) {
-                        notify('You have already applied for this task', 'error')
-                    } else {
-                        const [projectCode, branch, task] = floGlobals.tempUserTaskRequest.split('_')
-                        const { title } = RIBC.getTaskDetails(projectCode, branch, task)
-                        getConfirmation(`Do you want to apply for "${title}"`, { confirmText: 'Apply' }).then((result) => {
-                            if (result) {
-                                RIBC.applyForTask(projectCode, branch, task).then((result) => {
-                                    notify('Applied successfully.', 'success')
-                                    sessionTaskRequests.add({ projectCode, branch, task })
-                                    floGlobals.tempUserTaskRequest = null
-                                })
-                            }
-                        }).catch((error) => {
-                            notify(error, 'error')
-                        })
-                    }
-                }
+                requestForTask()
             }
             switch (pageId) {
                 case 'landing':
@@ -1320,6 +1178,13 @@
                     if (!params || !params.id) return;
                     const [projectCode, branch, task] = params.id.split('_')
                     const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
+                    let hasApplied = false
+                    try {
+                        floDapps.user.id
+                        hasApplied = [...RIBC.getTaskRequests(), ...sessionTaskRequests].find(({ details }) => {
+                            return params.id === details.taskId
+                        })
+                    } catch (e) { }
                     renderElem(getRef('task_details_wrapper'), html`
                         <div class="grid gap-1">
                             <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
@@ -1348,7 +1213,9 @@
                                 `: ''}    
                             </div>
                         </div>
-                        <button class="button button--primary" .dataset=${{ taskId: params.id }} onclick="requestForTask(this)">Apply Now</button>
+                        ${!hasApplied ? html`
+                            <button class="button button--primary" .dataset=${{ taskId: params.id }} onclick="requestForTask(this)">Apply Now</button>
+                            `: ''}
                     `)
                 } break;
                 case 'sign_up':
@@ -1386,7 +1253,7 @@
                     renderInternUpdates(matchedUpdates)
                 } break;
                 case 'applications':
-                    render.internApplications()
+                    render.taskApplications()
                     break;
                 case 'all_interns_page':
                     renderAllInterns()
@@ -1749,7 +1616,7 @@
             target.type = target.type === 'password' ? 'text' : 'password';
             target.focusIn()
         }
-        function filteredMap(array, mapFn) {
+        function filterMap(array, mapFn) {
             const result = [];
             array.forEach((element, index) => {
                 const mapped = mapFn(element, index)
@@ -1779,7 +1646,7 @@
                 return html`
                     <li class=${`display-task`}>
                         <div class="flex align-center space-between">
-                            <div class="display-task__category">${floGlobals.taskCategories[category]}</div>
+                            <a class="display-task__category" href=${`#/landing?category=${category}`} title=${`See all ${floGlobals.taskCategories[category]} tasks`}>${floGlobals.taskCategories[category]}</a>
                             <a href=${`#/task_details?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
                                 View details
                                 <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
@@ -1832,7 +1699,7 @@
             taskCard(task) {
                 const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
                 const branches = getAllBranches(appState.params.id)
-                const branchesButtons = filteredMap(branches, (branch) => {
+                const branchesButtons = filterMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === appState.params.branch && startPoint === task) {
                         return render.branchButton({
@@ -1843,13 +1710,13 @@
                     }
                 })
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task) || []
-                const assignedInternsCards = filteredMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId));
+                const assignedInternsCards = filterMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId));
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let applyButton
-                if (typeOfUser === 'intern' && !assignedInterns.includes(myFloID)) {
+                if (!assignedInterns.includes(myFloID)) {
                     const taskRequests = RIBC.getTaskRequests();
-                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ projectCode, branch, task: taskId }) => {
-                        return `${appState.params.id}_${appState.params.branch}_${task}` === `${projectCode}_${branch}_${taskId}`
+                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ details }) => {
+                        return `${appState.params.id}_${appState.params.branch}_${task}` === details.taskId
                     })
                     applyButton = html`
                         <button class="button button--primary apply-button" .dataset=${{ taskId: `${appState.params.id}_${appState.params.branch}_${task}` }} ?disabled=${hasApplied}>
@@ -1949,10 +1816,10 @@
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let assignedInternsCards
                 if (assignedInterns) {
-                    assignedInternsCards = filteredMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId, true))
+                    assignedInternsCards = filterMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId, true))
                 }
                 const branches = getAllBranches(appState.params.id)
-                const branchesButtons = filteredMap(branches, (branch) => {
+                const branchesButtons = filterMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
                     if (parentBranch === appState.params.branch && startPoint === task) {
                         return render.branchButton({
@@ -2017,47 +1884,46 @@
                     </li>
                 `;
             },
-            taskRequestCard(details) {
-                const { projectCode, branch, task, floID, vectorClock } = details
+            taskRequestCard(request) {
+                const { details: { taskId, name, brief, contact, portfolioLink }, floID, vectorClock } = request
                 const internName = RIBC.getInternList()[floID];
+                const [projectCode, branch, task] = taskId.split('_');
+                const { category } = RIBC.getTaskDetails(projectCode, branch, task);
                 return html`
                     <li class="request-card" .dataset=${{ vectorClock, type: 'task' }}>
+                        <div class="display-task__category justify-self-start">${floGlobals.taskCategories[category]}</div>
                         <p class="request-card__description">
-                            <b class="capitalize">${internName}</b> applied for 
-                            <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).title}</b> from 
-                            <b class="capitalize">${branch}</b> of
-                            <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
+                            <b class="capitalize">${internName || name}</b> applied for 
+                            <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).title}</b>
                         </p>
+                        ${!internName ? html`
+                            <div class="request-card__details grid gap-0-5 margin-top-1">
+                                ${brief ? html`
+                                    <div class="grid gap-0-3">
+                                        <h5>Educational background</h5>
+                                        <p class="ws-pre-line">${brief}</p>
+                                    </div>
+                                    ` : ''}
+                                ${contact ? html`
+                                    <div class="grid gap-0-3">
+                                        <h5>Contact</h5>
+                                        <sm-copy value=${contact}></sm-copy>
+                                    </div>
+                                    ` : ''}
+                                ${portfolioLink ? html`
+                                    <div class="grid gap-0-3">
+                                        <h5>Portfolio link</h5>
+                                        <a href="${portfolioLink}" target="_blank">${portfolioLink}</a>
+                                    </div>
+                                    ` : ''}
+                        </div>
+                        ` : ''}
                         <div class="flex gap-0-3 margin-left-auto">
                             <button class="button button--small reject-request">
                                 <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
                                 Reject
                             </button>
-                            <button class="button button--small accept-request">
-                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>
-                                Accept
-                            </button>
-                        </div>
-                    </li>            
-                `;
-            },
-            internshipRequest(details) {
-                const { comments, floID, name, vectorClock } = details
-                let providedLink
-                if (typeof comments !== 'string') {
-                    providedLink = html`<a class="internship-request__link" href="${comments.link}" target="_blank">${comments.link}</a>`
-                }
-                return html`
-                    <li class="request-card" .dataset=${{ vectorClock, type: 'internship' }}>
-                        <h4>${name}</h4>
-                        <p class="request-card__description">${typeof comments !== 'string' ? comments.brief : comments}</p>
-                        ${providedLink}
-                        <div class="flex gap-0-3 margin-left-auto" style="margin-top: 0.5rem">
-                            <button class="button button--small reject-request">
-                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
-                                Reject
-                            </button>
-                            <button class="button button--small accept-request">
+                            <button class="button button--small button--primary accept-request">
                                 <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>
                                 Accept
                             </button>
@@ -2121,26 +1987,23 @@
                 renderElem(where, html`${projects.map(project => render.dashProject(project, where))} `)
             },
             internRequests() {
-                const selectedRequestType = getRef('request_type_selector').value;
-                let requestCards = [];
-                if (selectedRequestType === 'task') {
-                    RIBC.getTaskRequests().reverse().forEach((request) => {
-                        const { projectCode, branch, task } = request
-                        if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined')
-                            requestCards.push(render.taskRequestCard(request))
-                    })
-                } else {
-                    requestCards = RIBC.getInternRequests().reverse().map((request) => render.internshipRequest(request))
-                }
+                let requestCards = filterMap(RIBC.getTaskRequests().reverse(), (request) => {
+                    if (Array.isArray(request.details) || !request.details.taskId) return
+                    const [projectCode, branch, task] = request.details.taskId.split('_')
+                    if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined')
+                        return render.taskRequestCard(request)
+                })
                 renderElem(getRef('requests_list'), html`${requestCards}`)
             },
             projectList(container, projects, isAdminList = false) {
                 renderElem(container, html`${projects.map(projectCode => render.projectCard(projectCode, isAdminList, container))}`)
             },
-            requestStatus(request, type) {
-                const { comments, floID, projectCode, branch, task, name, status, vectorClock } = request
+            requestStatus(request) {
+                if (Array.isArray(request.details) || !request.details.taskId) return
+                const { details: { taskId }, status, vectorClock } = request;
+                const [projectCode, branch, task] = taskId.split('_');
+                if (!RIBC.getTaskDetails(projectCode, branch, task)) return
                 const timestamp = parseInt(vectorClock.split('_')[0])
-                let details
                 let icon = ''
                 if (status === 'Accepted') {
                     icon = html`<svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>`
@@ -2149,40 +2012,26 @@
                 } else {
                     icon = html`<svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>`
                 }
-                if (type === 'internship') {
-                    details = html` <h4 class="status-card__details">Internship application</h4> `;
-                } else {
-                    details = html`
-                    <p class="status-card__details">
-                        You applied for 
-                        <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).title}</b> from 
-                        <b class="capitalize">${branch}</b> of
-                        <b class="capitalize">${RIBC.getProjectDetails(projectCode).projectName}</b>
-                    </p>`;
-                }
                 return html`
                     <li class=${`status-card ${status?.toLowerCase() || 'pending'}`}>
                         <time class="status-card__time">${getFormattedTime(timestamp, 'relative')}</time>
-                        ${details}
+                        <p class="status-card__details">
+                            You applied for <a class="capitalize" href=${`#/task_details?id=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
+                        </p>
                         <div class="flex align-center status-card__status">
                             ${icon}
                             <span>${status || 'Under review'}</span>
                         </div>
                     </li>
-                `
+                `;
             },
-            internApplications() {
-                const internshipRequests = RIBC.getInternRequests(false).reverse()
-                const taskRequests = RIBC.getTaskRequests(false).reverse()
-                const requestCards = internshipRequests.map(request => render.requestStatus(request, 'internship'))
-                renderElem(getRef('internship_requests_list'), html`${requestCards}`)
-                if (taskRequests.length) {
-                    const taskCards = taskRequests.map(request => render.requestStatus(request, 'task'))
-                    renderElem(getRef('task_requests_list'), html`${taskCards}`)
-                    getRef('task_requests_list').parentElement.classList.remove('hidden')
-                } else {
-                    getRef('task_requests_list').parentElement.classList.add('hidden')
-                }
+            taskApplications() {
+                const taskRequests = RIBC.getTaskRequests(false)
+                taskRequests.sort((a, b) => {
+                    return parseInt(b.vectorClock.split('_')[0]) - parseInt(a.vectorClock.split('_')[0])
+                })
+                const taskCards = filterMap(taskRequests, request => render.requestStatus(request))
+                renderElem(getRef('task_requests_list'), html`${taskCards}`)
             }
         }
         const selectedColors = [
@@ -2313,7 +2162,7 @@
         function renderBranches() {
             const { id: projectCode, branch } = appState.params
             const taskListContainer = appState.currentPage === 'admin_page' ? 'branch_container' : 'explorer_branch_container';
-            const branchList = filteredMap(RIBC.getProjectBranches(appState.params.id), (branch) => {
+            const branchList = filterMap(RIBC.getProjectBranches(appState.params.id), (branch) => {
                 return render.branchButton({ projectCode, branch, page: appState.currentPage, active: branch === appState.params.branch })
             })
             renderElem(getRef(taskListContainer), html`${branchList}`)
@@ -2523,7 +2372,7 @@
                                 <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <path d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z"> </path> </g> </g> </svg>
                             </sm-input>
                         </div>
-                        <div class="flex align-center gap-0-3">
+                        <div class="flex align-center gap-0-3 margin-top-1">
                             <button class="button cancel-task-button">
                                 <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" /> </svg>
                                 Cancel
@@ -2741,31 +2590,64 @@
             }
             localStorage.setItem(`${myFloID}_pinned_projects`, pinnedProjects.join())
             render.dashProjects(getRef('pinned_projects'), pinnedProjects)
-            render.dashProjects(getRef('project_list'), RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse())
+            const unpinnedProjects = RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse()
+            if (unpinnedProjects.length > 0) {
+                getRef('project_list_container').classList.remove('hidden')
+            } else {
+                getRef('project_list_container').classList.add('hidden')
+            }
+            render.dashProjects(getRef('project_list'), unpinnedProjects)
         }
 
         let sessionTaskRequests = new Set();
         function requestForTask(btn) {
-            const [projectCode, branch, task] = btn.dataset.taskId
             try {
                 floDapps.user.id
-                getConfirmation('Do you want to apply for this task?', { confirmText: 'Apply' }).then((result) => {
-                    if (result) {
-                        btn.textContent = 'Applied'
-                        btn.disabled = true
-                        RIBC.applyForTask(projectCode, branch, task).then((result) => {
-                            notify('Applied successfully.', 'success')
-                            sessionTaskRequests.add({ projectCode, branch, task });
-                            floGlobals.tempUserTaskRequests = null;
+                const taskId = btn ? btn.dataset.taskId : floGlobals.tempUserTaskRequest
+                floGlobals.tempUserTaskRequest = taskId
+                if (typeOfUser === 'general') {
+                    getRef('intern_apply__task').textContent = RIBC.getAllTasks()[taskId].title
+                    openPopup('apply_for_task_popup', true)
+                } else if (typeOfUser === 'intern') {
+                    const taskRequests = RIBC.getTaskRequests();
+                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ details }) => {
+                        return taskId === details.taskId
+                    })
+                    if (hasApplied) {
+                        notify('You have already applied for this task', 'error')
+                    } else {
+                        if (floGlobals.assignedTasks.has(taskId))
+                            return notify('You have already been assigned this task', 'error');
+                        const [projectCode, branch, task] = taskId.split('_')
+                        const { title } = RIBC.getTaskDetails(projectCode, branch, task)
+                        getConfirmation(`Do you want to apply for "${title}"`, { confirmText: 'Apply' }).then((result) => {
+                            if (result) {
+                                if (btn) {
+                                    btn.textContent = 'Applying...'
+                                    btn.disabled = true
+                                }
+                                RIBC.applyForTask({ taskId }).then((result) => {
+                                    notify('Applied successfully.', 'success')
+                                    sessionTaskRequests.add({ details: { taskId } })
+                                    floGlobals.tempUserTaskRequest = null
+                                    btn.textContent = 'Applied'
+                                }).catch((err) => {
+                                    if (btn) {
+                                        btn.textContent = 'Apply'
+                                        btn.disabled = false
+                                    }
+                                    notify(err, 'error')
+                                })
+                            }
+                        }).catch((error) => {
+                            notify(error, 'error')
                         })
                     }
-                }).catch((error) => {
-                    notify(error, 'error')
-                })
+                }
             } catch (err) {
                 floGlobals.tempUserTaskRequest = btn.dataset.taskId;
                 location.hash = '#/sign_in'
-                notify('Please login to apply for task.', 'error')
+                floGlobals.signInNotification = notify('Please login to apply for task.', 'error')
             }
         }
 
@@ -2784,6 +2666,7 @@
         })
 
         document.addEventListener('popupopened', e => {
+            getRef('main_page').setAttribute('inert', '')
             switch (e.detail.popup.id) {
                 case 'intern_list_popup':
                     renderElem(getRef('intern_list_container'), filterInterns('', { availableInternsOnly: true }))
@@ -2798,6 +2681,9 @@
                     floGlobals.selectedInterns.clear()
                     getRef('assign_interns_button').disabled = true
                     break;
+            }
+            if (popupStack.items.length === 0) {
+                getRef('main_page').removeAttribute('inert')
             }
         })
 
@@ -2886,20 +2772,12 @@
                     getConfirmation('Are you sure you want to accept this request?').then(result => {
                         if (result) {
                             const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
-                            const type = e.delegateTarget.closest('.request-card').dataset.type
                             let result
-                            if (type === 'task') {
+                            if (RIBC.getInternList())
                                 result = RIBC.admin.processTaskRequest(vectorClock, true)
-                                if (result === 'Accepted') {
-                                    notify('Intern assigned, commit changes to make it permanent.', 'success')
-                                    removeRequest(e.delegateTarget.closest('.request-card'))
-                                }
-                            } else if (type === 'internship') {
-                                result = RIBC.admin.processInternRequest(vectorClock, true)
-                                if (result === 'Accepted') {
-                                    notify('Added intern, commit changes to make it permanent.', 'success')
-                                    removeRequest(e.delegateTarget.closest('.request-card'))
-                                }
+                            if (result === 'Accepted') {
+                                notify('Intern assigned, commit changes to make it permanent.', 'success')
+                                removeRequest(e.delegateTarget.closest('.request-card'))
                             }
                         }
                     })
@@ -2963,15 +2841,6 @@
                     elem.classList.remove('hidden')
                 })
             }
-            // if (typeOfUser === 'general') {
-            //     const internshipRequests = RIBC.getInternRequests(false).reverse()
-            //     const hasPendingApplication = internshipRequests.find(request => !request.status)
-            //     if (internshipRequests.length === 0 || !hasPendingApplication) {
-            //         getRef('application_card').classList.remove('hidden')
-            //     } else {
-            //         getRef('application_card').classList.add('hidden')
-            //     }
-            // }
             //creates cards for highest performing interns
             //sort interns earned points
             const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => {
@@ -2989,16 +2858,12 @@
             } else {
                 getRef('other_projects').previousElementSibling.classList.add('hidden')
             }
-
-            getRef('explorer_task_list').addEventListener('click', (event) => {
-                if (event.target.closest('.apply-button')) {
-                    requestForTask(event.target.closest('.apply-button'))
-                }
+            delegate(getRef('explorer_task_list'), 'click', '.apply-button', e => {
+                requestForTask(e.delegateTarget)
             })
             getRef('user_flo_id').value = myFloID;
             console.log(typeOfUser)
         }
-        getRef('request_type_selector').addEventListener('change', render.internRequests)
 
         function postUpdate() {
             const { projectCode, branch, task } = floGlobals.assignedTasks.get(currentTaskId)
@@ -3041,7 +2906,7 @@
                     return render.internCard(floId, { selectable: availableInternsOnly })
                 })
             } else {
-                filtered = filteredMap(arrayOfInterns, (floId) => {
+                filtered = filterMap(arrayOfInterns, (floId) => {
                     if (allInterns[floId].toLowerCase().includes(searchKey.toLowerCase())) {
                         return render.internCard(floId, { selectable: availableInternsOnly })
                     }
@@ -3062,19 +2927,22 @@
         function applyForInternship() {
             buttonLoader(getRef('intern_apply__button'), true)
             const name = getRef('intern_apply__name').value.trim();
+            const contact = getRef('intern_apply__contact').value.trim();
             const brief = getRef('intern_apply__brief').value.trim();
-            const resumeLink = getRef('intern_apply__resume_link').value.trim();
+            // const resumeLink = getRef('intern_apply__resume_link').value.trim();
             const portfolioLink = getRef('intern_apply__portfolio_link').value.trim();
+            console.log(name, contact, brief, portfolioLink, floGlobals.tempUserTaskRequest)
             const details = {
+                name,
                 brief,
-                resumeLink,
+                // resumeLink,
+                contact,
                 portfolioLink: portfolioLink !== '' ? portfolioLink : null,
-                task: floGlobals.tempUserTaskRequest
+                taskId: floGlobals.tempUserTaskRequest
             }
-            RIBC.applyForIntern(name, details)
+            RIBC.applyForTask(details)
                 .then((result) => {
                     notify('Application submitted', 'success')
-                    // getRef('application_card').classList.add('hidden')
                     closePopup()
                 })
                 .catch((error) => {
@@ -3121,11 +2989,13 @@
                         resolve(getRef('private_key_field').value.trim());
                         getRef('private_key_field').value = '';
                         routeTo('loading');
+                        getRef("notification_drawer").remove(floGlobals.signInNotification)
                     };
                     getRef('sign_up_button').onclick = () => {
                         resolve(getRef('generated_private_key').value);
                         getRef('generated_private_key').value = '';
                         routeTo('loading');
+                        getRef("notification_drawer").remove(floGlobals.signInNotification)
                     };
                 }
             });
@@ -3151,21 +3021,6 @@
                         location.reload();
                     }
                 });
-        }
-        function downloadGeneratedCredentials() {
-            const floAddress = getRef('generated_flo_address').value;
-            const privKey = getRef('generated_private_key').value;
-            generateTxtFile(`FLO address: ${floAddress}\n\nFLO Private Key: ${privKey} `, 'FLO credentials');
-        }
-        // generate txt file with given content
-        function generateTxtFile(content, fileName) {
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-            element.setAttribute('download', `${fileName}.txt`);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
         }
     </script>
 </body>

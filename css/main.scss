@@ -239,7 +239,8 @@ sm-copy {
 }
 
 sm-input,
-sm-textarea {
+sm-textarea,
+tags-input {
   font-size: 0.9rem;
   --border-radius: 0.5rem;
   --background-color: rgba(var(--foreground-color), 1);
@@ -1010,6 +1011,9 @@ ul {
     height: 100%;
     align-items: center;
   }
+  &__category:is(a) {
+    color: var(--accent-color);
+  }
   &__title {
     font-size: 1.2rem;
   }
@@ -1231,10 +1235,13 @@ ul {
   display: grid;
   position: relative;
   padding: 1rem;
-  margin: 0.2rem;
+  width: min(64rem, 100%);
+  margin: 0 auto;
   gap: 0.3rem;
-  background-color: rgba(var(--text-color), 0.06);
+  background-color: rgba(var(--foreground-color), 1);
   border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: solid rgba(var(--text-color), 0.1) thin;
   sm-button {
     --padding: 0.5rem 0.8rem;
   }
@@ -1337,8 +1344,8 @@ ul {
 }
 #intern_info__initials {
   position: relative;
-  height: 3rem;
-  width: 3rem;
+  height: 4rem;
+  width: 4rem;
   font-size: 1.3rem;
   color: var(--color);
 }

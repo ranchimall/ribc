@@ -4,7 +4,7 @@
 
     Ribc.init = function (isSubAdmin = false) {
         return new Promise((resolve, reject) => {
-            Ribc.refreshGeneralData(isSubAdmin)
+            Promise.all([Ribc.refreshGeneralData(isSubAdmin)])
                 .then(results => resolve(results))
                 .catch(error => reject(error))
         })
@@ -53,8 +53,8 @@
 
     const _ = {}; //private variable holder
 
-    Ribc.applyForIntern = (name, comments = '') => new Promise((resolve, reject) => {
-        floCloudAPI.sendGeneralData([name, comments], "InternRequests")
+    Ribc.applyForIntern = (details) => new Promise((resolve, reject) => {
+        floCloudAPI.sendGeneralData(details, "InternRequests")
             .then(results => resolve(results))
             .catch(error => reject(error))
     });
@@ -89,8 +89,8 @@
             .catch(error => reject(error))
     });
 
-    Ribc.applyForTask = (projectCode, branch, task, comments = '') => new Promise((resolve, reject) => {
-        floCloudAPI.sendGeneralData([projectCode, branch, task, comments], "TaskRequests")
+    Ribc.applyForTask = (details) => new Promise((resolve, reject) => {
+        floCloudAPI.sendGeneralData(details, "TaskRequests")
             .then(result => resolve(result))
             .catch(error => reject(error))
     });
@@ -134,9 +134,8 @@
             return {
                 floID: data.senderID,
                 vectorClock: data.vectorClock,
-                name: data.message[0],
-                comments: data.message[1],
-                status: data.note
+                details: data.message,
+                status: data.note,
             }
         })
         //filter existing interns
@@ -180,15 +179,17 @@
             return {
                 floID: data.senderID,
                 vectorClock: data.vectorClock,
-                projectCode: data.message[0],
-                branch: data.message[1],
-                task: data.message[2],
-                comments: data.message[3],
+                details: data.message,
                 status: data.note
             }
         })
-        //filter only intern requests
-        taskRequests = taskRequests.filter(data => data.floID in _.internList)
+        //filter only requests for logged in intern
+        try {
+            if (floDapps.user.id)
+                taskRequests = taskRequests.filter(data => data.floID === floDapps.user.id)
+        } catch (err) {
+            return [];
+        }
         //filter processed requests
         if (ignoreProcessed)
             taskRequests = taskRequests.filter(data => !data.status)
@@ -199,8 +200,11 @@
         let request = floGlobals.generalDataset("TaskRequests")[vectorClock];
         if (!request)
             return "Request not found";
+        const { message: { taskId, name }, senderID } = request;
+        const [projectCode, branch, taskNumber] = taskId.split('_');
         var status;
-        if (accept && assignInternToTask(request.senderID, request.message[0], request.message[1], request.message[2]))
+        addIntern(senderID, name)
+        if (accept && assignInternToTask(senderID, projectCode, branch, taskNumber))
             status = "Accepted";
         else
             status = "Rejected";
