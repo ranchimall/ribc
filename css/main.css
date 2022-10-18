@@ -885,6 +885,12 @@ ul {
   width: min(64rem, 100%);
 }
 
+#task_details_wrapper {
+  padding: 1.5rem;
+  background-color: rgba(var(--foreground-color), 1);
+  border-radius: 0.5rem;
+}
+
 #main_page {
   height: 100%;
   grid-template-rows: auto 1fr auto;

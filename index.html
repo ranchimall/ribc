@@ -417,7 +417,8 @@
                                     </button>
                                 </div>
                                 <div class="flex flex-wrap align-items-start">
-                                    <p id="editing_panel__description" class="ws-pre-line" data-editable></p>
+                                    <p id="editing_panel__description" class="ws-pre-line wrap-around" data-editable>
+                                    </p>
                                     <button class="button button--small button--transparent admin-option"
                                         title="Edit this description"
                                         onclick="makeEditable(this.previousElementSibling)">
@@ -563,7 +564,7 @@
                         </a>
                         <h2 id="project_explorer__project_title"></h2>
                     </header>
-                    <p id="project_explorer__project_description" class="ws-pre-line"></p>
+                    <p id="project_explorer__project_description" class="ws-pre-line wrap-around"></p>
                     <a href="" id="project_explorer__project_updates"
                         class="button button--small margin-right-auto">Check
                         related updates</a>
@@ -1177,7 +1178,7 @@
                             <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
                             <div class="grid gap-0-5">
                                 <h2 id="task_title">${title}</h2>
-                                <p id="task_description" class="ws-pre-line">${description}</p>
+                                <p id="task_description" class="ws-pre-line wrap-around">${description}</p>
                             </div>
                             <div class="display-task__details flex flex-wrap gap-0-3">
                                 ${duration ? html`
@@ -1722,7 +1723,7 @@
                                 ${applyButton}
                             </div>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
-                            <p class="timeline-task__description ws-pre-line">${description}</p>
+                            <p class="timeline-task__description ws-pre-line wrap-around">${description}</p>
                             ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                         </div>
                     </div>
@@ -1759,7 +1760,7 @@
                 if (note) {
                     adminReply = html`<div class="admin-reply grid">
                         <h4 class="admin-reply__title">Admin</h4>
-                        <p class="admin-reply__description ws-pre-line">${note}</p>
+                        <p class="admin-reply__description ws-pre-line wrap-around">${note}</p>
                     </div>`
                 }
                 return html.node`
@@ -1769,7 +1770,7 @@
                             <span class="update__time">${getFormattedTime(time)}</span>
                         </div>
                         <h4 class="update__topic">${topic}</h4>
-                        <p class="update__message ws-pre-line">${description}</p>
+                        <p class="update__message ws-pre-line wrap-around">${description}</p>
                         ${providedLink}
                         ${replyButton}
                         ${adminReply}
@@ -1840,7 +1841,7 @@
                             </button>
                             ${assignedInternsCards}
                         </div>
-                        <p class="task-description ws-pre-line" data-editable>${description}</p>
+                        <p class="task-description ws-pre-line wrap-around" data-editable>${description}</p>
                         <div class="display-task__details flex flex-wrap gap-0-3">
                             ${category ? html`
                                 <div class="display-task__detail">
@@ -1888,7 +1889,7 @@
                                 ${brief ? html`
                                     <div class="grid gap-0-3">
                                         <h5>Educational background</h5>
-                                        <p class="ws-pre-line">${brief}</p>
+                                        <p class="ws-pre-line wrap-around">${brief}</p>
                                     </div>
                                     ` : ''}
                                 ${contact ? html`
@@ -1927,7 +1928,7 @@
                         <span class="task__project-title">${projectName}</span>
                         <div>
                             <h4 class="task__title">${title}</h4>
-                            <p class="task__description ws-pre-line">${description}</p>
+                            <p class="task__description ws-pre-line wrap-around">${description}</p>
                         </div>
                         <button class="send-update-button button--small margin-left-auto">
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
@@ -2531,7 +2532,7 @@
                     replayBox.replaceWith(html.node`
                         <div class="admin-reply grid">
                             <h4 class="admin-reply__title">Admin</h4>
-                            <p class="admin-reply__description ws-pre-line">${replyText}</p>
+                            <p class="admin-reply__description ws-pre-line wrap-around">${replyText}</p>
                         </div>`)
                 }).catch(err => {
                     notify(err, 'error')
