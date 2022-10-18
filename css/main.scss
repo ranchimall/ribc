@@ -868,7 +868,7 @@ ul {
 #task_details {
   & > * {
     justify-self: center;
-    max-width: 64rem;
+    width: min(64rem, 100%);
   }
 }
 
@@ -1822,6 +1822,11 @@ input[type="date"] {
     grid-template-columns: 1fr auto;
     img {
       justify-self: flex-end;
+    }
+  }
+  #task_details {
+    .button--primary {
+      width: max-content;
     }
   }
 

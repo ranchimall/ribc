@@ -878,7 +878,7 @@ ul {
 
 #task_details > * {
   justify-self: center;
-  max-width: 64rem;
+  width: min(64rem, 100%);
 }
 
 #main_page {
@@ -1838,6 +1838,11 @@ input[type=date]:focus {
   }
   .landing__card img {
     justify-self: flex-end;
+  }
+  #task_details .button--primary {
+    width: -webkit-max-content;
+    width: -moz-max-content;
+    width: max-content;
   }
   #main_nav {
     padding: 0.5rem;
