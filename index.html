@@ -417,7 +417,7 @@
                                     </button>
                                 </div>
                                 <div class="flex flex-wrap align-items-start">
-                                    <p id="editing_panel__description" data-editable></p>
+                                    <p id="editing_panel__description" class="ws-pre-line" data-editable></p>
                                     <button class="button button--small button--transparent admin-option"
                                         title="Edit this description"
                                         onclick="makeEditable(this.previousElementSibling)">
@@ -563,7 +563,7 @@
                         </a>
                         <h2 id="project_explorer__project_title"></h2>
                     </header>
-                    <p id="project_explorer__project_description"></p>
+                    <p id="project_explorer__project_description" class="ws-pre-line"></p>
                     <a href="" id="project_explorer__project_updates"
                         class="button button--small margin-right-auto">Check
                         related updates</a>
@@ -1087,11 +1087,7 @@
                     case 'time-only':
                         return finalHours;
                     case 'relative':
-                        // check if timestamp is older than a day
-                        if (Date.now() - new Date(timestamp) < 60 * 60 * 24 * 1000)
-                            return `${finalHours}`;
-                        else
-                            return relativeTime.from(timestamp)
+                        return relativeTime.from(timestamp)
                     default:
                         return `${month} ${date}, ${year} at ${finalHours}`;
                 }
@@ -1923,7 +1919,7 @@
                 `;
             },
             internTaskCard(uniqueId) {
-                const { projectCode, branch, task } = RIBC.getAllTasks()[uniqueId]
+                const [projectCode, branch, task] = uniqueId.split('_');
                 const { title, description } = RIBC.getTaskDetails(projectCode, branch, task)
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 return html`
@@ -1950,7 +1946,7 @@
                     })
                 })
                 const completedTasks = projectTasks.filter(task => task === 'completed').length
-                let completePercent = parseFloat(((completedTasks / projectTasks.length) * 100).toFixed(2))
+                let completePercent = parseFloat(((completedTasks / (projectTasks.length || 1)) * 100).toFixed(2))
                 const isPinned = pinnedProjects.includes(projectCode);
                 let pinIcon = ''
                 if (isPinned) {
@@ -2713,7 +2709,7 @@
 
                 // Render assigned task cards
                 if (floGlobals.assignedTasks.size) {
-                    const taskCards = floGlobals.assignedTasks.map(id => render.internTaskCard(task))
+                    const taskCards = filterMap(floGlobals.assignedTasks, id => render.internTaskCard(id))
                     renderElem(getRef('assigned_task_list'), html`${taskCards}`)
                 } else {
                     getRef('assigned_task_list').textContent = 'No task assigned yet.';

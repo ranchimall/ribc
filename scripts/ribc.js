@@ -184,12 +184,12 @@
             }
         })
         //filter only requests for logged in intern
-        try {
-            if (floDapps.user.id)
-                taskRequests = taskRequests.filter(data => data.floID === floDapps.user.id)
-        } catch (err) {
-            return [];
-        }
+        // try {
+        //     if (floDapps.user.id)
+        //         taskRequests = taskRequests.filter(data => data.floID === floDapps.user.id)
+        // } catch (err) {
+        //     return [];
+        // }
         //filter processed requests
         if (ignoreProcessed)
             taskRequests = taskRequests.filter(data => !data.status)
@@ -208,7 +208,7 @@
             status = "Accepted";
         else
             status = "Rejected";
-        floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
+        // floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
         return status;
     }
 
