@@ -319,7 +319,12 @@
         </nav>
         <article id="sub_page_container">
             <section id="dashboard_page" class="inner-page hidden">
-                <div class="flex flex-direction-column gap-2">
+                <strip-select id="dashboard_view_selector" class="hide-on-desktop">
+                    <strip-option value="intern_view" selected>My tasks</strip-option>
+                    <strip-option value="best_interns_container">Leaderboard</strip-option>
+                    <strip-option value="projects_wrapper">Projects</strip-option>
+                </strip-select>
+                <div id="projects_wrapper" class="grid gap-2 align-items-start">
                     <section id="pinned_project_section" class="w-100">
                         <h4>Pinned</h4>
                         <div id="pinned_projects" class="observe-empty-state"></div>
@@ -338,11 +343,11 @@
                         </div>
                         <div id="project_list" class="flex flex-direction-column gap-0-3"></div>
                     </div>
-                    <section id="intern_view" class="hidden intern-option">
-                        <h4>My tasks</h4>
-                        <ul id="assigned_task_list"></ul>
-                    </section>
                 </div>
+                <section id="intern_view" class="hidden intern-option">
+                    <h4>My tasks</h4>
+                    <ul id="assigned_task_list"></ul>
+                </section>
                 <div id="best_interns_container" class="container-card">
                     <div class="container-header">
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -1103,7 +1108,7 @@
         const generalPages = ['sign_up', 'sign_in', 'loading', 'landing', 'task_details']
         function routeTo(targetPage, options = {}) {
             const { firstLoad } = options
-            const routingAnimation = { in: null, out: null }
+            const routingAnimation = { in: slideInUp, out: slideOutUp }
             let pageId
             let subPageId1
             let searchParams
@@ -1300,18 +1305,18 @@
                     }
                     break;
             }
-            switch (`${appState.lastPage}->${pageId}`) {
-                case 'landing->task_details':
-                    routingAnimation.in = slideInLeft;
-                    routingAnimation.out = slideOutLeft;
-                    break;
-                case 'task_details->landing':
+            switch (appState.lastPage) {
+                case 'task_details':
+                case 'project_explorer':
                     routingAnimation.in = slideInRight;
                     routingAnimation.out = slideOutRight;
                     break;
-                default:
-                    routingAnimation.in = slideInUp;
-                    routingAnimation.out = slideOutUp;
+            }
+            switch (pageId) {
+                case 'task_details':
+                case 'project_explorer':
+                    routingAnimation.in = slideInLeft;
+                    routingAnimation.out = slideOutLeft;
                     break;
             }
             if (appState.lastPage !== pageId) {
@@ -1720,6 +1725,10 @@
                             ${hasApplied ? 'Applied' : 'Apply'}
                         </button>`;
                 }
+                const linkifyDescription = createElement('p', {
+                    innerHTML: DOMPurify.sanitize(linkify(description), { ADD_ATTR: ['target'] }),
+                    className: `timeline-task__description ws-pre-line wrap-around`
+                })
                 return html`
                     <div class=${`task ${status}`}>
                         <div class="left">
@@ -1732,7 +1741,7 @@
                                 ${applyButton}
                             </div>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
-                            <p class="timeline-task__description ws-pre-line wrap-around">${description}</p>
+                            ${linkifyDescription}
                             ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                         </div>
                     </div>
@@ -1932,12 +1941,16 @@
                 const [projectCode, branch, task] = uniqueId.split('_');
                 const { title, description } = RIBC.getTaskDetails(projectCode, branch, task)
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
+                const linkifyDescription = createElement('p', {
+                    innerHTML: DOMPurify.sanitize(linkify(description), { ADD_ATTR: ['target'] }),
+                    className: `timeline-task__description ws-pre-line wrap-around`
+                })
                 return html`
                     <li class="task-card" data-unique-id="${uniqueId}">
                         <span class="task__project-title">${projectName}</span>
                         <div>
                             <h4 class="task__title">${title}</h4>
-                            <p class="task__description ws-pre-line wrap-around">${description}</p>
+                            ${linkifyDescription}
                         </div>
                         <button class="send-update-button button--small margin-left-auto">
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
@@ -2011,7 +2024,7 @@
                 }
                 return html`
                     <li class=${`status-card ${status?.toLowerCase() || 'pending'}`}>
-                        <time class="status-card__time">${getFormattedTime(timestamp, 'relative')}</time>
+                        <time class="status-card__time capitalize">${getFormattedTime(timestamp, 'relative')}</time>
                         <p class="status-card__details">
                             You applied for <a class="capitalize" href=${`#/task_details?id=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
                         </p>

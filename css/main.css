@@ -1112,7 +1112,6 @@ ul {
   padding: 0.4rem;
 }
 
-.timeline-task__description,
 .admin-reply__description {
   max-width: 100%;
 }
@@ -1523,10 +1522,6 @@ ul {
   margin-bottom: 1rem;
 }
 
-#best_interns_container .container-header .icon {
-  margin-right: 0.5rem;
-}
-
 #edit_data_fig {
   fill: rgba(var(--text-color), 0.6);
   width: 60vw;
@@ -1902,6 +1897,16 @@ input[type=date]:focus {
   }
   #dashboard_page {
     grid-template-columns: 1fr 18rem;
+    align-content: flex-start;
+    align-items: flex-start;
+  }
+  #dashboard_page > :not(#best_interns_container) {
+    grid-column: 1;
+  }
+  #best_interns_container {
+    grid-column: 2;
+    grid-row: 1/4;
+    height: 100%;
   }
   #all_interns_page__header {
     grid-template-columns: 1fr auto;
