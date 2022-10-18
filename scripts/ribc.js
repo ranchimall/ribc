@@ -183,13 +183,13 @@
                 status: data.note
             }
         })
-        //filter only requests for logged in intern
-        // try {
-        //     if (floDapps.user.id)
-        //         taskRequests = taskRequests.filter(data => data.floID === floDapps.user.id)
-        // } catch (err) {
-        //     return [];
-        // }
+        // filter only requests for logged in intern
+        try {
+            if (floDapps.user.id && !floGlobals.subAdmins.includes(floDapps.user.id))
+                taskRequests = taskRequests.filter(data => data.floID === floDapps.user.id)
+        } catch (err) {
+            return [];
+        }
         //filter processed requests
         if (ignoreProcessed)
             taskRequests = taskRequests.filter(data => !data.status)
@@ -240,7 +240,7 @@
         return "Project Create: " + projectCode
     }
 
-    Admin.copyBranchtoNewProject = function (oldProjectCode, oldBranch, newProjectCode, newBranchConnection,
+    Admin.copyBranchToNewProject = function (oldProjectCode, oldBranch, newProjectCode, newBranchConnection,
         newStartPoint, newEndPoint) {
         //Make sure new branch is a new text string that does not exist in new project
         if (oldBranch == "mainLine") {

@@ -793,8 +793,7 @@
                 <h3 id="intern_apply__task"></h3>
             </div>
             <sm-input id="intern_apply__name" placeholder="Full name" autofocus required animate></sm-input>
-            <sm-input id="intern_apply__contact" placeholder="WhatsApp mobile number" pattern="[6789][0-9]{9}"
-                error-text="Please provide valid indian mobile number" required animate></sm-input>
+            <sm-input id="intern_apply__contact" placeholder="WhatsApp mobile number" required animate></sm-input>
             <sm-textarea id="intern_apply__brief" placeholder="Educational background" rows="4" required></sm-textarea>
             <!-- <sm-input id="intern_apply__resume_link" placeholder="Resume link (optional)" animate></sm-input> -->
             <sm-input id="intern_apply__portfolio_link" placeholder="Portfolio link (optional)" animate>
@@ -1169,16 +1168,21 @@
                     let hasApplied = false
                     try {
                         floDapps.user.id
-                        hasApplied = [...RIBC.getTaskRequests(), ...sessionTaskRequests].find(({ details }) => {
+                        hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                             return params.id === details.taskId
                         })
                     } catch (e) { }
+                    const descriptionTag = createElement('p', {
+                        innerHTML: DOMPurify.sanitize(linkify(description), { ADD_ATTR: ['target'] }),
+                        className: 'ws-pre-line wrap-around'
+                    })
+                    descriptionTag.id = 'task_description'
                     renderElem(getRef('task_details_wrapper'), html`
                         <div class="grid gap-1">
                             <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
                             <div class="grid gap-0-5">
                                 <h2 id="task_title">${title}</h2>
-                                <p id="task_description" class="ws-pre-line wrap-around">${description}</p>
+                                ${descriptionTag}
                             </div>
                             <div class="display-task__details flex flex-wrap gap-0-3">
                                 ${duration ? html`
@@ -1214,7 +1218,13 @@
                 case 'dashboard_page':
                     render.dashProjects(getRef('pinned_projects'), pinnedProjects);
                     // displays recent projects
-                    render.dashProjects(getRef('project_list'), RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse())
+                    const unpinnedProjects = RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse()
+                    if (unpinnedProjects.length > 0) {
+                        getRef('project_list_container').classList.remove('hidden')
+                    } else {
+                        getRef('project_list_container').classList.add('hidden')
+                    }
+                    render.dashProjects(getRef('project_list'), unpinnedProjects)
                     break;
                 case 'updates_page': {
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1702,8 +1712,7 @@
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let applyButton
                 if (!assignedInterns.includes(myFloID)) {
-                    const taskRequests = RIBC.getTaskRequests();
-                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ details }) => {
+                    const hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                         return `${appState.params.id}_${appState.params.branch}_${task}` === details.taskId
                     })
                     applyButton = html`
@@ -2597,8 +2606,7 @@
                     getRef('intern_apply__task').textContent = RIBC.getAllTasks()[taskId].title
                     openPopup('apply_for_task_popup', true)
                 } else if (typeOfUser === 'intern') {
-                    const taskRequests = RIBC.getTaskRequests();
-                    const hasApplied = [...taskRequests, ...sessionTaskRequests].find(({ details }) => {
+                    const hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                         return taskId === details.taskId
                     })
                     if (hasApplied) {
@@ -2635,7 +2643,7 @@
             } catch (err) {
                 floGlobals.tempUserTaskRequest = btn.dataset.taskId;
                 location.hash = '#/sign_in'
-                floGlobals.signInNotification = notify('Please login to apply for task.', 'error')
+                floGlobals.signInNotification = notify('Please login to apply for task.')
             }
         }
 
@@ -3009,6 +3017,20 @@
                         location.reload();
                     }
                 });
+        }
+        // detect url within text and convert to link
+        function linkify(inputText) {
+            let replacedText, replacePattern1, replacePattern2, replacePattern3;
+            //URLs starting with http://, https://, or ftp://
+            replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+            replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+            //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+            replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+            replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+            //Change email addresses to mailto:: links.
+            replacePattern3 = /(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
+            replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
+            return replacedText;
         }
     </script>
 </body>
