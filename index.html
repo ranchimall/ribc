@@ -331,7 +331,7 @@
                             </p>
                         </div>
                     </section>
-                    <div id="project_list_container">
+                    <div id="project_list_container" class="hidden">
                         <div class="flex align-center space-between margin-bottom-0-5">
                             <h4>Projects</h4>
                             <a href="#/project_explorer" class="button open-first-project">All</a>
@@ -2720,7 +2720,7 @@
                     if (e.target.closest('.send-update-button')) {
                         const taskCard = e.target.closest('.task-card')
                         currentTaskId = taskCard.dataset.uniqueId
-                        const { projectCode, branch, task } = floGlobals.assignedTasks.get(currentTaskId)
+                        const [projectCode, branch, task] = currentTaskId.split('_')
                         getRef('update_of_project').textContent = RIBC.getProjectDetails(projectCode).projectName
                         getRef('update_of_task').textContent = RIBC.getTaskDetails(projectCode, branch, task).title
                         openPopup('post_update_popup')
@@ -2853,7 +2853,7 @@
         }
 
         function postUpdate() {
-            const { projectCode, branch, task } = floGlobals.assignedTasks.get(currentTaskId)
+            const [projectCode, branch, task] = currentTaskId.split('_')
             const description = getRef('update__brief').value.trim()
             const linkText = getRef('update__link').value.trim()
             const link = linkText !== '' ? linkText : null

@@ -208,7 +208,7 @@
             status = "Accepted";
         else
             status = "Rejected";
-        // floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
+        floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
         return status;
     }
 

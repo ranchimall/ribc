@@ -866,6 +866,8 @@ ul {
 }
 
 #task_details {
+  overflow-y: auto;
+  padding-bottom: 3rem;
   & > * {
     justify-self: center;
     width: min(64rem, 100%);

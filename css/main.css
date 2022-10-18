@@ -876,6 +876,10 @@ ul {
   fill: rgba(0, 0, 0, 0.8);
 }
 
+#task_details {
+  overflow-y: auto;
+  padding-bottom: 3rem;
+}
 #task_details > * {
   justify-self: center;
   width: min(64rem, 100%);
