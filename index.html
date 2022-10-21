@@ -436,15 +436,14 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="grid gap-0-3">
-                                <h4>Branches</h4>
-                                <div id="branch_container"></div>
-                            </div>
+                            <div id="branch_container"></div>
                             <h4>Tasks</h4>
                             <ul id="task_list" class="grid observe-empty-state"></ul>
-                            <h4 class="empty-state padding-block-1">No tasks added yet, tasks will appear here after
-                                adding
-                                them.</h4>
+                            <div class="empty-state padding-block-1">
+                                <p>
+                                    No tasks added yet, tasks will appear here after adding them.
+                                </p>
+                            </div>
                             <button id="add_task" class="button " onclick="addPlaceholderTask()">
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                     height="24">
@@ -1853,6 +1852,10 @@
                         })
                     }
                 })
+                const categories = [];
+                for (const categoryID in floGlobals.taskCategories) {
+                    categories.push(html`<sm-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</sm-option>`)
+                }
                 return html.for(ref, `${appState.params.id}_${appState.params.branch}_${task}`)`
                     <li class="task-list-item" .dataset=${{ taskId: task }}>
                         <div class="flex align-center gap-0-3">
@@ -1869,7 +1872,7 @@
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /> </svg>
                             </button>
                         </div>
-                        <h4 class="task-title capitalize" data-editable>${title}</h4>
+                        <h4 class="task-title capitalize" data-editable  data-edit-field="title">${title}</h4>
                         <div class="assigned-interns">
                             <button class="button--outlined button--small button--colored" onclick="currentTask=this.closest('.task-list-item');openPopup('intern_list_popup')">
                                 <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zM5 18c.2-.63 2.57-1.68 4.96-1.94l2.04-2c-.39-.04-.68-.06-1-.06-2.67 0-8 1.34-8 4v2h9l-2-2H5zm15.6-5.5l-5.13 5.17-2.07-2.08L12 17l3.47 3.5L22 13.91z"/></svg>
@@ -1877,32 +1880,22 @@
                             </button>
                             ${assignedInternsCards}
                         </div>
-                        <p class="task-description ws-pre-line wrap-around" data-editable>${description}</p>
-                        <div class="display-task__details flex flex-wrap gap-0-3">
-                            ${category ? html`
-                                <div class="display-task__detail">
-                                    <span class="display-task__detail__title">Category: </span>
-                                    <span class="display-task__detail__value">${floGlobals.taskCategories[category]}</span>
-                                </div>
-                            `: ''}
-                            ${duration ? html`
-                                <div class="display-task__detail">
-                                    <span class="display-task__detail__title">Duration: </span>
-                                    <span class="display-task__detail__value">${duration} ${durationType}</span>
-                                </div>
-                            `: ''}
-                            ${maxSlots ? html`
-                                <div class="display-task__detail">
-                                    <span class="display-task__detail__title">Slots: </span>
-                                    <span class="display-task__detail__value">${maxSlots}</span>
-                                </div>
-                            `: ''}
-                            ${reward ? html`
-                                <div class="display-task__detail">
-                                    <span class="display-task__detail__title">Reward: </span>
-                                    <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
-                                </div>
-                            `: ''}    
+                        <p class="task-description ws-pre-line wrap-around" data-editable data-edit-field="description">${description}</p>
+                        <div class="grid gap-0-5 margin-top-1" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+                            <sm-select data-edit-field="category" label="Category: ">${categories}</sm-select>
+                            <div class="flex flex-1">
+                                <sm-input data-edit-field="duration" value="${duration}" class="flex-1" placeholder="Duration" type="number" style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);" animate="" aria-label="Duration" role="textbox">
+                                    <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <g> <path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z"></path> </g> </g> </g> </svg>
+                                </sm-input>
+                                <sm-select data-edit-field="durationType" class="flex-shrink-0" style="--select-border-radius: 0 0.5rem 0.5rem 0;" role="listbox" align-select="right" value="days">
+                                    <sm-option value="days" ?selected=${durationType === "days"}>Days</sm-option>
+                                    <sm-option value="months" ?selected=${durationType === "months"}>Months</sm-option>
+                                </sm-select>
+                            </div>
+                            <sm-input data-edit-field="maxSlots" value=${maxSlots} placeholder="Max slots available" type="number" animate="" aria-label="Max slots available" role="textbox"> </sm-input>
+                            <sm-input data-edit-field="reward" value=${reward} type="number" placeholder="Reward" animate="" aria-label="Reward" role="textbox">
+                                <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <path d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z"> </path> </g> </g> </svg>
+                            </sm-input>
                         </div>
                         ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                     </li>
@@ -2210,7 +2203,12 @@
             const branchList = filterMap(RIBC.getProjectBranches(appState.params.id), (branch) => {
                 return render.branchButton({ projectCode, branch, page: appState.currentPage, active: branch === appState.params.branch })
             })
-            renderElem(getRef(taskListContainer), html`${branchList}`)
+            if (branchList.length > 1) {
+                renderElem(getRef(taskListContainer), html`${branchList}`)
+                getRef(taskListContainer).classList.remove('hidden')
+            } else {
+                getRef(taskListContainer).classList.add('hidden')
+            }
         }
         function renderBranchTasks() {
             const { id: projectCode, branch } = appState.params
@@ -2262,29 +2260,42 @@
                 makeEditable(currentTask.querySelector('.task-description'))
             }
         }
+        function formatAmount(amount = 0, currency = 'inr') {
+            if (!amount)
+                return '₹0';
+            return amount.toLocaleString(currency === 'inr' ? `en-IN` : 'en-US', { style: 'currency', currency, maximumFractionDigits: 0 })
+        }
         delegate(getRef('task_list'), 'change', 'sm-checkbox', (e) => {
             currentTask = e.target.closest('.task-list-item');
             const taskStatus = e.target.checked ? 'completed' : 'incomplete'
             RIBC.admin.putTaskStatus(taskStatus, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
         })
+        delegate(getRef('task_list'), 'change', 'sm-select', (e) => {
+            currentTask = e.target.closest('.task-list-item');
+            const taskDetails = {
+                [e.target.dataset.editField]: e.target.value
+            }
+            RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+            notify('Changes saved locally, commit the changes to make them permanent', 'success')
+        })
         getRef('task_list').addEventListener('focusout', (e) => {
+            currentTask = e.target.closest('.task-list-item');
+            if (!currentTask) return;
+            const ogTaskDetails = RIBC.getTaskDetails(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+            const newTaskDetails = {}
+            let valid = false;
             if (e.target.isContentEditable) {
                 e.target.contentEditable = false
-                if (e.target.innerText.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerText.trim())) {
-                    const { title, description } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
-                    const taskDetails = {}
-                    if (e.target.closest('.task-description')) {
-                        taskDetails['title'] = title
-                        taskDetails['description'] = DOMPurify.sanitize(e.target.innerText.trim())
-                    } else if (e.target.closest('.task-title')) {
-                        taskDetails['title'] = DOMPurify.sanitize(e.target.innerText.trim())
-                        taskDetails['description'] = description
-                    }
-                    RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
-                    notify('Changes saved locally, commit the changes to make them permanent', 'success')
-                } else {
-                    e.target.innerText = floGlobals.tempEditableContent
-                }
+                newTaskDetails[e.target.dataset.editField] = DOMPurify.sanitize(e.target.innerText.trim())
+                valid = true;
+            } else if (e.target.closest('sm-input')) {
+                newTaskDetails[e.target.dataset.editField] = parseInt(e.target.value)
+                valid = true;
+            }
+            if (!valid) return;
+            if (ogTaskDetails[e.target.dataset.editField] !== newTaskDetails[e.target.dataset.editField]) {
+                RIBC.admin.editTaskDetails(newTaskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+                notify('Changes saved locally, commit the changes to make them permanent', 'success')
             }
         })
         getRef('task_list').addEventListener('dblclick', (e) => {
@@ -2375,7 +2386,6 @@
                     durationType,
                     reward
                 }
-                console.log(taskDetails)
                 const task = RIBC.admin.addTaskInMap(appState.params.id, appState.params.branch)
                 RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, task)
                 RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, task)
