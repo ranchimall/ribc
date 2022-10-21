@@ -502,16 +502,15 @@
                             <h5>Filters</h5>
                             <div class="grid gap-0-3">
                                 <p>Category</p>
-                                <sm-select id="filter_requests_by_category"></sm-select>
+                                <sm-select id="filter_requests_by_category" onchange="render.internRequests()">
+                                </sm-select>
                             </div>
                             <div class="grid gap-0-3">
                                 <p>Project</p>
-                                <sm-select id="filter_requests_by_project"></sm-select>
+                                <sm-select id="filter_requests_by_project" onchange="render.internRequests()">
+                                </sm-select>
                             </div>
-                            <div class="flex gap-0-3">
-                                <button class="button button--colored">Clear</button>
-                                <button class="button button--primary flex-1">Filter</button>
-                            </div>
+                            <button class="button button--colored" onclick="clearRequestFilters()">Clear</button>
                         </div>
                         <div class="flex flex-direction-column gap-1">
                             <h5>Pending</h5>
@@ -538,7 +537,7 @@
                         <input type="date" id="updates_page__date_selector" aria-label="Filter updates by date"
                             min="2020-01-01">
                     </label>
-                    <button class="button" onclick="clearFilter()">Clear</button>
+                    <button class="button" onclick="clearUpdatesFilter()">Clear</button>
                 </section>
                 <section id="updates_wrapper">
                     <ul id="all_updates_list" class="grid gap-0-5 observe-empty-state"></ul>
@@ -2013,21 +2012,29 @@
             internRequests() {
                 const requestCategories = new Set()
                 const requestProjects = new Set()
+                const shouldFilterByProject = getRef('filter_requests_by_project').value !== 'all' ? getRef('filter_requests_by_project').value : false;
+                const shouldFilterByCategory = getRef('filter_requests_by_category').value !== 'all' ? getRef('filter_requests_by_category').value : false;
                 let requestCards = filterMap(RIBC.getTaskRequests().reverse(), (request) => {
-                    if (Array.isArray(request.details) || !request.details.taskId) return
+                    if (Array.isArray(request.details) || !request.details.taskId) return;
                     const [projectCode, branch, task] = request.details.taskId.split('_')
-                    if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined') {
-                        requestCategories.add(RIBC.getTaskDetails(projectCode, branch, task).category)
-                        requestProjects.add(projectCode)
-                        return render.taskRequestCard(request)
-                    }
+                    const taskDetails = RIBC.getTaskDetails(projectCode, branch, task)
+                    if (!taskDetails) return;
+                    requestCategories.add(RIBC.getTaskDetails(projectCode, branch, task).category)
+                    requestProjects.add(projectCode)
+                    if (shouldFilterByCategory && taskDetails.category !== shouldFilterByCategory) return;
+                    if (shouldFilterByProject && projectCode !== shouldFilterByProject) return;
+                    return render.taskRequestCard(request)
                 })
                 renderElem(getRef('requests_list'), html`${requestCards}`)
-                if (requestCards.length) {
+                if (requestCategories.size) {
                     const categoryOptions = [...requestCategories].map(cat => html`<sm-option value=${cat}>${floGlobals.taskCategories[cat]}</sm-option>`);
                     renderElem(getRef('filter_requests_by_category'), html`${[html`<sm-option value='all' selected>All</sm-option>`, ...categoryOptions]}`)
+                }
+                if (requestProjects.size) {
                     const projectOptions = [...requestProjects].map(project => html`<sm-option value=${project}>${RIBC.getProjectDetails(project).projectName}</sm-option>`);
                     renderElem(getRef('filter_requests_by_project'), html`${[html`<sm-option value='all' selected>All</sm-option>`, ...projectOptions]}`)
+                }
+                if (requestCategories.size || requestProjects.size) {
                     getRef('requests_container__filters').classList.remove('hidden')
                 } else {
                     getRef('requests_container__filters').classList.add('hidden')
@@ -2515,6 +2522,11 @@
             closePopup()
         }
 
+        function clearRequestFilters() {
+            getRef('filter_requests_by_category').reset()
+            getRef('filter_requests_by_project').reset()
+        }
+
         function renderProjectSelectorOptions() {
             const options = [html`<sm-option value="all" selected>All</sm-option>`];
             RIBC.getProjectList().reverse().forEach(project => {
@@ -2622,7 +2634,7 @@
             return { projectCode, internId, date }
         }
 
-        function clearFilter() {
+        function clearUpdatesFilter() {
             getRef('updates_page__project_selector').reset()
             getRef('updates_page__intern_selector').reset()
             getRef('updates_page__date_selector').value = ''
