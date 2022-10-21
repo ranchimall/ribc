@@ -306,14 +306,14 @@ sm-option {
 strip-select {
   --gap: 0;
   background-color: rgba(var(--text-color), 0.06);
-  border-radius: 0.3rem;
+  border-radius: 3rem;
   padding: 0.3rem;
 }
 
 strip-option {
   position: relative;
   font-size: 0.8rem;
-  --border-radius: 0.2rem;
+  --border-radius: 3rem;
   user-select: none;
 }
 
@@ -1023,33 +1023,6 @@ ul {
   }
 }
 
-#application_card {
-  position: relative;
-  overflow: hidden;
-  background-color: rgba(var(--foreground-color), 1);
-  border: solid thin rgba(var(--text-color), 0.1);
-  padding: 0;
-  & > div {
-    &:first-of-type {
-      padding: max(1rem, 3vw);
-      z-index: 2;
-      width: calc(100% - 4rem);
-      background: linear-gradient(
-        90deg,
-        rgba(var(--foreground-color), 1) 0%,
-        rgba(var(--foreground-color), 0) 100%
-      );
-    }
-  }
-  .illustration {
-    position: absolute;
-    height: 100%;
-    right: 0;
-    width: auto;
-    margin: 0 -1.5rem -1.5rem 0;
-  }
-}
-
 .task {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -1137,6 +1110,8 @@ ul {
 #dashboard_page {
   padding-bottom: 5rem;
   grid-template-columns: auto;
+  overflow-y: auto;
+  align-items: flex-start;
 }
 .logo {
   display: flex;
@@ -1506,16 +1481,6 @@ ul {
     margin: 0;
   }
 }
-
-#best_interns_container {
-  margin-bottom: 1rem;
-}
-
-#edit_data_fig {
-  fill: rgba(var(--text-color), 0.6);
-  width: 60vw;
-  margin: 2rem 0;
-}
 #loading {
   display: grid;
   text-align: center;
@@ -1677,6 +1642,7 @@ ul {
 #projects_container__left {
   height: 100%;
   overflow-y: auto;
+  width: 100%;
   .list-container {
     height: 100%;
     overflow-y: auto;
@@ -1705,9 +1671,10 @@ input[type="date"] {
     box-shadow: 0 0 0 0.1rem var(--accent-color);
   }
 }
-.search__icon {
-  height: 1.2rem;
-  width: 1.2rem;
+#requests_container {
+  padding: 0 1rem;
+  gap: 1.5rem;
+  overflow-y: auto;
 }
 #user_role {
   justify-self: start;
@@ -1749,9 +1716,11 @@ input[type="date"] {
     }
   }
   .project__title {
-    margin-bottom: 0.8rem;
     font-weight: 500;
-    color: inherit;
+    color: rgba(var(--text-color), 0.9);
+    &:hover {
+      color: var(--accent-color);
+    }
   }
   .project__complete-percent {
     font-size: 0.8rem;
@@ -1773,6 +1742,10 @@ input[type="date"] {
 }
 #settings_page {
   align-content: flex-start;
+  & > * {
+    width: min(48rem, 100%);
+    margin: 0 auto;
+  }
 }
 @media only screen and (max-width: 640px) {
   .hide-on-mobile,
@@ -1889,16 +1862,17 @@ input[type="date"] {
 
   #dashboard_page {
     grid-template-columns: 1fr 18rem;
-    align-content: flex-start;
-    align-items: flex-start;
     & > :not(#best_interns_container) {
       grid-column: 1;
+      width: min(48rem, 100%);
+      margin: 0 auto;
     }
   }
   #best_interns_container {
+    position: sticky;
+    top: 0;
     grid-column: 2;
     grid-row: 1 /4;
-    height: 100%;
   }
   #all_interns_page__header {
     grid-template-columns: 1fr auto;
@@ -1909,14 +1883,7 @@ input[type="date"] {
   }
   #projects_container__left {
     width: 18rem;
-    background-color: rgba(var(--foreground-color), 0.5);
   }
-
-  #edit_data_fig {
-    width: 16rem;
-    justify-self: center;
-  }
-
   #project_explorer {
     display: grid;
     height: 100%;
@@ -1989,7 +1956,13 @@ input[type="date"] {
     font-size: 0.9rem;
     grid-template-columns: 6rem 1fr 8rem;
   }
-  #project_editing_panel {
+  #requests_container {
+    padding: 1rem;
+    grid-template-columns: 14rem 1fr;
+    & > :nth-child(2) {
+      width: min(48rem, 100%);
+      margin: 0 auto;
+    }
   }
 }
 

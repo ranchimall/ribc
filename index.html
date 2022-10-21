@@ -319,7 +319,7 @@
         </nav>
         <article id="sub_page_container">
             <section id="dashboard_page" class="inner-page hidden">
-                <strip-select id="dashboard_view_selector" class="hide-on-desktop">
+                <strip-select id="dashboard_view_selector" class="hide-on-desktop justify-self-center">
                     <strip-option value="intern_view" selected>My tasks</strip-option>
                     <strip-option value="best_interns_container">Leaderboard</strip-option>
                     <strip-option value="projects_wrapper">Projects</strip-option>
@@ -498,9 +498,27 @@
                         <ul id="admin_page__intern_list" class="list-container observe-empty-state"></ul>
                         <h4 class="empty-state">No interns added</h4>
                     </section>
-                    <section class="flex flex-direction-column hidden">
-                        <ul id="requests_list" class="list-container observe-empty-state"></ul>
-                        <h4 class="empty-state">No pending requests</h4>
+                    <section id="requests_container" class="grid hidden">
+                        <div id="requests_container__filters" class="flex flex-direction-column gap-1">
+                            <h5>Filters</h5>
+                            <div class="grid gap-0-3">
+                                <p>Category</p>
+                                <sm-select id="filter_requests_by_category"></sm-select>
+                            </div>
+                            <div class="grid gap-0-3">
+                                <p>Project</p>
+                                <sm-select id="filter_requests_by_project"></sm-select>
+                            </div>
+                            <div class="flex gap-0-3">
+                                <button class="button button--colored">Clear</button>
+                                <button class="button button--primary flex-1">Filter</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-direction-column gap-1">
+                            <h5>Pending</h5>
+                            <ul id="requests_list" class="list-container observe-empty-state"></ul>
+                            <h4 class="empty-state">No pending requests</h4>
+                        </div>
                     </section>
                 </div>
             </section>
@@ -540,8 +558,8 @@
                 <div id="all_interns_page__header" class="grid gap-0-5">
                     <h2>Interns</h2>
                     <sm-input id="interns_page__search" placeholder="Search">
-                        <svg class="icon search__icon" slot="icon" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24" width="24" height="24">
+                        <svg class="icon" slot="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                            height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
                             <path
                                 d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
@@ -1983,7 +2001,10 @@
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
                         </div>
                         <div class="flex space-between align-items-start">
-                            <a class="project__title" href=${`#/project_explorer/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>
+                            <a class="flex align-center" href=${`#/project_explorer/project?id=${projectCode}&branch=mainLine`}>
+                                <h4 class="project__title">${projectName}</h4>
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
+                            </a>
                             <button class="icon-only pin-project" title=${`${isPinned ? 'Unpin' : 'Pin'} this project`} onclick="pinProject(this)" data-pinned=${isPinned}>${pinIcon}</button>
                         </div>
                         <div class="progress-bar">
@@ -1997,13 +2018,27 @@
                 renderElem(where, html`${projects.map(project => render.dashProject(project, where))} `)
             },
             internRequests() {
+                const requestCategories = new Set()
+                const requestProjects = new Set()
                 let requestCards = filterMap(RIBC.getTaskRequests().reverse(), (request) => {
                     if (Array.isArray(request.details) || !request.details.taskId) return
                     const [projectCode, branch, task] = request.details.taskId.split('_')
-                    if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined')
+                    if (typeof RIBC.getTaskDetails(projectCode, branch, task) !== 'undefined') {
+                        requestCategories.add(RIBC.getTaskDetails(projectCode, branch, task).category)
+                        requestProjects.add(projectCode)
                         return render.taskRequestCard(request)
+                    }
                 })
                 renderElem(getRef('requests_list'), html`${requestCards}`)
+                if (requestCards.length) {
+                    const categoryOptions = [...requestCategories].map(cat => html`<sm-option value=${cat}>${floGlobals.taskCategories[cat]}</sm-option>`);
+                    renderElem(getRef('filter_requests_by_category'), html`${[html`<sm-option value='all' selected>All</sm-option>`, ...categoryOptions]}`)
+                    const projectOptions = [...requestProjects].map(project => html`<sm-option value=${project}>${RIBC.getProjectDetails(project).projectName}</sm-option>`);
+                    renderElem(getRef('filter_requests_by_project'), html`${[html`<sm-option value='all' selected>All</sm-option>`, ...projectOptions]}`)
+                    getRef('requests_container__filters').classList.remove('hidden')
+                } else {
+                    getRef('requests_container__filters').classList.add('hidden')
+                }
             },
             projectList(container, projects, isAdminList = false) {
                 renderElem(container, html`${projects.map(projectCode => render.projectCard(projectCode, isAdminList, container))}`)
@@ -2319,7 +2354,6 @@
                 const card = e.target.closest('.temp-task')
                 const title = card.querySelector('.temp-task__title').value.trim();
                 const description = card.querySelector('.temp-task__description').value.trim();
-                const links = card.querySelector('.temp-task__links').value
                 const category = card.querySelector('.temp-task__category').value.trim();
                 const maxSlots = parseInt(card.querySelector('.temp-task__max-slots').value.trim());
                 const duration = parseInt(card.querySelector('.temp-task__duration').value.trim());
@@ -2335,7 +2369,6 @@
                 const taskDetails = {
                     title,
                     description,
-                    links,
                     category,
                     maxSlots,
                     duration,
@@ -2363,8 +2396,7 @@
                 <div class="temp-task grid gap-0-5">
                     <sm-form style="--gap: 0.5rem;">
                         <sm-input class="temp-task__title" placeholder="Title" animate required></sm-input>
-                        <sm-textarea class="temp-task__description" placeholder="Description" rows="4" required></sm-textarea>
-                        <tags-input class="temp-task__links" placeholder="Related links(separate by comma)"></tags-input>
+                        <sm-textarea class="temp-task__description" placeholder="Description" rows="6" required></sm-textarea>
                         <div class="grid gap-0-5" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
                             <sm-select class="temp-task__category" label="Category: ">${categories}</sm-select>
                             <sm-input class="temp-task__max-slots flex-1" placeholder="Max slots available" type="number" animate> </sm-input>
