@@ -53,6 +53,7 @@
                     floGlobals.loaded = true
                     console.log(result)
                     routeTo(window.location.hash, { firstLoad: true })
+                    renderAllElements()
                 }).catch(error => console.error(error))
             }).catch(error => console.error(error))
         }
@@ -1263,7 +1264,6 @@
                         return RIBC.getInternRating(b) - RIBC.getInternRating(a)
                     });
                     renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`);
-                    renderAllElements()
                     break;
                 case 'updates_page': {
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1901,6 +1901,14 @@
                 for (const categoryID in floGlobals.taskCategories) {
                     categories.push(html`<sm-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</sm-option>`)
                 }
+                const taskDescription = createElement('p', {
+                    className: 'task-description ws-pre-line wrap-around',
+                    attributes: {
+                        'data-editable': '',
+                        'data-edit-field': 'description',
+                    },
+                    innerHTML: DOMPurify.sanitize(description)
+                })
                 return html.for(ref, `${appState.params.id}_${appState.params.branch}_${task}`)`
                     <li class="task-list-item" .dataset=${{ taskId: task }}>
                         <div class="flex align-center gap-0-3">
@@ -1925,7 +1933,7 @@
                             </button>
                             ${assignedInternsCards}
                         </div>
-                        <p class="task-description ws-pre-line wrap-around" data-editable data-edit-field="description">${description}</p>
+                        ${taskDescription}
                         <div class="grid gap-0-5 margin-top-1" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
                             <sm-select data-edit-field="category" label="Category: ">${categories}</sm-select>
                             <div class="flex flex-1">
