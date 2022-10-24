@@ -41,7 +41,8 @@
                 new Promise((resolve) => {
                     RIBC.refreshObjectData().then(() => {
                         resolve()
-                        routeTo(window.location.hash);
+                        if (!floGlobals.loaded)
+                            routeTo(window.location.hash);
                     })
                 })
             )
@@ -49,8 +50,8 @@
                 console.log(result)
                 console.log(`Welcome FLO_ID: ${myFloID}`)
                 RIBC.init(floGlobals.subAdmins.includes(myFloID)).then(result => {
+                    floGlobals.loaded = true
                     console.log(result)
-                    renderAllElements()
                     routeTo(window.location.hash, { firstLoad: true })
                 }).catch(error => console.error(error))
             }).catch(error => console.error(error))
@@ -102,19 +103,18 @@
                         <h3>
                             Available Tasks
                         </h3>
-                        <div class="flex gap-0-3">
-                            <sm-input placeholder="Search" type="search" class="flex-1">
-                                <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                            </sm-input>
-                        </div>
+                        <sm-input id="task_search_input" oninput="searchTasks(event)" placeholder="Search keywords"
+                            type="search">
+                            <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </sm-input>
                     </div>
                     <div id="display_task_filters" class="flex gap-1">
-                        <strip-select id="task_category_selector" class="w-100"></strip-select>
+                        <strip-select id="task_category_selector"></strip-select>
                     </div>
                 </div>
                 <div class="grid gap-1">
@@ -1146,7 +1146,9 @@
                         categories.push(html`<strip-option value=${categoryID} ?selected=${params.category === categoryID}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
                     }
                     renderElem(getRef('task_category_selector'), html`${categories}`)
-                    render.displayTasks(params.category)
+                    render.displayTasks(params.category, params.search)
+                    if (getRef('task_search_input').value.trim() !== params.search)
+                        getRef('task_search_input').value = params.search || ''
                     break;
                 case 'task_details': {
                     if (!params || !params.id) return;
@@ -1167,10 +1169,7 @@
                     renderElem(getRef('task_details_wrapper'), html`
                         <div class="grid gap-1">
                             <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
-                            <div class="grid gap-0-5">
-                                <h2 id="task_title">${title}</h2>
-                                ${descriptionTag}
-                            </div>
+                            <h2 id="task_title">${title}</h2>
                             <div class="display-task__details flex flex-wrap gap-0-3">
                                 ${duration ? html`
                                     <div class="display-task__detail">
@@ -1191,6 +1190,7 @@
                                     </div>
                                 `: ''}    
                             </div>
+                            ${descriptionTag}
                         </div>
                         ${!hasApplied ? html`
                             <button class="button button--primary" .dataset=${{ taskId: params.id }} onclick="requestForTask(this)">Apply Now</button>
@@ -1263,6 +1263,7 @@
                         return RIBC.getInternRating(b) - RIBC.getInternRating(a)
                     });
                     renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`);
+                    renderAllElements()
                     break;
                 case 'updates_page': {
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1714,20 +1715,22 @@
                     </li>
                 `;
             },
-            displayTasks(category) {
+            displayTasks(category, searchQuery) {
                 if (appState.currentPage !== 'landing') return;
                 const allTasks = RIBC.getAllTasks()
                 const filterCategory = category === 'all' ? false : category;
                 const filtered = []
-                for (const taskKey in allTasks) {
-                    const [projectCode, branch, task] = taskKey.split('_')
-                    const { category } = RIBC.getTaskDetails(projectCode, branch, task)
-                    if (RIBC.getTaskStatus(projectCode, branch, task) === 'incomplete') {
-                        if (filterCategory && category !== filterCategory) continue;
-                        filtered.unshift(render.displayTaskCard(projectCode, branch, task))
-                    }
+                for (const taskId in allTasks) {
+                    const [projectCode, branch, task] = taskId.split('_')
+                    if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
+                    if (RIBC.getTaskStatus(projectCode, branch, task) !== 'incomplete') continue;
+                    if (searchQuery && searchQuery !== '' && !allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase())) continue;
+                    filtered.push(render.displayTaskCard(projectCode, branch, task))
                 }
-                renderElem(getRef('display_task_list'), html`${filtered}`)
+                renderElem(getRef('display_task_list'), html`${filtered.reverse()}`)
+                if (searchQuery && filtered.length === 0) {
+                    renderElem(getRef('display_task_list'), html`<p>No tasks related to <b>${searchQuery}</b></p>`)
+                }
             },
             projectCard(projectCode, isAdmin = false, ref) {
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
@@ -2003,10 +2006,7 @@
                         <span class="task__project-title">${projectName}</span>
                         <div>
                             <h4 class="task__title">${title}</h4>
-                            <details>
-                                <summary>View description</summary>
-                                ${linkifyDescription}
-                            </details>
+                            ${linkifyDescription}
                         </div>
                         <button class="send-update-button button--small margin-left-auto">
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
@@ -2153,9 +2153,12 @@
             return renderedIntensColor[floId]
         }
 
-        getRef('task_category_selector').addEventListener('change', (e) => {
-            window.location.hash = `#/landing?category=${e.target.value}`;
-        })
+        const searchTasks = debounce((e) => {
+            const searchQuery = getRef('task_search_input').value.trim();
+            const category = getRef('task_category_selector').value;
+            window.location.hash = `#/landing?category=${category}${searchQuery !== '' ? `&search=${searchQuery}` : ''}`;
+        }, 100)
+        getRef('task_category_selector').addEventListener('change', searchTasks)
         let pinnedProjects = [];
         let currentIntern;
         let currentTaskId;
@@ -2200,7 +2203,7 @@
         }
 
         function makeEditable(elem) {
-            floGlobals.tempEditableContent = DOMPurify.sanitize(elem.innerText.trim())
+            floGlobals.tempEditableContent = DOMPurify.sanitize(elem.innerHTML.trim())
             elem.contentEditable = true
             elem.focus()
             document.execCommand('selectAll', false, null);
@@ -2214,14 +2217,14 @@
         getRef('project_details_wrapper').addEventListener('focusout', (e) => {
             if (e.target.isContentEditable) {
                 e.target.contentEditable = false
-                if (e.target.innerText.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerText.trim())) {
-                    const newTitle = DOMPurify.sanitize(getRef('editing_panel__title').innerText.trim())
-                    const newDescription = DOMPurify.sanitize(getRef('editing_panel__description').innerText.trim())
+                if (e.target.innerHTML.trim() !== '' && floGlobals.tempEditableContent !== DOMPurify.sanitize(e.target.innerHTML.trim())) {
+                    const newTitle = DOMPurify.sanitize(getRef('editing_panel__title').innerHTML.trim())
+                    const newDescription = DOMPurify.sanitize(getRef('editing_panel__description').innerHTML.trim())
                     RIBC.admin.addProjectDetails(appState.params.id, { projectName: newTitle, projectDescription: newDescription })
                     notify('Changes saved locally, commit the changes to make them permanent', 'success')
                     render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
                 } else {
-                    e.target.innerText = floGlobals.tempEditableContent
+                    e.target.innerHTML = floGlobals.tempEditableContent
                 }
             }
         })
@@ -2350,7 +2353,7 @@
             let valid = false;
             if (e.target.isContentEditable) {
                 e.target.contentEditable = false
-                newTaskDetails[e.target.dataset.editField] = DOMPurify.sanitize(e.target.innerText.trim())
+                newTaskDetails[e.target.dataset.editField] = DOMPurify.sanitize(e.target.innerHTML.trim())
                 valid = true;
             } else if (e.target.closest('sm-input')) {
                 newTaskDetails[e.target.dataset.editField] = parseInt(e.target.value)

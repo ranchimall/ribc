@@ -4,7 +4,7 @@
 
     Ribc.init = function (isSubAdmin = false) {
         return new Promise((resolve, reject) => {
-            Promise.all([Ribc.refreshGeneralData(isSubAdmin)])
+            Promise.all([Ribc.refreshObjectData(), Ribc.refreshGeneralData(isSubAdmin)])
                 .then(results => resolve(results))
                 .catch(error => reject(error))
         })
