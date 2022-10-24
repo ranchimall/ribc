@@ -96,18 +96,28 @@
                 </div>
                 <img src="assets/working-intern.svg" alt="">
             </div>
-            <div id="task_display_wrapper" class="flex flex-wrap gap-2 justify-center">
-                <div id="display_task_filters" class="grid gap-1">
-                    <h4>Filters</h4>
-                    <div class="flex flex-direction-column gap-0-5">
-                        <h5>Category</h5>
-                        <sm-select id="task_category_selector"></sm-select>
+            <div id="task_display_wrapper" class="flex flex-direction-column gap-1 justify-center">
+                <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
+                    <div class="flex align-center gap-1 flex-wrap space-between">
+                        <h3>
+                            Available Tasks
+                        </h3>
+                        <div class="flex gap-0-3">
+                            <sm-input placeholder="Search" type="search" class="flex-1">
+                                <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </sm-input>
+                        </div>
+                    </div>
+                    <div id="display_task_filters" class="flex gap-1">
+                        <strip-select id="task_category_selector" class="w-100"></strip-select>
                     </div>
                 </div>
                 <div class="grid gap-1">
-                    <h3>
-                        Available Tasks
-                    </h3>
                     <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state"></ul>
                     <div class="empty-state">
                         <h4>Nothing to see here</h4>
@@ -318,52 +328,7 @@
             <theme-toggle class="hide-on-mobile"></theme-toggle>
         </nav>
         <article id="sub_page_container">
-            <section id="dashboard_page" class="inner-page hidden">
-                <strip-select id="dashboard_view_selector" class="hide-on-desktop justify-self-center">
-                    <strip-option value="intern_view" selected>My tasks</strip-option>
-                    <strip-option value="best_interns_container">Leaderboard</strip-option>
-                    <strip-option value="projects_wrapper">Projects</strip-option>
-                </strip-select>
-                <div id="projects_wrapper" class="grid gap-2 align-items-start">
-                    <section id="pinned_project_section" class="w-100">
-                        <h4>Pinned</h4>
-                        <div id="pinned_projects" class="observe-empty-state"></div>
-                        <div class="empty-state">
-                            <h4>There are no pinned projects</h4>
-                            <p class="margin-block-0-5">
-                                You can pin projects for easier monitoring by clicking on the 'pin' icon on project
-                                card.
-                            </p>
-                        </div>
-                    </section>
-                    <div id="project_list_container" class="hidden">
-                        <div class="flex align-center space-between margin-bottom-0-5">
-                            <h4>Projects</h4>
-                            <a href="#/project_explorer" class="button open-first-project">All</a>
-                        </div>
-                        <div id="project_list" class="flex flex-direction-column gap-0-3"></div>
-                    </div>
-                </div>
-                <section id="intern_view" class="hidden intern-option">
-                    <h4>My tasks</h4>
-                    <ul id="assigned_task_list"></ul>
-                </section>
-                <div id="best_interns_container" class="container-card">
-                    <div class="container-header">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" />
-                        </svg>
-                        <h4>Leaderboard</h4>
-                        <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
-                    </div>
-                    <div id="top_interns" class="observe-empty-state"></div>
-                    <div class="empty-state">
-                        <h4>There are no interns</h4>
-                    </div>
-                </div>
-            </section>
+            <section id="dashboard_page" class="inner-page hidden"></section>
             <section id="admin_page" class="inner-page hidden">
                 <div class="flex align-center space-between">
                     <strip-select id="admin_view_selector">
@@ -401,13 +366,14 @@
                         <section id="project_editing_panel" class="hidden">
                             <div id="project_details_wrapper"
                                 class="flex flex-direction-column gap-1 margin-bottom-2 align-items-start">
-                                <a class="button icon-only hide-on-desktop" href="#/admin_page" title="Go back">
-                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px"
-                                        viewBox="0 0 24 24" width="24px" fill="#000000">
-                                        <path d="M0 0h24v24H0V0z" fill="none"></path>
-                                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z">
-                                        </path>
+                                <a class="flex gap-0-3 align-center button--colored hide-on-desktop" href="#/admin_page"
+                                    title="Go back">
+                                    <svg class="icon" style="margin-left: -0.3rem;" xmlns="http://www.w3.org/2000/svg"
+                                        height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" />
                                     </svg>
+                                    Projects
                                 </a>
                                 <div class="flex flex-wrap align-items-start">
                                     <h2 id="editing_panel__title" data-editable></h2>
@@ -521,7 +487,7 @@
                 </div>
             </section>
             <section id="updates_page" class="inner-page hidden">
-                <button class="button hide-on-desktop justify-self-end" onclick="toggleFilter()">Filter</button>
+                <button class="button hide-on-desktop justify-self-end" onclick="toggleUpdatesFilter()">Filter</button>
                 <section id="update_filters_wrapper" class="grid hide-on-mobile">
                     <h4>Filter</h4>
                     <div class="grid gap-0-5">
@@ -1175,9 +1141,9 @@
                     if (!params) {
                         params = { category: 'all' }
                     }
-                    const categories = [html`<sm-option value='all' ?selected=${params.category === 'all'}>All</sm-option>`];
+                    const categories = [html`<strip-option value='all' ?selected=${params.category === 'all'}>All</strip-option>`];
                     for (const categoryID in floGlobals.taskCategories) {
-                        categories.push(html`<sm-option value=${categoryID} ?selected=${params.category === categoryID}>${floGlobals.taskCategories[categoryID]}</sm-option>`)
+                        categories.push(html`<strip-option value=${categoryID} ?selected=${params.category === categoryID}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
                     }
                     renderElem(getRef('task_category_selector'), html`${categories}`)
                     render.displayTasks(params.category)
@@ -1237,6 +1203,48 @@
                     getRef('generated_private_key').value = privKey
                     break;
                 case 'dashboard_page':
+                    renderElem(getRef('dashboard_page'), html`
+                        <strip-select id="dashboard_view_selector" onchange=${handleDashboardViewChange}>
+                            ${typeOfUser === 'intern' ? html`<strip-option value="intern_view" selected>My tasks</strip-option>` : ''}
+                            ${typeOfUser !== 'admin' ? html`<strip-option value="display_task_list">All tasks</strip-option>` : ''}
+                            <strip-option value="projects_wrapper" ?selected=${typeOfUser !== 'intern'}>Projects</strip-option>
+                            <strip-option value="best_interns_container">Leaderboard</strip-option>
+                        </strip-select>
+                        <div id="projects_wrapper" class=${`grid gap-2 align-items-start dashboard-view__item ${typeOfUser === 'intern' ? 'hide-on-mobile' : ''}`}>
+                            <section id="pinned_project_section" class="w-100">
+                                <h4>Pinned</h4>
+                                <div id="pinned_projects" class="observe-empty-state"></div>
+                                <div class="empty-state">
+                                    <h4>There are no pinned projects</h4>
+                                    <p class="margin-block-0-5">
+                                        You can pin projects for easier monitoring by clicking on the 'pin' icon on project card.
+                                    </p>
+                                </div>
+                            </section>
+                            <div id="project_list_container" class=${`hidden`}>
+                                <div class="flex align-center space-between margin-bottom-0-5">
+                                    <h4>Projects</h4>
+                                    <a href="#/project_explorer" class="button open-first-project">All</a>
+                                </div>
+                                <div id="project_list" class="flex flex-direction-column gap-0-3"></div>
+                            </div>
+                        </div>
+                        <section id="intern_view" class="hidden intern-option dashboard-view__item">
+                            <h4>My tasks</h4>
+                            <ul id="assigned_task_list"></ul>
+                        </section>
+                        <div id="best_interns_container" class="container-card dashboard-view__item hide-on-mobile">
+                            <div class="container-header">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" /> </svg>
+                                <h4>Leaderboard</h4>
+                                <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
+                            </div>
+                            <div id="top_interns" class="observe-empty-state"></div>
+                            <div class="empty-state">
+                                <h4>There are no interns</h4>
+                            </div>
+                        </div>
+                    `)
                     render.dashProjects(getRef('pinned_projects'), pinnedProjects);
                     // displays recent projects
                     const unpinnedProjects = RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse()
@@ -1246,6 +1254,15 @@
                         getRef('project_list_container').classList.add('hidden')
                     }
                     render.dashProjects(getRef('project_list'), unpinnedProjects)
+                    delegate(getRef('top_interns'), 'click', '.intern-card', e => {
+                        showInternInfo(e.delegateTarget.dataset.internFloId)
+                    })
+                    //creates cards for highest performing interns
+                    //sort interns earned points
+                    const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => {
+                        return RIBC.getInternRating(b) - RIBC.getInternRating(a)
+                    });
+                    renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`);
                     break;
                 case 'updates_page': {
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1324,6 +1341,7 @@
             switch (appState.lastPage) {
                 case 'task_details':
                 case 'project_explorer':
+                case 'all_interns_page':
                     routingAnimation.in = slideInRight;
                     routingAnimation.out = slideOutRight;
                     break;
@@ -1331,6 +1349,7 @@
             switch (pageId) {
                 case 'task_details':
                 case 'project_explorer':
+                case 'all_interns_page':
                     routingAnimation.in = slideInLeft;
                     routingAnimation.out = slideOutLeft;
                     break;
@@ -1748,7 +1767,9 @@
                 return html`
                     <div class=${`task ${status}`}>
                         <div class="left">
-                            <div class="circle"></div>
+                            <div class="circle">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                            </div>
                             <div class="line"></div>
                         </div>
                         <div class="right">
@@ -1757,7 +1778,29 @@
                                 ${applyButton}
                             </div>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
-                            ${linkifyDescription}
+                            <details>
+                                <summary class="task-details__summary">Task details</summary>
+                                ${linkifyDescription}
+                            </details>
+                            <div class="timeline-task__details flex flex-wrap gap-0-3">
+                                ${duration ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Duration: </span>
+                                        <span class="display-task__detail__value">${duration} ${durationType}</span>
+                                    </div>
+                                `: ''}
+                                ${maxSlots ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Slots: </span>
+                                        <span class="display-task__detail__value">${maxSlots}</span>
+                                    </div>
+                                `: ''}
+                                ${reward ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Reward: </span>
+                                        <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                                    </div>
+                                `: ''}
                             ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                         </div>
                     </div>
@@ -1960,7 +2003,10 @@
                         <span class="task__project-title">${projectName}</span>
                         <div>
                             <h4 class="task__title">${title}</h4>
-                            ${linkifyDescription}
+                            <details>
+                                <summary>View description</summary>
+                                ${linkifyDescription}
+                            </details>
                         </div>
                         <button class="send-update-button button--small margin-left-auto">
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
@@ -2114,6 +2160,17 @@
         let currentIntern;
         let currentTaskId;
         let typeOfUser = 'general';
+
+        function handleDashboardViewChange(e) {
+            document.querySelectorAll('.dashboard-view__item').forEach(item => item.classList.add('hide-on-mobile'))
+            document.querySelector(`#${e.target.value}`).classList.remove('hide-on-mobile')
+            if (typeOfUser === 'intern') {
+                getRef(`intern_view`).classList.remove('hidden')
+            } else {
+                getRef(`intern_view`).classList.add('hidden')
+            }
+        }
+
 
         // Adds interns to the database **Only SubAdmins can add interns
         function addInternToList() {
@@ -2714,13 +2771,10 @@
             }
         }
 
-        function toggleFilter() {
+        function toggleUpdatesFilter() {
             getRef('update_filters_wrapper').classList.toggle('hide-on-mobile')
         }
         // Event listeners
-        delegate(getRef('top_interns'), 'click', '.intern-card', e => {
-            showInternInfo(e.delegateTarget.dataset.internFloId)
-        })
         delegate(getRef('all_interns_page'), 'click', '.intern-card', e => {
             showInternInfo(e.delegateTarget.dataset.internFloId)
         })
@@ -2904,12 +2958,6 @@
                     elem.classList.remove('hidden')
                 })
             }
-            //creates cards for highest performing interns
-            //sort interns earned points
-            const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => {
-                return RIBC.getInternRating(b) - RIBC.getInternRating(a)
-            });
-            renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 4).map((floId) => render.internCard(floId))}`);
 
             if (typeOfUser === 'intern') {
                 render.projectList(getRef('my_projects'), [...floGlobals.assignedProjectsList])
