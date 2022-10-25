@@ -1754,7 +1754,7 @@
                 const assignedInternsCards = filterMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId));
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let applyButton
-                if (!assignedInterns.includes(myFloID)) {
+                if (!assignedInterns.includes(myFloID) && typeOfUser !== 'admin') {
                     const hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                         return `${appState.params.id}_${appState.params.branch}_${task}` === details.taskId
                     })
