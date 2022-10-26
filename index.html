@@ -40,19 +40,24 @@
             document.body.classList.remove('hidden')
             floDapps.setCustomPrivKeyInput(getSignedIn);
             floDapps.setMidStartup(() =>
-                new Promise((resolve) => {
+                new Promise((resolve, reject) => {
                     RIBC.refreshObjectData().then(() => {
                         resolve()
-                        if (!floGlobals.loaded)
-                            routeTo(window.location.hash);
+                        setTimeout(() => {
+                            if (!floGlobals.loaded) {
+                                routeTo(window.location.hash);
+                            }
+                        }, 0);
+                    }).catch((err) => {
+                        reject(err)
                     })
                 })
             )
             floDapps.launchStartUp().then(result => {
+                floGlobals.loaded = true
                 console.log(result)
                 console.log(`Welcome FLO_ID: ${myFloID}`)
                 RIBC.init(floGlobals.subAdmins.includes(myFloID)).then(result => {
-                    floGlobals.loaded = true
                     console.log(result)
                     renderAllElements()
                     routeTo(window.location.hash, { firstLoad: true })
@@ -1305,6 +1310,9 @@
                     routingAnimation.in = slideInRight;
                     routingAnimation.out = slideOutRight;
                     break;
+                case 'sign_in':
+                    floGlobals.tempUserTaskRequest = null
+                    break;
             }
             switch (pageId) {
                 case 'project_explorer':
@@ -1706,15 +1714,17 @@
                         categories.push(html`<strip-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
                     })
                 }
-                // if (getRef('task_search_input').value.trim() !== search)
-                //         getRef('task_search_input').value = search || ''
+                setTimeout(() => {
+                    if (document.getElementById('task_search_input') && document.getElementById('task_search_input').value.trim() !== searchQuery)
+                        document.getElementById('task_search_input').value = searchQuery || ''
+                }, 0);
                 return html`
                     <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
                         <div class="flex align-center gap-1 flex-wrap space-between">
                             <h3>
                                 Available Tasks
                             </h3>
-                            ${filtered.length > 0 ? html`
+                            ${(filtered.length > 0 || searchQuery) ? html`
                                 <sm-input id="task_search_input" oninput="filterTasks(event)" placeholder="Search keywords" type="search">
                                     <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg>
                                 </sm-input>
@@ -3075,7 +3085,6 @@
             const description = getRef('update__brief').value.trim()
             const linkText = getRef('update__link').value.trim()
             const link = linkText !== '' ? linkText : null
-            console.log(link)
             if (description !== '') {
                 RIBC.postInternUpdate({ projectCode, branch, task, description, link })
                     .then((result) => {
@@ -3136,7 +3145,6 @@
             const brief = getRef('intern_apply__brief').value.trim();
             // const resumeLink = getRef('intern_apply__resume_link').value.trim();
             const portfolioLink = getRef('intern_apply__portfolio_link').value.trim();
-            console.log(name, contact, brief, portfolioLink, floGlobals.tempUserTaskRequest)
             const details = {
                 name,
                 brief,
