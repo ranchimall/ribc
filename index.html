@@ -1334,7 +1334,6 @@
                     switch (pageId) {
                         case 'sign_in':
                             getRef('private_key_field').focusIn()
-
                             break;
                     }
                 }
@@ -1690,6 +1689,8 @@
                     if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
                     if (RIBC.getTaskStatus(projectCode, branch, task) !== 'incomplete') continue;
                     if (searchQuery && searchQuery !== '' && !allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase())) continue;
+                    if (RIBC.getAssignedInterns(projectCode, branch, task).length >= allTasks[taskId].maxSlots) continue;
+                    if (typeOfUser && typeOfUser === 'intern' && floDapps.user.id && RIBC.getAssignedInterns(projectCode, branch, task).includes(floDapps.user.id)) continue;
                     filtered.push(render.displayTaskCard(projectCode, branch, task))
                     availableCategories.add(allTasks[taskId].category)
                 }
@@ -1713,16 +1714,18 @@
                             <h3>
                                 Available Tasks
                             </h3>
-                            <sm-input id="task_search_input" oninput="filterTasks(event)" placeholder="Search keywords" type="search">
-                                <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg>
-                            </sm-input>
+                            ${filtered.length > 0 ? html`
+                                <sm-input id="task_search_input" oninput="filterTasks(event)" placeholder="Search keywords" type="search">
+                                    <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg>
+                                </sm-input>
+                            `: ''}
                         </div>
                         ${availableCategories.size > 1 ? html`<strip-select id="task_category_selector" onchange='filterTasks()'>${renderedCategories}</strip-select>` : ''}
                     </div>
                     <div class="grid gap-1">
                         <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state">${renderedTasks}</ul>
                         <div class="empty-state">
-                            <h4>Nothing to see here</h4>
+                            <p>Nothing to see here</p>
                         </div>
                     </div>
                 `;
@@ -2825,6 +2828,7 @@
 
         let sessionTaskRequests = new Set();
         function requestForTask(btn) {
+            hideTaskDetails()
             try {
                 floDapps.user.id
                 const taskId = btn ? btn.dataset.taskId : floGlobals.tempUserTaskRequest
