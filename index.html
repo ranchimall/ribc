@@ -30,7 +30,9 @@
     <script src="scripts/floDapps.min.js"></script>
     <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.0/dist/purify.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"
+        integrity="sha512-/hVAZO5POxCKdZMSLefw30xEVwjm94PAV9ynjskGbIpBvHO9EBplEcdUlBdCKutpZsF+La8Ag4gNrG0gAOn3Ig=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="scripts/ribc.min.js"></script>
     <script id="onLoadStartUp">
         function onLoadStartUp() {
@@ -52,8 +54,8 @@
                 RIBC.init(floGlobals.subAdmins.includes(myFloID)).then(result => {
                     floGlobals.loaded = true
                     console.log(result)
-                    routeTo(window.location.hash, { firstLoad: true })
                     renderAllElements()
+                    routeTo(window.location.hash, { firstLoad: true })
                 }).catch(error => console.error(error))
             }).catch(error => console.error(error))
         }
@@ -65,9 +67,9 @@
     <sm-popup id="confirmation_popup">
         <h4 id="confirm_title"></h4>
         <p id="confirm_message"></p>
-        <div class="flex align-center">
-            <sm-button variant="no-outline" class="cancel-button">Cancel</sm-button>
-            <sm-button variant="no-outline" class="confirm-button">OK</button>
+        <div class="flex align-center gap-0-5 margin-left-auto">
+            <button class="button cancel-button">Cancel</button>
+            <button class="button button--primary confirm-button">OK</button>
         </div>
     </sm-popup>
     <div id="secondary_pages" class="page">
@@ -100,19 +102,6 @@
             </div>
             <div id="landing_tasks_wrapper" class="flex flex-direction-column gap-1 justify-center"></div>
         </div>
-        <div id="task_details" class="inner-page hidden align-content-start">
-            <div class="flex">
-                <button class="button icon-only align-self-start" onclick="history.back()" title="Go back">
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
-                        fill="#000000">
-                        <path d="M0 0h24v24H0V0z" fill="none"></path>
-                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-            <div id="task_details_wrapper" class="flex flex-direction-column gap-1-5"></div>
-        </div>
         <article id="sign_in" class="inner-page hidden">
             <section>
                 <h1 style="font-size: 2rem;">Sign in</h1>
@@ -139,7 +128,7 @@
                             </svg>
                         </label>
                     </sm-input>
-                    <sm-button id="sign_in_button" variant="primary" disabled>Sign in</sm-button>
+                    <button id="sign_in_button" class="button button--primary" type="submit" disabled>Sign in</button>
                 </sm-form>
                 <p>
                     New here? <a href="#/sign_up">get your FLO login credentials</a>
@@ -184,6 +173,10 @@
             <h4 class="page__tag-line margin-block-1">Getting everything ready, Hang on.</h4>
             <button class="button" onclick="floDapps.clearCredentials()">Reset</button>
         </div>
+    </div>
+    <div id="task_details" class="hidden align-content-start">
+        <div id="task_details__backdrop" onclick="hideTaskDetails()"></div>
+        <div id="task_details_wrapper" class="flex flex-direction-column gap-1-5"></div>
     </div>
     <main id="main_page" class="grid page hidden">
         <header id="main_header" class="hide-on-desktop space-between">
@@ -652,13 +645,13 @@
         <sm-form>
             <sm-input id="project_name_field" placeholder="Name" autofocus required></sm-input>
             <sm-textarea id="project_description_field" placeholder="Description" rows="4" required></sm-textarea>
-            <sm-button variant="primary" onclick="addProjectToList()" disabled>
+            <button class="button button--primary" type="submit" onclick="addProjectToList()" disabled>
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" />
                 </svg>
                 Add
-            </sm-button>
+            </button>
         </sm-form>
     </sm-popup>
     <sm-popup id="add_intern_popup">
@@ -677,13 +670,13 @@
                 required autofocus>
             </sm-input>
             <sm-input id="intern_name_field" placeholder="Name" required></sm-input>
-            <sm-button variant="primary" onclick="addInternToList()" disabled>
+            <button class="button button--primary" type="submit" onclick="addInternToList()" disabled>
                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
                     <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" />
                 </svg>
                 Add
-            </sm-button>
+            </button>
         </sm-form>
     </sm-popup>
     <sm-popup id="create_branch_popup">
@@ -727,7 +720,8 @@
             <sm-textarea id="update__brief" placeholder="Type the update" rows="4" autofocus required>
             </sm-textarea>
             <sm-input id="update__link" placeholder="Related link (optional)" animate></sm-input>
-            <sm-button id="post_update_btn" title="post this update" variant="primary" disabled onclick="postUpdate()">
+            <button id="post_update_btn" title="post this update" class="button button--primary" type="submit" disabled
+                onclick="postUpdate()">
                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
                     <path fill="none" d="M0 0h24v24H0z"></path>
@@ -736,7 +730,7 @@
                     </path>
                 </svg>
                 Post update
-            </sm-button>
+            </button>
         </sm-form>
     </sm-popup>
 
@@ -763,8 +757,8 @@
             <sm-input id="intern_apply__portfolio_link" placeholder="Portfolio link (optional)" animate>
             </sm-input>
             <div class="multi-state-button">
-                <sm-button id="intern_apply__button" title="post this update" variant="primary" disabled
-                    onclick="applyForInternship()">
+                <button id="intern_apply__button" title="post this update" class="button button--primary" type="submit"
+                    disabled onclick="applyForInternship()">
                     <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                         height="24">
                         <path fill="none" d="M0 0h24v24H0z" />
@@ -772,7 +766,7 @@
                             d="M1.923 9.37c-.51-.205-.504-.51.034-.689l19.086-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.475.553-.717.07L11 13 1.923 9.37zm4.89-.2l5.636 2.255 3.04 6.082 3.546-12.41L6.812 9.17z" />
                     </svg>
                     Apply
-                </sm-button>
+                </button>
             </div>
         </sm-form>
     </sm-popup>
@@ -979,6 +973,24 @@
                 notify('Browser is not fully compatible, some features may not work. for best experience please use Chrome, Edge, Firefox or Safari', 'error')
             }
             document.body.classList.remove('hidden')
+            DOMPurify.setConfig = {
+                FORBID_ATTR: ['style'],
+                FORBID_TAGS: ['style']
+
+            }
+            DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+                // set all elements owning target to target=_blank
+                if ('target' in node) {
+                    node.setAttribute('target', '_blank');
+                }
+                // set non-HTML/MathML links to xlink:show=new
+                if (
+                    !node.hasAttribute('target') &&
+                    (node.hasAttribute('xlink:href') || node.hasAttribute('href'))
+                ) {
+                    node.setAttribute('xlink:show', 'new');
+                }
+            });
             document.querySelectorAll('sm-input[data-flo-id]').forEach(input => input.customValidation = floCrypto.validateAddr)
             document.querySelectorAll('sm-input[data-private-key]').forEach(input => input.customValidation = floCrypto.getPubKeyHex)
             document.addEventListener('keyup', (e) => {
@@ -987,8 +999,8 @@
                 }
             })
             document.addEventListener("pointerdown", (e) => {
-                if (e.target.closest("button:not([disabled]), sm-button:not([disabled]), .interact")) {
-                    createRipple(e, e.target.closest("button, sm-button, .interact"));
+                if (e.target.closest("button:not([disabled]), .interact")) {
+                    createRipple(e, e.target.closest("button, .interact"));
                 }
             });
             document.addEventListener('copy', () => {
@@ -1064,7 +1076,7 @@
         const appState = {
             params: {},
         }
-        const generalPages = ['sign_up', 'sign_in', 'loading', 'landing', 'task_details']
+        const generalPages = ['sign_up', 'sign_in', 'loading', 'landing']
         function routeTo(targetPage, options = {}) {
             const { firstLoad } = options
             const routingAnimation = { in: slideInUp, out: slideOutUp }
@@ -1119,60 +1131,27 @@
                         params = { category: 'all' }
                     }
                     renderElem(getRef('landing_tasks_wrapper'), render.displayTasks(params.category, params.search))
+                    if (subPageId1) {
+                        showTaskDetails(params.id)
+                    } else {
+                        hideTaskDetails()
+                    }
                     break;
-                case 'task_details': {
-                    if (!params || !params.id) return;
-                    const [projectCode, branch, task] = params.id.split('_')
-                    const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
-                    let hasApplied = false
-                    try {
-                        floDapps.user.id
-                        hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
-                            return params.id === details.taskId
-                        })
-                    } catch (e) { }
-                    const descriptionTag = createElement('p', {
-                        innerHTML: DOMPurify.sanitize(linkify(description), { ADD_ATTR: ['target'] }),
-                        className: 'ws-pre-line wrap-around'
-                    })
-                    descriptionTag.id = 'task_description'
-                    renderElem(getRef('task_details_wrapper'), html`
-                        <div class="grid gap-1">
-                            <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
-                            <h2 id="task_title">${title}</h2>
-                            <div class="display-task__details flex flex-wrap gap-0-3">
-                                ${duration ? html`
-                                    <div class="display-task__detail">
-                                        <span class="display-task__detail__title">Duration: </span>
-                                        <span class="display-task__detail__value">${duration} ${durationType}</span>
-                                    </div>
-                                `: ''}
-                                ${maxSlots ? html`
-                                    <div class="display-task__detail">
-                                        <span class="display-task__detail__title">Slots: </span>
-                                        <span class="display-task__detail__value">${maxSlots}</span>
-                                    </div>
-                                `: ''}
-                                ${reward ? html`
-                                    <div class="display-task__detail">
-                                        <span class="display-task__detail__title">Reward: </span>
-                                        <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
-                                    </div>
-                                `: ''}    
-                            </div>
-                            ${descriptionTag}
-                        </div>
-                        ${!hasApplied ? html`
-                            <button class="button button--primary" .dataset=${{ taskId: params.id }} onclick="requestForTask(this)">Apply Now</button>
-                            `: ''}
-                    `)
-                } break;
                 case 'sign_up':
                     const { floID, privKey } = floCrypto.generateNewID()
                     getRef('generated_flo_address').value = floID
                     getRef('generated_private_key').value = privKey
                     break;
                 case 'dashboard_page':
+                    let renderedAssignedTasks
+                    if (typeOfUser === 'intern') {
+                        // Render assigned task cards
+                        if (floGlobals.assignedTasks.size) {
+                            renderedAssignedTasks = filterMap(floGlobals.assignedTasks, id => render.internTaskCard(id))
+                        } else {
+                            renderedAssignedTasks = html`No task assigned yet.`;
+                        }
+                    }
                     renderElem(getRef('dashboard_page'), html`
                         <strip-select id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
                             ${typeOfUser === 'intern' ? html`<strip-option value="intern_view" selected>My tasks</strip-option>` : ''}
@@ -1180,7 +1159,12 @@
                             <strip-option value="projects_wrapper">Projects</strip-option>
                            ${floGlobals.isMobileView ? html`<strip-option value="best_interns_container">Leaderboard</strip-option>` : ''} 
                         </strip-select>
-                        <div id="dashboard_tasks_wrapper" class="flex flex-direction-column gap-1 justify-center dashboard-view__item">${render.displayTasks('all', params?.search)}</div>
+                        ${typeOfUser === 'intern' ? html`
+                            <section id="intern_view" class="intern-option dashboard-view__item">
+                                <ul id="assigned_task_list">${renderedAssignedTasks}</ul>
+                            </section>
+                        ` : ''}
+                        <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column gap-1 justify-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks('all', params?.search)}</div>
                         <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">
                             <section id="pinned_project_section" class="w-100">
                                 <h4>Pinned</h4>
@@ -1200,10 +1184,6 @@
                                 <div id="project_list" class="flex flex-direction-column gap-0-3"></div>
                             </div>
                         </div>
-                        <section id="intern_view" class="hidden intern-option dashboard-view__item">
-                            <h4>My tasks</h4>
-                            <ul id="assigned_task_list"></ul>
-                        </section>
                         <div id="best_interns_container" class="container-card dashboard-view__item hide-on-mobile">
                             <div class="container-header">
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" /> </svg>
@@ -1234,6 +1214,11 @@
                         return RIBC.getInternRating(b) - RIBC.getInternRating(a)
                     });
                     renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`);
+                    if (subPageId1) {
+                        showTaskDetails(params.id)
+                    } else {
+                        hideTaskDetails()
+                    }
                     break;
                 case 'updates_page': {
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1261,6 +1246,11 @@
                 } break;
                 case 'applications':
                     render.taskApplications()
+                    if (subPageId1) {
+                        showTaskDetails(params.id)
+                    } else {
+                        hideTaskDetails()
+                    }
                     break;
                 case 'all_interns_page':
                     renderAllInterns()
@@ -1310,7 +1300,6 @@
                     break;
             }
             switch (appState.lastPage) {
-                case 'task_details':
                 case 'project_explorer':
                 case 'all_interns_page':
                     routingAnimation.in = slideInRight;
@@ -1318,7 +1307,6 @@
                     break;
             }
             switch (pageId) {
-                case 'task_details':
                 case 'project_explorer':
                 case 'all_interns_page':
                     routingAnimation.in = slideInLeft;
@@ -1662,7 +1650,7 @@
                     <li class=${`display-task`}>
                         <div class="flex align-center space-between">
                             <a class="display-task__category" href=${`#/landing?category=${category}`} title=${`See all ${floGlobals.taskCategories[category]} tasks`}>${floGlobals.taskCategories[category]}</a>
-                            <a href=${`#/task_details?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
+                            <a href=${`#/${appState.currentPage}/task?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
                                 View details
                                 <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
                             </a> 
@@ -1771,7 +1759,7 @@
                         </button>`;
                 }
                 const linkifyDescription = createElement('p', {
-                    innerHTML: DOMPurify.sanitize(linkify(description), { ADD_ATTR: ['target'] }),
+                    innerHTML: DOMPurify.sanitize(linkify(description)),
                     className: `timeline-task__description ws-pre-line wrap-around`
                 })
                 return html`
@@ -2013,7 +2001,7 @@
                 const { title, description } = RIBC.getTaskDetails(projectCode, branch, task)
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 const linkifyDescription = createElement('p', {
-                    innerHTML: DOMPurify.sanitize(linkify(description), { ADD_ATTR: ['target'] }),
+                    innerHTML: DOMPurify.sanitize(linkify(description)),
                     className: `timeline-task__description ws-pre-line wrap-around`
                 })
                 return html`
@@ -2023,7 +2011,7 @@
                             <h4 class="task__title">${title}</h4>
                             ${linkifyDescription}
                         </div>
-                        <button class="send-update-button button--small margin-left-auto">
+                        <button class="send-update-button button--small margin-left-auto" onclick=${initTaskUpdate}>
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
                             Post an update
                         </button>
@@ -2122,7 +2110,7 @@
                     <li class=${`status-card ${status?.toLowerCase() || 'pending'}`}>
                         <time class="status-card__time capitalize">${getFormattedTime(timestamp, 'relative')}</time>
                         <p class="status-card__details">
-                            You applied for <a class="capitalize" href=${`#/task_details?id=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
+                            You applied for <a class="capitalize" href=${`#/${appState.currentPage}/task?id=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
                         </p>
                         <div class="flex align-center status-card__status">
                             ${icon}
@@ -2173,9 +2161,107 @@
             const category = getRef('task_category_selector')?.value || 'all';
             window.location.hash = `#/${appState.currentPage}?category=${category}${searchQuery !== '' ? `&search=${searchQuery}` : ''}`;
         }, 100)
+
+        function showTaskDetails(taskId) {
+            const [projectCode, branch, task] = taskId.split('_')
+            const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
+            let hasApplied = false
+            try {
+                floDapps.user.id
+                hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
+                    return taskId === details.taskId
+                })
+            } catch (e) { }
+            const descriptionTag = createElement('p', {
+                innerHTML: DOMPurify.sanitize(linkify(description)),
+                className: 'ws-pre-line wrap-around'
+            })
+            descriptionTag.id = 'task_description'
+            renderElem(getRef('task_details_wrapper'), html`
+                <div class="flex" style="position: sticky; top: 0; background-color: rgba(var(--foreground-color),1); padding: 1rem 0 0.5rem 0">
+                    <button class="button icon-only align-self-start" onclick="history.back()" title="Go back">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <path d="M0 0h24v24H0V0z" fill="none"></path> <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"> </path> </svg>
+                    </button>
+                </div>
+                <div class="grid gap-1">
+                    <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
+                    <h2 id="task_title">${title}</h2>
+                    <div class="display-task__details flex flex-wrap gap-0-3">
+                        ${duration ? html`
+                            <div class="display-task__detail">
+                                <span class="display-task__detail__title">Duration: </span>
+                                <span class="display-task__detail__value">${duration} ${durationType}</span>
+                            </div>
+                        `: ''}
+                        ${maxSlots ? html`
+                            <div class="display-task__detail">
+                                <span class="display-task__detail__title">Slots: </span>
+                                <span class="display-task__detail__value">${maxSlots}</span>
+                            </div>
+                        `: ''}
+                        ${reward ? html`
+                            <div class="display-task__detail">
+                                <span class="display-task__detail__title">Reward: </span>
+                                <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                            </div>
+                        `: ''}    
+                    </div>
+                    ${descriptionTag}
+                </div>
+                ${!hasApplied ? html`
+                    <button class="button button--primary" .dataset=${{ taskId }} onclick="requestForTask(this)">Apply Now</button>
+                    `: ''}
+            `);
+            getRef('task_details').classList.remove('hidden')
+            const animOptions = {
+                duration: floGlobals.prefersReducedMotion ? 0 : 300,
+                easing: 'ease',
+                fill: 'forwards'
+            }
+            getRef('task_details__backdrop').animate([
+                { opacity: 0 },
+                { opacity: 1 }
+            ], animOptions)
+            getRef('task_details_wrapper').animate([
+                { transform: 'translateX(100%)' },
+                { transform: 'translateX(0)' }
+            ], animOptions)
+            if (appState.currentPage === 'landing') {
+                getRef('landing').animate([
+                    { transform: 'translateX(0)' },
+                    { transform: 'translateX(-10%)' }
+                ], animOptions)
+            }
+        }
+        function hideTaskDetails() {
+            if (getRef('task_details').classList.contains('hidden')) return;
+            history.replaceState(null, null, `#/${appState.currentPage}`);
+            const animOptions = {
+                duration: floGlobals.prefersReducedMotion ? 0 : 300,
+                easing: 'ease',
+                fill: 'forwards'
+            }
+            getRef('task_details__backdrop').animate([
+                { opacity: 1 },
+                { opacity: 0 }
+            ], animOptions).onfinish = () => {
+                getRef('task_details').classList.add('hidden')
+                renderElem(getRef('task_details_wrapper'), html``)
+            }
+            getRef('task_details_wrapper').animate([
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(100%)' }
+            ], animOptions)
+            if (appState.currentPage === 'landing') {
+                getRef('landing').animate([
+                    { transform: 'translateX(-10%)' },
+                    { transform: 'translateX(0)' },
+                ], animOptions)
+            }
+        }
+
         let pinnedProjects = [];
         let currentIntern;
-        let currentTaskId;
         let typeOfUser = 'general';
 
         function handleDashboardViewChange(e) {
@@ -2186,11 +2272,6 @@
                     item.classList.add('hidden')
             })
             document.querySelector(`#${e.target.value}`).classList.remove('hide-on-mobile', 'hidden')
-            if (typeOfUser === 'intern') {
-                getRef(`intern_view`).classList.remove('hidden')
-            } else {
-                getRef(`intern_view`).classList.add('hidden')
-            }
         }
 
 
@@ -2839,13 +2920,12 @@
 
             // Intern's view
 
-            floGlobals.assignedProjectsList = new Set();
             if (RIBC.getInternList()[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
                 typeOfUser = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.remove('hidden')
                 })
-
+                floGlobals.assignedProjectsList = new Set();
                 // store all the projects assigned to interns in array
                 const allTasks = RIBC.getAllTasks()
                 for (const taskKey in allTasks) {
@@ -2858,28 +2938,7 @@
                         }
                     }
                 }
-
-                // Render assigned task cards
-                if (floGlobals.assignedTasks.size) {
-                    const taskCards = filterMap(floGlobals.assignedTasks, id => render.internTaskCard(id))
-                    renderElem(getRef('assigned_task_list'), html`${taskCards}`)
-                } else {
-                    getRef('assigned_task_list').textContent = 'No task assigned yet.';
-                }
-
-                // Event delegate clicks on intern tasks
-                getRef('assigned_task_list').addEventListener('click', e => {
-                    if (e.target.closest('.send-update-button')) {
-                        const taskCard = e.target.closest('.task-card')
-                        currentTaskId = taskCard.dataset.uniqueId
-                        const [projectCode, branch, task] = currentTaskId.split('_')
-                        getRef('update_of_project').textContent = RIBC.getProjectDetails(projectCode).projectName
-                        getRef('update_of_task').textContent = RIBC.getTaskDetails(projectCode, branch, task).title
-                        openPopup('post_update_popup')
-                    }
-                })
-            }
-            else {
+            } else {
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.add('hidden')
                 })
@@ -2995,7 +3054,16 @@
                 requestForTask(e.delegateTarget)
             })
             getRef('user_flo_id').value = myFloID;
-            console.log(typeOfUser)
+        }
+
+        let currentTaskId;
+        function initTaskUpdate(e) {
+            const taskCard = e.target.closest('.task-card')
+            currentTaskId = taskCard.dataset.uniqueId
+            const [projectCode, branch, task] = currentTaskId.split('_')
+            getRef('update_of_project').textContent = RIBC.getProjectDetails(projectCode).projectName
+            getRef('update_of_task').textContent = RIBC.getTaskDetails(projectCode, branch, task).title
+            openPopup('post_update_popup')
         }
 
         function postUpdate() {
