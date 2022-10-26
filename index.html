@@ -93,38 +93,12 @@
                         <a href="#/sign_up" class="button"
                             style="background-color: rgba( 0 0 0 / 0.3); padding: 0.8rem;">Get
                             started</a>
-                        <a href="#/sign_in" class="button button--primary">Sign In</a>
+                        <a href="#/sign_in" class="button button--primary">Sign in</a>
                     </div>
                 </div>
                 <img src="assets/working-intern.svg" alt="">
             </div>
-            <div id="task_display_wrapper" class="flex flex-direction-column gap-1 justify-center">
-                <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
-                    <div class="flex align-center gap-1 flex-wrap space-between">
-                        <h3>
-                            Available Tasks
-                        </h3>
-                        <sm-input id="task_search_input" oninput="searchTasks(event)" placeholder="Search keywords"
-                            type="search">
-                            <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                        </sm-input>
-                    </div>
-                    <div id="display_task_filters" class="flex gap-1">
-                        <strip-select id="task_category_selector"></strip-select>
-                    </div>
-                </div>
-                <div class="grid gap-1">
-                    <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state"></ul>
-                    <div class="empty-state">
-                        <h4>Nothing to see here</h4>
-                    </div>
-                </div>
-            </div>
+            <div id="landing_tasks_wrapper" class="flex flex-direction-column gap-1 justify-center"></div>
         </div>
         <div id="task_details" class="inner-page hidden align-content-start">
             <div class="flex">
@@ -141,7 +115,7 @@
         </div>
         <article id="sign_in" class="inner-page hidden">
             <section>
-                <h1 style="font-size: 2rem;">Sign In</h1>
+                <h1 style="font-size: 2rem;">Sign in</h1>
                 <p>Welcome back, glad to see you again</p>
                 <sm-form id="sign_in_form">
                     <sm-input id="private_key_field" class="password-field" type="password"
@@ -165,7 +139,7 @@
                             </svg>
                         </label>
                     </sm-input>
-                    <sm-button id="sign_in_button" variant="primary" disabled>Sign In</sm-button>
+                    <sm-button id="sign_in_button" variant="primary" disabled>Sign in</sm-button>
                 </sm-form>
                 <p>
                     New here? <a href="#/sign_up">get your FLO login credentials</a>
@@ -213,10 +187,12 @@
     </div>
     <main id="main_page" class="grid page hidden">
         <header id="main_header" class="hide-on-desktop space-between">
-            <div id="logo" class="logo">
-                <svg class="icon rm-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <div class="flex align-center flex-1">
+                <svg class="icon margin-right-0-3" viewBox="0 0 27.25 32">
+                    <title>RanchiMall</title>
                     <path
-                        d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z" />
+                        d="M27.14,30.86c-.74-2.48-3-4.36-8.25-6.94a20,20,0,0,1-4.2-2.49,6,6,0,0,1-1.25-1.67,4,4,0,0,1,0-2.26c.37-1.08.79-1.57,3.89-4.55a11.66,11.66,0,0,0,3.34-4.67,6.54,6.54,0,0,0,.05-2.82C20,3.6,18.58,2,16.16.49c-.89-.56-1.29-.64-1.3-.24a3,3,0,0,1-.3.72l-.3.55L13.42.94C13,.62,12.4.26,12.19.15c-.4-.2-.73-.18-.72.05a9.39,9.39,0,0,1-.61,1.33s-.14,0-.27-.13C8.76.09,8-.27,8,.23A11.73,11.73,0,0,1,6.76,2.6C4.81,5.87,2.83,7.49.77,7.49c-.89,0-.88,0-.61,1,.22.85.33.92,1.09.69A5.29,5.29,0,0,0,3,8.33c.23-.17.45-.29.49-.26a2,2,0,0,1,.22.63A1.31,1.31,0,0,0,4,9.34a5.62,5.62,0,0,0,2.27-.87L7,8l.13.55c.19.74.32.82,1,.65a7.06,7.06,0,0,0,3.46-2.47l.6-.71-.06.64c-.17,1.63-1.3,3.42-3.39,5.42L6.73,14c-3.21,3.06-3,5.59.6,8a46.77,46.77,0,0,0,4.6,2.41c.28.13,1,.52,1.59.87,3.31,2,4.95,3.92,4.95,5.93a2.49,2.49,0,0,0,.07.77h0c.09.09,0,.1.9-.14a2.61,2.61,0,0,0,.83-.32,3.69,3.69,0,0,0-.55-1.83A11.14,11.14,0,0,0,17,26.81a35.7,35.7,0,0,0-5.1-2.91C9.37,22.64,8.38,22,7.52,21.17a3.53,3.53,0,0,1-1.18-2.48c0-1.38.71-2.58,2.5-4.23,2.84-2.6,3.92-3.91,4.67-5.65a3.64,3.64,0,0,0,.42-2A3.37,3.37,0,0,0,13.61,5l-.32-.74.29-.48c.17-.27.37-.63.46-.8l.15-.3.44.64a5.92,5.92,0,0,1,1,2.81,5.86,5.86,0,0,1-.42,1.94c0,.12-.12.3-.15.4a9.49,9.49,0,0,1-.67,1.1,28,28,0,0,1-4,4.29C8.62,15.49,8.05,16.44,8,17.78a3.28,3.28,0,0,0,1.11,2.76c.95,1,2.07,1.74,5.25,3.32,3.64,1.82,5.22,2.9,6.41,4.38A4.78,4.78,0,0,1,21.94,31a3.21,3.21,0,0,0,.14.92,1.06,1.06,0,0,0,.43-.05l.83-.22.46-.12-.06-.46c-.21-1.53-1.62-3.25-3.94-4.8a37.57,37.57,0,0,0-5.22-2.82A13.36,13.36,0,0,1,11,21.19a3.36,3.36,0,0,1-.8-4.19c.41-.85.83-1.31,3.77-4.15,2.39-2.31,3.43-4.13,3.43-6a5.85,5.85,0,0,0-2.08-4.29c-.23-.21-.44-.43-.65-.65A2.5,2.5,0,0,1,15.27.69a10.6,10.6,0,0,1,2.91,2.78A4.16,4.16,0,0,1,19,6.16a4.91,4.91,0,0,1-.87,3c-.71,1.22-1.26,1.82-4.27,4.67a9.47,9.47,0,0,0-2.07,2.6,2.76,2.76,0,0,0-.33,1.54,2.76,2.76,0,0,0,.29,1.47c.57,1.21,2.23,2.55,4.65,3.73a32.41,32.41,0,0,1,5.82,3.24c2.16,1.6,3.2,3.16,3.2,4.8a1.94,1.94,0,0,0,.09.76,4.54,4.54,0,0,0,1.66-.4C27.29,31.42,27.29,31.37,27.14,30.86ZM6.1,7h0a3.77,3.77,0,0,1-1.46.45L4,7.51l.68-.83a25.09,25.09,0,0,0,3-4.82A12,12,0,0,1,8.28.76c.11-.12.77.32,1.53,1l.63.58-.57.84A10.34,10.34,0,0,1,6.1,7Zm5.71-1.78A9.77,9.77,0,0,1,9.24,7.18h0a5.25,5.25,0,0,1-1.17.28l-.58,0,.65-.78a21.29,21.29,0,0,0,2.1-3.12c.22-.41.42-.76.44-.79s.5.43.9,1.24L12,5ZM13.41,3a2.84,2.84,0,0,1-.45.64,11,11,0,0,1-.9-.91l-.84-.9.19-.45c.34-.79.39-.8,1-.31A9.4,9.4,0,0,1,13.8,2.33q-.18.34-.39.69Z">
+                    </path>
                 </svg>
                 <h4>RanchiMall Internships</h4>
             </div>
@@ -1142,14 +1118,7 @@
                     if (!params) {
                         params = { category: 'all' }
                     }
-                    const categories = [html`<strip-option value='all' ?selected=${params.category === 'all'}>All</strip-option>`];
-                    for (const categoryID in floGlobals.taskCategories) {
-                        categories.push(html`<strip-option value=${categoryID} ?selected=${params.category === categoryID}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
-                    }
-                    renderElem(getRef('task_category_selector'), html`${categories}`)
-                    render.displayTasks(params.category, params.search)
-                    if (getRef('task_search_input').value.trim() !== params.search)
-                        getRef('task_search_input').value = params.search || ''
+                    renderElem(getRef('landing_tasks_wrapper'), render.displayTasks(params.category, params.search))
                     break;
                 case 'task_details': {
                     if (!params || !params.id) return;
@@ -1205,13 +1174,14 @@
                     break;
                 case 'dashboard_page':
                     renderElem(getRef('dashboard_page'), html`
-                        <strip-select id="dashboard_view_selector" onchange=${handleDashboardViewChange}>
+                        <strip-select id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
                             ${typeOfUser === 'intern' ? html`<strip-option value="intern_view" selected>My tasks</strip-option>` : ''}
-                            ${typeOfUser !== 'admin' ? html`<strip-option value="display_task_list">All tasks</strip-option>` : ''}
-                            <strip-option value="projects_wrapper" ?selected=${typeOfUser !== 'intern'}>Projects</strip-option>
-                            <strip-option value="best_interns_container">Leaderboard</strip-option>
+                            <strip-option value="dashboard_tasks_wrapper" ?selected=${typeOfUser !== 'intern'}>All tasks</strip-option>
+                            <strip-option value="projects_wrapper">Projects</strip-option>
+                           ${floGlobals.isMobileView ? html`<strip-option value="best_interns_container">Leaderboard</strip-option>` : ''} 
                         </strip-select>
-                        <div id="projects_wrapper" class=${`grid gap-2 align-items-start dashboard-view__item ${typeOfUser === 'intern' ? 'hide-on-mobile' : ''}`}>
+                        <div id="dashboard_tasks_wrapper" class="flex flex-direction-column gap-1 justify-center dashboard-view__item">${render.displayTasks('all', params?.search)}</div>
+                        <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">
                             <section id="pinned_project_section" class="w-100">
                                 <h4>Pinned</h4>
                                 <div id="pinned_projects" class="observe-empty-state"></div>
@@ -1663,6 +1633,12 @@
             })
             return result;
         }
+        const mobileQuery = window.matchMedia('(max-width: 40rem)')
+        function handleMobileChange(e) {
+            floGlobals.isMobileView = e.matches
+        }
+        mobileQuery.addEventListener('change', handleMobileChange)
+        handleMobileChange(mobileQuery)
         const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         reduceMotionQuery.addEventListener('change', () => {
             floGlobals.prefersReducedMotion = reduceMotionQuery.matches
@@ -1716,21 +1692,52 @@
                 `;
             },
             displayTasks(category, searchQuery) {
-                if (appState.currentPage !== 'landing') return;
+                // render tasks
                 const allTasks = RIBC.getAllTasks()
                 const filterCategory = category === 'all' ? false : category;
                 const filtered = []
+                const availableCategories = new Set();
                 for (const taskId in allTasks) {
                     const [projectCode, branch, task] = taskId.split('_')
                     if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
                     if (RIBC.getTaskStatus(projectCode, branch, task) !== 'incomplete') continue;
                     if (searchQuery && searchQuery !== '' && !allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase())) continue;
                     filtered.push(render.displayTaskCard(projectCode, branch, task))
+                    availableCategories.add(allTasks[taskId].category)
                 }
-                renderElem(getRef('display_task_list'), html`${filtered.reverse()}`)
+                let renderedTasks = filtered.reverse()
                 if (searchQuery && filtered.length === 0) {
-                    renderElem(getRef('display_task_list'), html`<p>No tasks related to <b>${searchQuery}</b></p>`)
+                    renderedTasks = html`<p>No tasks related to <b>${searchQuery}</b></p>`
                 }
+                // render categories
+                let renderedCategories = []
+                if (availableCategories.size > 1) {
+                    renderedCategories = [html`<strip-option value='all' ?selected=${category === 'all'}>All</strip-option>`];
+                    availableCategories.forEach(categoryID => {
+                        categories.push(html`<strip-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
+                    })
+                }
+                // if (getRef('task_search_input').value.trim() !== search)
+                //         getRef('task_search_input').value = search || ''
+                return html`
+                    <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
+                        <div class="flex align-center gap-1 flex-wrap space-between">
+                            <h3>
+                                Available Tasks
+                            </h3>
+                            <sm-input id="task_search_input" oninput="filterTasks(event)" placeholder="Search keywords" type="search">
+                                <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg>
+                            </sm-input>
+                        </div>
+                        ${availableCategories.size > 1 ? html`<strip-select id="task_category_selector" onchange='filterTasks()'>${renderedCategories}</strip-select>` : ''}
+                    </div>
+                    <div class="grid gap-1">
+                        <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state">${renderedTasks}</ul>
+                        <div class="empty-state">
+                            <h4>Nothing to see here</h4>
+                        </div>
+                    </div>
+                `;
             },
             projectCard(projectCode, isAdmin = false, ref) {
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
@@ -2161,20 +2168,24 @@
             return renderedIntensColor[floId]
         }
 
-        const searchTasks = debounce((e) => {
+        const filterTasks = debounce((e) => {
             const searchQuery = getRef('task_search_input').value.trim();
-            const category = getRef('task_category_selector').value;
-            window.location.hash = `#/landing?category=${category}${searchQuery !== '' ? `&search=${searchQuery}` : ''}`;
+            const category = getRef('task_category_selector')?.value || 'all';
+            window.location.hash = `#/${appState.currentPage}?category=${category}${searchQuery !== '' ? `&search=${searchQuery}` : ''}`;
         }, 100)
-        getRef('task_category_selector').addEventListener('change', searchTasks)
         let pinnedProjects = [];
         let currentIntern;
         let currentTaskId;
         let typeOfUser = 'general';
 
         function handleDashboardViewChange(e) {
-            document.querySelectorAll('.dashboard-view__item').forEach(item => item.classList.add('hide-on-mobile'))
-            document.querySelector(`#${e.target.value}`).classList.remove('hide-on-mobile')
+            document.querySelectorAll('.dashboard-view__item').forEach(item => {
+                if (item.id === 'best_interns_container')
+                    item.classList.add('hide-on-mobile')
+                else
+                    item.classList.add('hidden')
+            })
+            document.querySelector(`#${e.target.value}`).classList.remove('hide-on-mobile', 'hidden')
             if (typeOfUser === 'intern') {
                 getRef(`intern_view`).classList.remove('hidden')
             } else {

@@ -772,7 +772,7 @@ ul {
   grid-template-areas: "header" "content";
 }
 #secondary_pages header {
-  padding: 1.5rem 1rem;
+  padding: 1rem;
   background-color: rgba(var(--foreground-color), 0.3);
 }
 #secondary_pages .inner-page {
@@ -821,7 +821,7 @@ ul {
   mix-blend-mode: soft-light;
 }
 
-#task_display_wrapper {
+#landing_tasks_wrapper {
   margin: 0 auto;
   width: min(100%, 48rem);
 }
@@ -910,7 +910,7 @@ ul {
   align-items: center;
   position: -webkit-sticky;
   position: sticky;
-  padding: 0.5rem 1rem;
+  padding: 1rem;
   background: rgba(var(--foreground-color), 1);
   z-index: 1;
 }
@@ -1121,26 +1121,19 @@ ul {
   align-content: flex-start;
 }
 
+#dashboard_view_selector {
+  border-radius: 2rem;
+  margin: 0 auto;
+  padding: 0.3rem;
+  background-color: rgba(var(--text-color), 0.04);
+}
+#dashboard_view_selector strip-option {
+  --border-radius: 2rem;
+}
+
 .logo {
   display: flex;
   align-items: center;
-  font-size: 1.2rem;
-  width: 100%;
-}
-
-.logo .cls-2,
-.logo .cls-3 {
-  fill: rgba(var(--text-color), 1);
-  font-size: 146.9px;
-  font-family: ArialMT, Arial;
-}
-
-.logo svg {
-  height: 2.5rem;
-}
-
-.logo h4 {
-  margin: 0;
 }
 
 .project-card {
@@ -1877,7 +1870,7 @@ input[type=date]:focus {
   #dashboard_page {
     grid-template-columns: 1fr 18rem;
   }
-  #dashboard_page > :not(#best_interns_container) {
+  #dashboard_page > :not(#best_interns_container, #dashboard_view_selector) {
     grid-column: 1;
     width: min(48rem, 100%);
     margin: 0 auto;
@@ -1888,6 +1881,7 @@ input[type=date]:focus {
     top: 0;
     grid-column: 2;
     grid-row: 1/4;
+    align-self: flex-start;
   }
   #all_interns_page__header {
     grid-template-columns: 1fr auto;
