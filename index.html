@@ -105,7 +105,7 @@
                 </div>
                 <img src="assets/working-intern.svg" alt="">
             </div>
-            <div id="landing_tasks_wrapper" class="flex flex-direction-column gap-1 justify-center"></div>
+            <div id="landing_tasks_wrapper" class="flex flex-direction-column justify-center"></div>
         </div>
         <article id="sign_in" class="inner-page hidden">
             <section>
@@ -1094,6 +1094,7 @@
         const appState = {
             params: {},
         }
+        let dragger
         const generalPages = ['sign_up', 'sign_in', 'loading', 'landing']
         function routeTo(targetPage, options = {}) {
             const { firstLoad } = options
@@ -1179,7 +1180,7 @@
                                 <ul id="assigned_task_list">${renderedAssignedTasks}</ul>
                             </section>
                         ` : ''}
-                        <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column gap-1 justify-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
+                        <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column justify-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
                         <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">
                             <section id="pinned_project_section" class="w-100">
                                 <h4>Pinned</h4>
@@ -1377,7 +1378,9 @@
 
                     //show display tasks map
                     render.taskDisplayMap()
-                    const dragger = dragula([getRef('display_task_map'), getRef('all_tasks')])
+                    if (dragger)
+                        dragger.destroy()
+                    dragger = dragula([getRef('display_task_map'), getRef('all_tasks')])
                     dragger.on('dragend', function (el, source) {
                         const newOrder = Array.from(getRef('display_task_map').children).map(el => el.dataset.taskId)
                         RIBC.admin.setDisplayedTasks(newOrder)
@@ -2229,12 +2232,14 @@
                     if (displayedTasks.includes(taskId) || RIBC.getTaskStatus(projectCode, branch, task) === 'completed') continue;
                     availableToDisplay.push(render.draggableTask(taskId))
                 }
-                renderElem(getRef('all_tasks'), html`${availableToDisplay}`)
-                renderElem(getRef('display_task_map'), html`${displayedTasks.map(taskId => render.draggableTask(taskId))}`)
+                getRef('all_tasks').innerHTML = '';
+                getRef('all_tasks').append(...availableToDisplay)
+                getRef('display_task_map').innerHTML = '';
+                getRef('display_task_map').append(...displayedTasks.map(taskId => render.draggableTask(taskId)))
             },
             draggableTask(taskId) {
                 const [projectCode, branch, task] = taskId.split('_')
-                return html`
+                return html.node`
                     <li class="flex gap-0-5 displayable-task draggable" data-task-id=${taskId}>
                         <div class="dragging-handle">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
