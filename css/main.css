@@ -80,7 +80,6 @@ body[data-theme=dark] ::-webkit-calendar-picker-indicator {
 p,
 strong {
   line-height: 1.7;
-  font-size: 0.9rem;
   color: rgba(var(--text-color), 0.9);
   max-width: 70ch;
 }
@@ -246,14 +245,9 @@ input[type=range]:active {
   cursor: grab;
 }
 
-sm-copy {
-  font-size: 0.9rem;
-}
-
 sm-input,
 sm-textarea,
 tags-input {
-  font-size: 0.9rem;
   --border-radius: 0.5rem;
   --background-color: rgba(var(--foreground-color), 1);
 }
@@ -296,7 +290,6 @@ sm-form {
 
 sm-select {
   --padding: 0.8rem;
-  font-size: 0.9rem;
   --min-width: fit-content;
   --select-border-radius: 0.5rem;
 }
@@ -1016,7 +1009,6 @@ ul {
   background-color: rgba(var(--text-color), 0.06);
   border-radius: 1rem;
   padding: 0.4rem 0.8rem;
-  font-size: 0.9rem;
   color: rgba(var(--text-color), 0.8);
 }
 .display-task__detail__value {
@@ -1490,6 +1482,25 @@ ul {
   margin: 0;
 }
 
+#task_display_container {
+  padding: 0 1rem;
+}
+
+.displayable-task {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: solid thin rgba(var(--text-color), 0.1);
+  background-color: rgba(var(--foreground-color), 1);
+  margin-bottom: 0.5rem;
+}
+.displayable-task__project {
+  font-size: 0.9rem;
+  padding: 0.2rem 0.5rem;
+  background-color: rgba(var(--text-color), 0.06);
+  border-radius: 0.3rem;
+  opacity: 0.8;
+}
+
 #loading {
   display: grid;
   text-align: center;
@@ -1593,7 +1604,6 @@ ul {
   word-wrap: break-word;
   overflow-wrap: break-word;
   color: rgba(var(--text-color), 0.8);
-  font-size: 0.9rem;
   margin-top: 0.2rem;
 }
 

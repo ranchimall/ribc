@@ -15,7 +15,7 @@
             floCloudAPI.requestObjectData("RIBC").then(result => {
                 if (!floGlobals.appObjects.RIBC)
                     floGlobals.appObjects.RIBC = {};
-                var objectList = ["projectMap", "projectBranches", "projectTaskDetails", "projectDetails", "internList", "internRating", "internsAssigned", "projectTaskStatus"]
+                var objectList = ["projectMap", "projectBranches", "projectTaskDetails", "projectDetails", "internList", "internRating", "internsAssigned", "projectTaskStatus", "displayedTasks"]
                 objectList.forEach(obj => {
                     if (!floGlobals.appObjects.RIBC[obj])
                         floGlobals.appObjects.RIBC[obj] = {};
@@ -105,6 +105,7 @@
     Ribc.getInternRating = (floID) => _.internRating[floID];
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
     Ribc.getAllTasks = () => _.projectTaskDetails
+    Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks
 
     Admin.updateObjects = () => new Promise((resolve, reject) => {
         floCloudAPI.updateObjectData("RIBC")
@@ -231,6 +232,10 @@
     Admin.putTaskStatus = function (taskStatus, projectCode, branch, taskNumber) {
         _.projectTaskStatus[projectCode + "_" + branch + "_" + taskNumber] = taskStatus;
     };
+
+    Admin.setDisplayedTasks = function (tasksArr = []) {
+        floGlobals.appObjects.RIBC.displayedTasks = tasksArr;
+    }
 
     Admin.createProject = function (projectCode) {
         if (projectCode in _.projectMap) {
