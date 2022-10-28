@@ -858,7 +858,7 @@ ul {
   padding: 0 max(1rem, 4vw);
   background-color: rgba(var(--foreground-color), 1);
   padding-bottom: 3rem;
-  max-width: 70ch;
+  width: min(100%, 70ch);
   justify-self: flex-end;
   box-shadow: -1rem 0 2rem rgba(0, 0, 0, 0.1);
 }
