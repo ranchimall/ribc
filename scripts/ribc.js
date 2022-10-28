@@ -105,7 +105,7 @@
     Ribc.getInternRating = (floID) => _.internRating[floID];
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
     Ribc.getAllTasks = () => _.projectTaskDetails
-    Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks
+    Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks.filter(v => v)
 
     Admin.updateObjects = () => new Promise((resolve, reject) => {
         floCloudAPI.updateObjectData("RIBC")

@@ -305,7 +305,7 @@
         <article id="sub_page_container">
             <section id="dashboard_page" class="inner-page hidden"></section>
             <section id="admin_page" class="inner-page hidden">
-                <div class="flex align-center space-between">
+                <div id="admin_page__header" class="flex align-center space-between">
                     <strip-select id="admin_view_selector">
                         <strip-option value="0" selected>Projects</strip-option>
                         <strip-option value="1">Interns</strip-option>
@@ -439,23 +439,14 @@
                         <ul id="admin_page__intern_list" class="list-container observe-empty-state"></ul>
                         <h4 class="empty-state">No interns added</h4>
                     </section>
-                    <section id="task_display_container" class="flex flex-direction-column hidden">
-                        <h4>Customize tasks displayed</h4>
-                        <div class="flex gap-1">
-                            <div class="flex flex-direction-column gap-1 flex-1">
-                                <h4>Displayed tasks</h4>
-                                <ul id="display_task_map" class="observe-empty-state"></ul>
-                                <div class="empty-state">
-                                    <p>No tasks displayed</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-direction-column gap-1 flex-1">
-                                <h4>Available tasks</h4>
-                                <ul id="all_tasks" class="observe-empty-state"></ul>
-                                <div class="empty-state">
-                                    <p>No tasks available</p>
-                                </div>
-                            </div>
+                    <section id="task_display_container" class="flex hidden">
+                        <div class="flex flex-direction-column gap-1 flex-1">
+                            <h4>Displayed tasks</h4>
+                            <ul id="display_task_map" class="drop-zone"></ul>
+                        </div>
+                        <div class="flex flex-direction-column gap-1 flex-1">
+                            <h4>Available tasks</h4>
+                            <ul id="all_tasks" class="drop-zone"></ul>
                         </div>
                     </section>
                     <section id="requests_container" class="grid hidden">
@@ -836,6 +827,10 @@
         </sm-form>
     </sm-popup>
     <script>
+        // dragula
+        !function (e) { "object" == typeof exports && "undefined" != typeof module ? module.exports = e() : "function" == typeof define && define.amd ? define([], e) : ("undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this).dragula = e() }(function () { return function o(r, i, u) { function c(t, e) { if (!i[t]) { if (!r[t]) { var n = "function" == typeof require && require; if (!e && n) return n(t, !0); if (a) return a(t, !0); throw (n = new Error("Cannot find module '" + t + "'")).code = "MODULE_NOT_FOUND", n } n = i[t] = { exports: {} }, r[t][0].call(n.exports, function (e) { return c(r[t][1][e] || e) }, n, n.exports, o, r, i, u) } return i[t].exports } for (var a = "function" == typeof require && require, e = 0; e < u.length; e++)c(u[e]); return c }({ 1: [function (e, t, n) { "use strict"; var o = {}, r = "(?:^|\\s)", i = "(?:\\s|$)"; function u(e) { var t = o[e]; return t ? t.lastIndex = 0 : o[e] = t = new RegExp(r + e + i, "g"), t } t.exports = { add: function (e, t) { var n = e.className; n.length ? u(t).test(n) || (e.className += " " + t) : e.className = t }, rm: function (e, t) { e.className = e.className.replace(u(t), " ").trim() } } }, {}], 2: [function (e, t, n) { (function (r) { "use strict"; var M = e("contra/emitter"), k = e("crossvent"), j = e("./classes"), R = document, q = R.documentElement; function U(e, t, n, o) { r.navigator.pointerEnabled ? k[t](e, { mouseup: "pointerup", mousedown: "pointerdown", mousemove: "pointermove" }[n], o) : r.navigator.msPointerEnabled ? k[t](e, { mouseup: "MSPointerUp", mousedown: "MSPointerDown", mousemove: "MSPointerMove" }[n], o) : (k[t](e, { mouseup: "touchend", mousedown: "touchstart", mousemove: "touchmove" }[n], o), k[t](e, n, o)) } function K(e) { if (void 0 !== e.touches) return e.touches.length; if (void 0 !== e.which && 0 !== e.which) return e.which; if (void 0 !== e.buttons) return e.buttons; e = e.button; return void 0 !== e ? 1 & e ? 1 : 2 & e ? 3 : 4 & e ? 2 : 0 : void 0 } function z(e, t) { return void 0 !== r[t] ? r[t] : (q.clientHeight ? q : R.body)[e] } function H(e, t, n) { var o = (e = e || {}).className || ""; return e.className += " gu-hide", n = R.elementFromPoint(t, n), e.className = o, n } function V() { return !1 } function $() { return !0 } function G(e) { return e.width || e.right - e.left } function J(e) { return e.height || e.bottom - e.top } function Q(e) { return e.parentNode === R ? null : e.parentNode } function W(e) { return "INPUT" === e.tagName || "TEXTAREA" === e.tagName || "SELECT" === e.tagName || function e(t) { if (!t) return !1; if ("false" === t.contentEditable) return !1; if ("true" === t.contentEditable) return !0; return e(Q(t)) }(e) } function Z(t) { return t.nextElementSibling || function () { var e = t; for (; e = e.nextSibling, e && 1 !== e.nodeType;); return e }() } function ee(e, t) { var t = (n = t).targetTouches && n.targetTouches.length ? n.targetTouches[0] : n.changedTouches && n.changedTouches.length ? n.changedTouches[0] : n, n = { pageX: "clientX", pageY: "clientY" }; return e in n && !(e in t) && n[e] in t && (e = n[e]), t[e] } t.exports = function (e, t) { var l, f, s, d, m, o, r, v, p, h, n; 1 === arguments.length && !1 === Array.isArray(e) && (t = e, e = []); var i, g = null, y = t || {}; void 0 === y.moves && (y.moves = $), void 0 === y.accepts && (y.accepts = $), void 0 === y.invalid && (y.invalid = function () { return !1 }), void 0 === y.containers && (y.containers = e || []), void 0 === y.isContainer && (y.isContainer = V), void 0 === y.copy && (y.copy = !1), void 0 === y.copySortSource && (y.copySortSource = !1), void 0 === y.revertOnSpill && (y.revertOnSpill = !1), void 0 === y.removeOnSpill && (y.removeOnSpill = !1), void 0 === y.direction && (y.direction = "vertical"), void 0 === y.ignoreInputTextSelection && (y.ignoreInputTextSelection = !0), void 0 === y.mirrorContainer && (y.mirrorContainer = R.body); var w = M({ containers: y.containers, start: function (e) { e = S(e); e && C(e) }, end: O, cancel: L, remove: X, destroy: function () { c(!0), N({}) }, canMove: function (e) { return !!S(e) }, dragging: !1 }); return !0 === y.removeOnSpill && w.on("over", function (e) { j.rm(e, "gu-hide") }).on("out", function (e) { w.dragging && j.add(e, "gu-hide") }), c(), w; function u(e) { return -1 !== w.containers.indexOf(e) || y.isContainer(e) } function c(e) { e = e ? "remove" : "add"; U(q, e, "mousedown", E), U(q, e, "mouseup", N) } function a(e) { U(q, e ? "remove" : "add", "mousemove", x) } function b(e) { e = e ? "remove" : "add"; k[e](q, "selectstart", T), k[e](q, "click", T) } function T(e) { i && e.preventDefault() } function E(e) { var t, n; o = e.clientX, r = e.clientY, 1 !== K(e) || e.metaKey || e.ctrlKey || (n = S(t = e.target)) && (i = n, a(), "mousedown" === e.type && (W(t) ? t.focus() : e.preventDefault())) } function x(e) { if (i) if (0 !== K(e)) { if (!(void 0 !== e.clientX && Math.abs(e.clientX - o) <= (y.slideFactorX || 0) && void 0 !== e.clientY && Math.abs(e.clientY - r) <= (y.slideFactorY || 0))) { if (y.ignoreInputTextSelection) { var t = ee("clientX", e) || 0, n = ee("clientY", e) || 0; if (W(R.elementFromPoint(t, n))) return } n = i; a(!0), b(), O(), C(n); n = function (e) { e = e.getBoundingClientRect(); return { left: e.left + z("scrollLeft", "pageXOffset"), top: e.top + z("scrollTop", "pageYOffset") } }(s); d = ee("pageX", e) - n.left, m = ee("pageY", e) - n.top, j.add(h || s, "gu-transit"), function () { if (l) return; var e = s.getBoundingClientRect(); (l = s.cloneNode(!0)).style.width = G(e) + "px", l.style.height = J(e) + "px", j.rm(l, "gu-transit"), j.add(l, "gu-mirror"), y.mirrorContainer.appendChild(l), U(q, "add", "mousemove", P), j.add(y.mirrorContainer, "gu-unselectable"), w.emit("cloned", l, s, "mirror") }(), P(e) } } else N({}) } function S(e) { if (!(w.dragging && l || u(e))) { for (var t = e; Q(e) && !1 === u(Q(e));) { if (y.invalid(e, t)) return; if (!(e = Q(e))) return } var n = Q(e); if (n) if (!y.invalid(e, t)) if (y.moves(e, n, t, Z(e))) return { item: e, source: n } } } function C(e) { var t, n; t = e.item, n = e.source, ("boolean" == typeof y.copy ? y.copy : y.copy(t, n)) && (h = e.item.cloneNode(!0), w.emit("cloned", h, e.item, "copy")), f = e.source, s = e.item, v = p = Z(e.item), w.dragging = !0, w.emit("drag", s, f) } function O() { var e; w.dragging && _(e = h || s, Q(e)) } function I() { a(!(i = !1)), b(!0) } function N(e) { var t, n; I(), w.dragging && (t = h || s, n = ee("clientX", e) || 0, e = ee("clientY", e) || 0, (e = B(H(l, n, e), n, e)) && (h && y.copySortSource || !h || e !== f) ? _(t, e) : (y.removeOnSpill ? X : L)()) } function _(e, t) { var n = Q(e); h && y.copySortSource && t === f && n.removeChild(s), A(t) ? w.emit("cancel", e, f, f) : w.emit("drop", e, t, f, p), Y() } function X() { var e, t; w.dragging && ((t = Q(e = h || s)) && t.removeChild(e), w.emit(h ? "cancel" : "remove", e, t, f), Y()) } function L(e) { var t, n, o; w.dragging && (t = 0 < arguments.length ? e : y.revertOnSpill, !1 === (e = A(o = Q(n = h || s))) && t && (h ? o && o.removeChild(h) : f.insertBefore(n, v)), e || t ? w.emit("cancel", n, f, f) : w.emit("drop", n, o, f, p), Y()) } function Y() { var e = h || s; I(), l && (j.rm(y.mirrorContainer, "gu-unselectable"), U(q, "remove", "mousemove", P), Q(l).removeChild(l), l = null), e && j.rm(e, "gu-transit"), n && clearTimeout(n), w.dragging = !1, g && w.emit("out", e, g, f), w.emit("dragend", e), f = s = h = v = p = n = g = null } function A(e, t) { t = void 0 !== t ? t : l ? p : Z(h || s); return e === f && t === v } function B(t, n, o) { for (var r = t; r && !function () { if (!1 === u(r)) return !1; var e = D(r, t), e = F(r, e, n, o); if (A(r, e)) return !0; return y.accepts(s, r, f, e) }();)r = Q(r); return r } function P(e) { if (l) { e.preventDefault(); var t = ee("clientX", e) || 0, n = ee("clientY", e) || 0, o = t - d, r = n - m; l.style.left = o + "px", l.style.top = r + "px"; var i = h || s, e = H(l, t, n), o = B(e, t, n), u = null !== o && o !== g; !u && null !== o || (g && a("out"), g = o, u && a("over")); r = Q(i); if (o !== f || !h || y.copySortSource) { var c, e = D(o, e); if (null !== e) c = F(o, e, t, n); else { if (!0 !== y.revertOnSpill || h) return void (h && r && r.removeChild(i)); c = v, o = f } (null === c && u || c !== i && c !== Z(i)) && (p = c, o.insertBefore(i, c), w.emit("shadow", i, o, f)) } else r && r.removeChild(i) } function a(e) { w.emit(e, i, g, f) } } function D(e, t) { for (var n = t; n !== e && Q(n) !== e;)n = Q(n); return n === q ? null : n } function F(r, t, i, u) { var c = "horizontal" === y.direction; return (t !== r ? function () { var e = t.getBoundingClientRect(); if (c) return n(i > e.left + G(e) / 2); return n(u > e.top + J(e) / 2) } : function () { var e, t, n, o = r.children.length; for (e = 0; e < o; e++) { if (t = r.children[e], n = t.getBoundingClientRect(), c && n.left + n.width / 2 > i) return t; if (!c && n.top + n.height / 2 > u) return t } return null })(); function n(e) { return e ? Z(t) : t } } } }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {}) }, { "./classes": 1, "contra/emitter": 5, crossvent: 6 }], 3: [function (e, t, n) { t.exports = function (e, t) { return Array.prototype.slice.call(e, t) } }, {}], 4: [function (e, t, n) { "use strict"; var o = e("ticky"); t.exports = function (e, t, n) { e && o(function () { e.apply(n || null, t || []) }) } }, { ticky: 10 }], 5: [function (e, t, n) { "use strict"; var c = e("atoa"), a = e("./debounce"); t.exports = function (r, e) { var i = e || {}, u = {}; return void 0 === r && (r = {}), r.on = function (e, t) { return u[e] ? u[e].push(t) : u[e] = [t], r }, r.once = function (e, t) { return t._once = !0, r.on(e, t), r }, r.off = function (e, t) { var n = arguments.length; if (1 === n) delete u[e]; else if (0 === n) u = {}; else { e = u[e]; if (!e) return r; e.splice(e.indexOf(t), 1) } return r }, r.emit = function () { var e = c(arguments); return r.emitterSnapshot(e.shift()).apply(this, e) }, r.emitterSnapshot = function (o) { var e = (u[o] || []).slice(0); return function () { var t = c(arguments), n = this || r; if ("error" === o && !1 !== i.throws && !e.length) throw 1 === t.length ? t[0] : t; return e.forEach(function (e) { i.async ? a(e, t, n) : e.apply(n, t), e._once && r.off(o, e) }), r } }, r } }, { "./debounce": 4, atoa: 3 }], 6: [function (n, o, e) { (function (r) { "use strict"; var i = n("custom-event"), u = n("./eventmap"), c = r.document, e = function (e, t, n, o) { return e.addEventListener(t, n, o) }, t = function (e, t, n, o) { return e.removeEventListener(t, n, o) }, a = []; function l(e, t, n) { t = function (e, t, n) { var o, r; for (o = 0; o < a.length; o++)if ((r = a[o]).element === e && r.type === t && r.fn === n) return o }(e, t, n); if (t) { n = a[t].wrapper; return a.splice(t, 1), n } } r.addEventListener || (e = function (e, t, n) { return e.attachEvent("on" + t, function (e, t, n) { var o = l(e, t, n) || function (n, o) { return function (e) { var t = e || r.event; t.target = t.target || t.srcElement, t.preventDefault = t.preventDefault || function () { t.returnValue = !1 }, t.stopPropagation = t.stopPropagation || function () { t.cancelBubble = !0 }, t.which = t.which || t.keyCode, o.call(n, t) } }(e, n); return a.push({ wrapper: o, element: e, type: t, fn: n }), o }(e, t, n)) }, t = function (e, t, n) { n = l(e, t, n); if (n) return e.detachEvent("on" + t, n) }), o.exports = { add: e, remove: t, fabricate: function (e, t, n) { var o = -1 === u.indexOf(t) ? new i(t, { detail: n }) : function () { var e; c.createEvent ? (e = c.createEvent("Event")).initEvent(t, !0, !0) : c.createEventObject && (e = c.createEventObject()); return e }(); e.dispatchEvent ? e.dispatchEvent(o) : e.fireEvent("on" + t, o) } } }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {}) }, { "./eventmap": 7, "custom-event": 8 }], 7: [function (e, r, t) { (function (e) { "use strict"; var t = [], n = "", o = /^on/; for (n in e) o.test(n) && t.push(n.slice(2)); r.exports = t }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {}) }, {}], 8: [function (e, n, t) { (function (e) { var t = e.CustomEvent; n.exports = function () { try { var e = new t("cat", { detail: { foo: "bar" } }); return "cat" === e.type && "bar" === e.detail.foo } catch (e) { } }() ? t : "undefined" != typeof document && "function" == typeof document.createEvent ? function (e, t) { var n = document.createEvent("CustomEvent"); return t ? n.initCustomEvent(e, t.bubbles, t.cancelable, t.detail) : n.initCustomEvent(e, !1, !1, void 0), n } : function (e, t) { var n = document.createEventObject(); return n.type = e, t ? (n.bubbles = Boolean(t.bubbles), n.cancelable = Boolean(t.cancelable), n.detail = t.detail) : (n.bubbles = !1, n.cancelable = !1, n.detail = void 0), n } }).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {}) }, {}], 9: [function (e, t, n) { var o, r, t = t.exports = {}; function i() { throw new Error("setTimeout has not been defined") } function u() { throw new Error("clearTimeout has not been defined") } function c(t) { if (o === setTimeout) return setTimeout(t, 0); if ((o === i || !o) && setTimeout) return o = setTimeout, setTimeout(t, 0); try { return o(t, 0) } catch (e) { try { return o.call(null, t, 0) } catch (e) { return o.call(this, t, 0) } } } !function () { try { o = "function" == typeof setTimeout ? setTimeout : i } catch (e) { o = i } try { r = "function" == typeof clearTimeout ? clearTimeout : u } catch (e) { r = u } }(); var a, l = [], f = !1, s = -1; function d() { f && a && (f = !1, a.length ? l = a.concat(l) : s = -1, l.length && m()) } function m() { if (!f) { var e = c(d); f = !0; for (var t = l.length; t;) { for (a = l, l = []; ++s < t;)a && a[s].run(); s = -1, t = l.length } a = null, f = !1, function (t) { if (r === clearTimeout) return clearTimeout(t); if ((r === u || !r) && clearTimeout) return r = clearTimeout, clearTimeout(t); try { r(t) } catch (e) { try { return r.call(null, t) } catch (e) { return r.call(this, t) } } }(e) } } function v(e, t) { this.fun = e, this.array = t } function p() { } t.nextTick = function (e) { var t = new Array(arguments.length - 1); if (1 < arguments.length) for (var n = 1; n < arguments.length; n++)t[n - 1] = arguments[n]; l.push(new v(e, t)), 1 !== l.length || f || c(m) }, v.prototype.run = function () { this.fun.apply(null, this.array) }, t.title = "browser", t.browser = !0, t.env = {}, t.argv = [], t.version = "", t.versions = {}, t.on = p, t.addListener = p, t.once = p, t.off = p, t.removeListener = p, t.removeAllListeners = p, t.emit = p, t.prependListener = p, t.prependOnceListener = p, t.listeners = function (e) { return [] }, t.binding = function (e) { throw new Error("process.binding is not supported") }, t.cwd = function () { return "/" }, t.chdir = function (e) { throw new Error("process.chdir is not supported") }, t.umask = function () { return 0 } }, {}], 10: [function (e, n, t) { (function (t) { var e = "function" == typeof t ? function (e) { t(e) } : function (e) { setTimeout(e, 0) }; n.exports = e }).call(this, e("timers").setImmediate) }, { timers: 11 }], 11: [function (a, e, l) { (function (e, t) { var o = a("process/browser.js").nextTick, n = Function.prototype.apply, r = Array.prototype.slice, i = {}, u = 0; function c(e, t) { this._id = e, this._clearFn = t } l.setTimeout = function () { return new c(n.call(setTimeout, window, arguments), clearTimeout) }, l.setInterval = function () { return new c(n.call(setInterval, window, arguments), clearInterval) }, l.clearTimeout = l.clearInterval = function (e) { e.close() }, c.prototype.unref = c.prototype.ref = function () { }, c.prototype.close = function () { this._clearFn.call(window, this._id) }, l.enroll = function (e, t) { clearTimeout(e._idleTimeoutId), e._idleTimeout = t }, l.unenroll = function (e) { clearTimeout(e._idleTimeoutId), e._idleTimeout = -1 }, l._unrefActive = l.active = function (e) { clearTimeout(e._idleTimeoutId); var t = e._idleTimeout; 0 <= t && (e._idleTimeoutId = setTimeout(function () { e._onTimeout && e._onTimeout() }, t)) }, l.setImmediate = "function" == typeof e ? e : function (e) { var t = u++, n = !(arguments.length < 2) && r.call(arguments, 1); return i[t] = !0, o(function () { i[t] && (n ? e.apply(null, n) : e.call(null), l.clearImmediate(t)) }), t }, l.clearImmediate = "function" == typeof t ? t : function (e) { delete i[e] } }).call(this, a("timers").setImmediate, a("timers").clearImmediate) }, { "process/browser.js": 9, timers: 11 }] }, {}, [2])(2) });
+    </script>
+    <script>
         /*jshint esversion: 8 */
         /**
           * @yaireo/relative-time - javascript function to transform timestamp or date to local relative-time
@@ -1150,10 +1145,7 @@
             }
             switch (pageId) {
                 case 'landing':
-                    if (!params) {
-                        params = { category: 'all' }
-                    }
-                    renderElem(getRef('landing_tasks_wrapper'), render.displayTasks(params.category, params.search))
+                    renderElem(getRef('landing_tasks_wrapper'), render.displayTasks(params?.category, params?.search))
                     if (subPageId1) {
                         showTaskDetails(params.id)
                     } else {
@@ -1187,7 +1179,7 @@
                                 <ul id="assigned_task_list">${renderedAssignedTasks}</ul>
                             </section>
                         ` : ''}
-                        <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column gap-1 justify-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks('all', params?.search)}</div>
+                        <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column gap-1 justify-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
                         <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">
                             <section id="pinned_project_section" class="w-100">
                                 <h4>Pinned</h4>
@@ -1385,6 +1377,11 @@
 
                     //show display tasks map
                     render.taskDisplayMap()
+                    const dragger = dragula([getRef('display_task_map'), getRef('all_tasks')])
+                    dragger.on('dragend', function (el, source) {
+                        const newOrder = Array.from(getRef('display_task_map').children).map(el => el.dataset.taskId)
+                        RIBC.admin.setDisplayedTasks(newOrder)
+                    });
                     break;
             }
             switch (appState.lastPage) {
@@ -1735,39 +1732,39 @@
                 const { title, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
                 const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task) || [];
                 return html`
-            <li class=${`display-task`}>
-                <div class="flex align-center space-between">
-                    <a class="display-task__category" href=${`#/landing?category=${category}`} title=${`See all ${floGlobals.taskCategories[category]} tasks`}>${floGlobals.taskCategories[category]}</a>
-                    <a href=${`#/${appState.currentPage}/task?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
-                        View details
-                        <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
-                    </a> 
-                </div>
-                <h4 class="display-task__title">${title}</h4>
-                <div class="display-task__details flex flex-wrap gap-0-3">
-                    ${duration ? html`
-                        <div class="display-task__detail">
-                            <span class="display-task__detail__title">Duration: </span>
-                            <span class="display-task__detail__value">${duration} ${durationType}</span>
+                    <li class=${`display-task`}>
+                        <div class="flex align-center space-between">
+                            <a class="display-task__category" href=${`#/landing?category=${category}`} title=${`See all ${floGlobals.taskCategories[category]} tasks`}>${floGlobals.taskCategories[category]}</a>
+                            <a href=${`#/${appState.currentPage}/task?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
+                                View details
+                                <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
+                            </a> 
                         </div>
-                    `: ''}
-                    ${maxSlots ? html`
-                        <div class="display-task__detail">
-                            <span class="display-task__detail__title">Slots: </span>
-                            <span class="display-task__detail__value">${maxSlots - assignedInterns.length}</span>
+                        <h4 class="display-task__title">${title}</h4>
+                        <div class="display-task__details flex flex-wrap gap-0-3">
+                            ${duration ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Duration: </span>
+                                    <span class="display-task__detail__value">${duration} ${durationType}</span>
+                                </div>
+                            `: ''}
+                            ${maxSlots ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Slots: </span>
+                                    <span class="display-task__detail__value">${maxSlots - assignedInterns.length}</span>
+                                </div>
+                            `: ''}
+                            ${reward ? html`
+                                <div class="display-task__detail">
+                                    <span class="display-task__detail__title">Reward: </span>
+                                    <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                                </div>
+                            `: ''}
                         </div>
-                    `: ''}
-                    ${reward ? html`
-                        <div class="display-task__detail">
-                            <span class="display-task__detail__title">Reward: </span>
-                            <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
-                        </div>
-                    `: ''}
-                </div>
-            </li>
-        `;
+                    </li>
+                `;
             },
-            displayTasks(category, searchQuery) {
+            displayTasks(category = 'all', searchQuery) {
                 // render tasks
                 const allTasks = RIBC.getAllTasks();
                 const displayedTasks = RIBC.getDisplayedTasks()
@@ -1775,6 +1772,7 @@
                 const filtered = []
                 const availableCategories = new Set();
                 for (const taskId of displayedTasks) {
+                    availableCategories.add(allTasks[taskId].category)
                     const [projectCode, branch, task] = taskId.split('_')
                     const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task) || [];
                     if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
@@ -1782,7 +1780,6 @@
                     if (assignedInterns.length >= allTasks[taskId].maxSlots) continue;
                     if (typeOfUser && typeOfUser === 'intern' && floDapps.user.id && assignedInterns.includes(floDapps.user.id)) continue;
                     filtered.push(render.displayTaskCard(projectCode, branch, task))
-                    availableCategories.add(allTasks[taskId].category)
                 }
                 let renderedTasks = filtered.reverse()
                 if (searchQuery && filtered.length === 0) {
@@ -1793,7 +1790,7 @@
                 if (availableCategories.size > 1) {
                     renderedCategories = [html`<strip-option value='all' ?selected=${category === 'all'}>All</strip-option>`];
                     availableCategories.forEach(categoryID => {
-                        categories.push(html`<strip-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
+                        renderedCategories.push(html`<strip-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
                     })
                 }
                 setTimeout(() => {
@@ -1801,26 +1798,26 @@
                         document.getElementById('task_search_input').value = searchQuery || ''
                 }, 0);
                 return html`
-                <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
-                    <div class="flex align-center gap-1 flex-wrap space-between">
-                        <h3>
-                            Available Tasks
-                        </h3>
-                        ${(filtered.length > 0 || searchQuery) ? html`
-                            <sm-input id="task_search_input" oninput="filterTasks(event)" placeholder="Search keywords" type="search">
-                                <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg>
-                            </sm-input>
-                        `: ''}
+                    <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
+                        <div class="flex align-center gap-1 flex-wrap space-between">
+                            <h3>
+                                Available Tasks
+                            </h3>
+                            ${(filtered.length > 0 || searchQuery) ? html`
+                                <sm-input id="task_search_input" oninput="filterTasks(event)" placeholder="Search keywords" type="search">
+                                    <svg slot="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg>
+                                </sm-input>
+                            `: ''}
+                        </div>
+                        ${availableCategories.size > 1 ? html`<strip-select id="task_category_selector" onchange='filterTasks()'>${renderedCategories}</strip-select>` : ''}
                     </div>
-                    ${availableCategories.size > 1 ? html`<strip-select id="task_category_selector" onchange='filterTasks()'>${renderedCategories}</strip-select>` : ''}
-                </div>
-                <div class="grid gap-1">
-                    <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state">${renderedTasks}</ul>
-                    <div class="empty-state">
-                        <p>Nothing to see here</p>
+                    <div class="grid gap-1">
+                        <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state">${renderedTasks}</ul>
+                        <div class="empty-state">
+                            <p>Nothing to see here</p>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
             },
             projectCard(projectCode, isAdmin = false, ref) {
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
@@ -2229,63 +2226,23 @@
                 for (const taskId in allTasks) {
                     const [projectCode, branch, task] = taskId.split('_')
                     if (displayedTasks.includes(taskId) || RIBC.getTaskStatus(projectCode, branch, task) === 'completed') continue;
-                    availableToDisplay.push(html`
-                        <li class="flex gap-0-5 flex-direction-column displayable-task" data-task-id=${taskId}>
-                            <div class="flex gap-0-5 space-between">
-                                <p class="displayable-task__project">${RIBC.getProjectDetails(projectCode).projectName}</p>
-                                <button class="button button--small button--colored" onclick="showDisplayTask(event)">Show</button>
-                            </div>
-                            <h4>${RIBC.getTaskDetails(projectCode, branch, task).title}</h4>
-                        </li>`)
+                    availableToDisplay.push(render.draggableTask(taskId))
                 }
                 renderElem(getRef('all_tasks'), html`${availableToDisplay}`)
-                renderElem(getRef('display_task_map'), html`${displayedTasks.map((taskId, index) => {
-                    const [projectCode, branch, task] = taskId.split('_')
-                    return html`
-                        <li class="flex flex-direction-column gap-0-5 displayable-task" data-task-id=${taskId}>
-                            <p class="displayable-task__project">${RIBC.getProjectDetails(projectCode).projectName}</p>
-                            <h4>${RIBC.getTaskDetails(projectCode, branch, task).title}</h4>
-                            <div class="flex gap-0-3">
-                                <button class="button button--small button--colored hide-task" onclick="hideDisplayTask(event)">Hide</button>
-                                ${index !== 0 ? html`<button class="button button--small button--colored" onclick="moveDisplayTaskUp(event)">Move up</button>` : ''}
-                                ${index !== displayedTasks.length - 1 ? html`<button class="button button--small button--colored" onclick="moveDisplayTaskDown(event)">Move down</button>` : ''}
-                            </div>
-                        </li>
-                    `;
-                })}`)
+                renderElem(getRef('display_task_map'), html`${displayedTasks.map(taskId => render.draggableTask(taskId))}`)
+            },
+            draggableTask(taskId) {
+                const [projectCode, branch, task] = taskId.split('_')
+                return html`
+                    <li class="flex gap-0-5 displayable-task draggable" data-task-id=${taskId}>
+                        <div class="dragging-handle">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        </div>
+                        <p class="displayable-task__project">${RIBC.getProjectDetails(projectCode).projectName}</p>
+                        <h4>${RIBC.getTaskDetails(projectCode, branch, task).title}</h4>
+                    </li>
+                `;
             }
-        }
-        function showDisplayTask(e) {
-            const taskId = e.target.closest('li').dataset.taskId
-            RIBC.admin.setDisplayedTasks([taskId, ...RIBC.getDisplayedTasks()])
-            render.taskDisplayMap()
-        }
-        function hideDisplayTask(e) {
-            const taskId = e.target.closest('li').dataset.taskId
-            RIBC.admin.setDisplayedTasks([...RIBC.getDisplayedTasks().filter(id => id !== taskId)])
-            render.taskDisplayMap()
-        }
-        function moveDisplayTaskUp(e) {
-            const taskId = e.target.closest('li').dataset.taskId
-            const displayedTasks = RIBC.getDisplayedTasks()
-            const index = displayedTasks.indexOf(taskId)
-            if (index === 0) return;
-            const temp = displayedTasks[index - 1]
-            displayedTasks[index - 1] = displayedTasks[index]
-            displayedTasks[index] = temp
-            RIBC.admin.setDisplayedTasks(displayedTasks)
-            render.taskDisplayMap()
-        }
-        function moveDisplayTaskDown(e) {
-            const taskId = e.target.closest('li').dataset.taskId
-            const displayedTasks = RIBC.getDisplayedTasks()
-            const index = displayedTasks.indexOf(taskId)
-            if (index === displayedTasks.length - 1) return;
-            const temp = displayedTasks[index + 1]
-            displayedTasks[index + 1] = displayedTasks[index]
-            displayedTasks[index] = temp
-            RIBC.admin.setDisplayedTasks(displayedTasks)
-            render.taskDisplayMap()
         }
         const selectedColors = [
             '--dark-red',
@@ -2337,40 +2294,40 @@
             })
             descriptionTag.id = 'task_description'
             renderElem(getRef('task_details_wrapper'), html`
-        <div class="flex" style="position: sticky; top: 0; background-color: rgba(var(--foreground-color),1); padding: 1rem 0 0.5rem 0">
-            <button class="button icon-only align-self-start" onclick="history.back()" title="Go back">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <path d="M0 0h24v24H0V0z" fill="none"></path> <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"> </path> </svg>
-            </button>
-        </div>
-        <div class="grid gap-1">
-            <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
-            <h2 id="task_title">${title}</h2>
-            <div class="display-task__details flex flex-wrap gap-0-3">
-                ${duration ? html`
-                    <div class="display-task__detail">
-                        <span class="display-task__detail__title">Duration: </span>
-                        <span class="display-task__detail__value">${duration} ${durationType}</span>
+                <div class="flex" style="position: sticky; top: 0; background-color: rgba(var(--foreground-color),1); padding: 1rem 0 0.5rem 0">
+                    <button class="button icon-only align-self-start" onclick="history.back()" title="Go back">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <path d="M0 0h24v24H0V0z" fill="none"></path> <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"> </path> </svg>
+                    </button>
+                </div>
+                <div class="grid gap-1">
+                    <h5 class="capitalize">${floGlobals.taskCategories[category]}</h5>
+                    <h2 id="task_title">${title}</h2>
+                    <div class="display-task__details flex flex-wrap gap-0-3">
+                        ${duration ? html`
+                            <div class="display-task__detail">
+                                <span class="display-task__detail__title">Duration: </span>
+                                <span class="display-task__detail__value">${duration} ${durationType}</span>
+                            </div>
+                        `: ''}
+                        ${maxSlots ? html`
+                            <div class="display-task__detail">
+                                <span class="display-task__detail__title">Slots: </span>
+                                <span class="display-task__detail__value">${maxSlots}</span>
+                            </div>
+                        `: ''}
+                        ${reward ? html`
+                            <div class="display-task__detail">
+                                <span class="display-task__detail__title">Reward: </span>
+                                <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                            </div>
+                        `: ''}    
                     </div>
-                `: ''}
-                ${maxSlots ? html`
-                    <div class="display-task__detail">
-                        <span class="display-task__detail__title">Slots: </span>
-                        <span class="display-task__detail__value">${maxSlots}</span>
-                    </div>
-                `: ''}
-                ${reward ? html`
-                    <div class="display-task__detail">
-                        <span class="display-task__detail__title">Reward: </span>
-                        <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
-                    </div>
-                `: ''}    
-            </div>
-            ${descriptionTag}
-        </div>
-        ${!hasApplied ? html`
-            <button class="button button--primary" .dataset=${{ taskId }} onclick="requestForTask(this)">Apply Now</button>
-            `: ''}
-    `);
+                    ${descriptionTag}
+                </div>
+                ${!hasApplied ? html`
+                    <button class="button button--primary" .dataset=${{ taskId }} onclick="requestForTask(this)">Apply Now</button>
+                    `: ''}
+            `);
             getRef('task_details').classList.remove('hidden')
             const animOptions = {
                 duration: floGlobals.prefersReducedMotion ? 0 : 300,
@@ -2702,7 +2659,6 @@
                 }
                 if (description === '') {
                     return notify('Please enter description of the task', 'error')
-
                 }
                 const taskDetails = {
                     title,
@@ -2716,6 +2672,7 @@
                 const task = RIBC.admin.addTaskInMap(appState.params.id, appState.params.branch)
                 RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, task)
                 RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, task)
+                RIBC.admin.setDisplayedTasks([`${appState.params.id}_${appState.params.branch}_${task}`, ...RIBC.getDisplayedTasks()])
                 card.remove()
                 renderBranchTasks()
                 getRef('add_task').classList.remove('hidden')
@@ -2730,40 +2687,40 @@
                 first = false;
             }
             const placeholderTask = html.node`
-        <div class="temp-task grid gap-0-5">
-            <sm-form style="--gap: 0.5rem;">
-                <sm-input class="temp-task__title" placeholder="Title" animate required></sm-input>
-                <sm-textarea class="temp-task__description" placeholder="Description" rows="6" required></sm-textarea>
-                <div class="grid gap-0-5" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
-                    <sm-select class="temp-task__category" label="Category: ">${categories}</sm-select>
-                    <sm-input class="temp-task__max-slots flex-1" placeholder="Max slots available" type="number" animate> </sm-input>
-                    <div class="flex flex-1">
-                        <sm-input class="temp-task__duration flex-1" placeholder="Duration" type="number" style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);" animate>
-                            <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24" /> </g> <g> <g> <g> <path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z" /> </g> </g> </g> </svg>
-                        </sm-input>
-                        <sm-select class="temp-task__duration-type flex-shrink-0"
-                            style="--select-border-radius: 0 0.5rem 0.5rem 0;">
-                            <sm-option value="days" selected>Days</sm-option>
-                            <sm-option value="months">Months</sm-option>
-                        </sm-select>
-                    </div>
-                    <sm-input class="temp-task__reward flex-1" type="number" placeholder="Reward" animate>
-                        <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <path d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z"> </path> </g> </g> </svg>
-                    </sm-input>
+                <div class="temp-task grid gap-0-5">
+                    <sm-form style="--gap: 0.5rem;">
+                        <sm-input class="temp-task__title" placeholder="Title" animate required></sm-input>
+                        <sm-textarea class="temp-task__description" placeholder="Description" rows="6" required></sm-textarea>
+                        <div class="grid gap-0-5" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+                            <sm-select class="temp-task__category" label="Category: ">${categories}</sm-select>
+                            <sm-input class="temp-task__max-slots flex-1" placeholder="Max slots available" type="number" animate> </sm-input>
+                            <div class="flex flex-1">
+                                <sm-input class="temp-task__duration flex-1" placeholder="Duration" type="number" style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);" animate>
+                                    <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24" /> </g> <g> <g> <g> <path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z" /> </g> </g> </g> </svg>
+                                </sm-input>
+                                <sm-select class="temp-task__duration-type flex-shrink-0"
+                                    style="--select-border-radius: 0 0.5rem 0.5rem 0;">
+                                    <sm-option value="days" selected>Days</sm-option>
+                                    <sm-option value="months">Months</sm-option>
+                                </sm-select>
+                            </div>
+                            <sm-input class="temp-task__reward flex-1" type="number" placeholder="Reward" animate>
+                                <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <path d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z"> </path> </g> </g> </svg>
+                            </sm-input>
+                        </div>
+                        <div class="flex align-center gap-0-3 margin-top-1">
+                            <button class="button cancel-task-button">
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" /> </svg>
+                                Cancel
+                            </button>
+                            <button type="submit" class="button button--primary add-task-button">
+                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" /> </svg>
+                                Add
+                            </button>
+                        </div>
+                    </sm-form>
                 </div>
-                <div class="flex align-center gap-0-3 margin-top-1">
-                    <button class="button cancel-task-button">
-                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" /> </svg>
-                        Cancel
-                    </button>
-                    <button type="submit" class="button button--primary add-task-button">
-                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z" /> </svg>
-                        Add
-                    </button>
-                </div>
-            </sm-form>
-        </div>
-    `;
+            `;
             getRef('task_list').append(placeholderTask)
             getRef('task_list').querySelector('.temp-task__title').focusIn()
             getRef('add_task').classList.add('hidden')
@@ -2900,16 +2857,16 @@
         delegate(getRef('all_updates_list'), 'click', '.init-update-replay', (e) => {
             const vectorClock = e.delegateTarget.closest('.intern-update').dataset.vectorClock;
             e.delegateTarget.after(html.node`
-        <sm-form class="update-replay grid gap-0-5">
-            <sm-textarea placeholder="Enter your reply here" class="update-reply-textarea" rows="4" required></sm-textarea>
-            <div class="flex align-center gap-0-3 margin-left-auto">
-                <button class="update-replay__cancel button button--small" onclick="cancelUpdateReply(this.closest('.update-replay'))">Cancel</button>
-                <div class="multi-state-button">
-                    <button class="update-replay__submit button button--small button--primary" onclick="submitUpdateReply(this.closest('.update-replay'))" type="submit">Submit</button>
-                </div>
-            </div>
-        </sm-form>
-    `)
+                <sm-form class="update-replay grid gap-0-5">
+                    <sm-textarea placeholder="Enter your reply here" class="update-reply-textarea" rows="4" required></sm-textarea>
+                    <div class="flex align-center gap-0-3 margin-left-auto">
+                        <button class="update-replay__cancel button button--small" onclick="cancelUpdateReply(this.closest('.update-replay'))">Cancel</button>
+                        <div class="multi-state-button">
+                            <button class="update-replay__submit button button--small button--primary" onclick="submitUpdateReply(this.closest('.update-replay'))" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </sm-form>
+            `)
             e.delegateTarget.classList.add('hidden')
             e.target.closest('.intern-update').querySelector('.update-reply-textarea').focusIn()
         })
