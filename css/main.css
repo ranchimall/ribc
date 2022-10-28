@@ -809,6 +809,15 @@ ul {
   width: min(100%, 48rem);
 }
 
+#display_task_search_wrapper {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: 0.5rem;
+  background: linear-gradient(rgba(var(--foreground-color), 0.3), rgba(var(--foreground-color), 0.3)), linear-gradient(rgba(var(--background-color), 1), rgba(var(--background-color), 1));
+}
+
 #display_task_list {
   margin-top: 1rem;
 }
