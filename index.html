@@ -1785,7 +1785,7 @@
                     if (typeOfUser && typeOfUser === 'intern' && floDapps.user.id && assignedInterns.includes(floDapps.user.id)) continue;
                     filtered.push(render.displayTaskCard(projectCode, branch, task))
                 }
-                let renderedTasks = filtered.reverse()
+                let renderedTasks = filtered
                 if (searchQuery && filtered.length === 0) {
                     renderedTasks = html`<p>No tasks related to <b>${searchQuery}</b></p>`
                 }
