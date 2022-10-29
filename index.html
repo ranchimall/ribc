@@ -2756,6 +2756,8 @@
             getConfirmation("Are you sure to delete this task?", { confirmText: 'Delete' }).then((result) => {
                 if (result) {
                     RIBC.admin.deleteTaskInMap(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+                    const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
+                    RIBC.admin.setDisplayedTasks(RIBC.getDisplayedTasks().filter(task => task !== taskId))
                     renderBranchTasks()
                 }
             })
