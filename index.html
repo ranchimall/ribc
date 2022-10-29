@@ -1743,27 +1743,29 @@
                                 <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
                             </a> 
                         </div>
-                        <h4 class="display-task__title">${title}</h4>
-                        <div class="display-task__details flex flex-wrap gap-0-3">
-                            ${duration ? html`
-                                <div class="display-task__detail">
-                                    <span class="display-task__detail__title">Duration: </span>
-                                    <span class="display-task__detail__value">${duration} ${durationType}</span>
-                                </div>
-                            `: ''}
-                            ${maxSlots ? html`
-                                <div class="display-task__detail">
-                                    <span class="display-task__detail__title">Slots: </span>
-                                    <span class="display-task__detail__value">${maxSlots - assignedInterns.length}</span>
-                                </div>
-                            `: ''}
-                            ${reward ? html`
-                                <div class="display-task__detail">
-                                    <span class="display-task__detail__title">Reward: </span>
-                                    <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
-                                </div>
-                            `: ''}
-                        </div>
+                        <a href=${`#/${appState.currentPage}/task?id=${projectCode}_${branch}_${task}`} class="display-task__link flex flex-direction-column gap-1">
+                            <h4 class="display-task__title">${title}</h4>
+                            <div class="display-task__details flex flex-wrap gap-0-3">
+                                ${duration ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Duration: </span>
+                                        <span class="display-task__detail__value">${duration} ${durationType}</span>
+                                    </div>
+                                `: ''}
+                                ${maxSlots ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Slots: </span>
+                                        <span class="display-task__detail__value">${maxSlots - assignedInterns.length}</span>
+                                    </div>
+                                `: ''}
+                                ${reward ? html`
+                                    <div class="display-task__detail">
+                                        <span class="display-task__detail__title">Reward: </span>
+                                        <span class="display-task__detail__value" style="color: var(--green)">₹${reward}</span>
+                                    </div>
+                                `: ''}
+                            </div>
+                        </a>
                     </li>
                 `;
             },
@@ -1805,7 +1807,7 @@
                     <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
                         <div class="flex align-center gap-1 flex-wrap space-between">
                             <h3>
-                                Available Tasks
+                                Apply for available tasks
                             </h3>
                             ${(filtered.length > 0 || searchQuery) ? html`
                                 <sm-input id="task_search_input" oninput="filterTasks(event)" placeholder="Search keywords" type="search">

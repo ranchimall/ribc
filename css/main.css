@@ -1004,6 +1004,7 @@ ul {
   color: var(--accent-color);
 }
 .display-task__title {
+  color: rgba(var(--text-color), 0.9);
   font-size: 1.2rem;
 }
 .display-task__description {
