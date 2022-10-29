@@ -982,6 +982,7 @@ ul {
   background-color: rgba(var(--foreground-color), 1);
   width: 100%;
   border: solid thin rgba(var(--text-color), 0.1);
+  font-size: 0.9rem;
   &__category {
     display: inline-flex;
     padding: 0.3rem 0.5rem;

@@ -1886,7 +1886,7 @@
                                 ${maxSlots ? html`
                                     <div class="display-task__detail">
                                         <span class="display-task__detail__title">Slots: </span>
-                                        <span class="display-task__detail__value">${maxSlots}</span>
+                                        <span class="display-task__detail__value">${maxSlots - assignedInterns.length}</span>
                                     </div>
                                 `: ''}
                                 ${reward ? html`
@@ -2287,6 +2287,7 @@
         function showTaskDetails(taskId) {
             const [projectCode, branch, task] = taskId.split('_')
             const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(projectCode, branch, task)
+            const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task) || [];
             let hasApplied = false
             try {
                 floDapps.user.id
@@ -2318,7 +2319,7 @@
                         ${maxSlots ? html`
                             <div class="display-task__detail">
                                 <span class="display-task__detail__title">Slots: </span>
-                                <span class="display-task__detail__value">${maxSlots}</span>
+                                <span class="display-task__detail__value">${maxSlots - assignedInterns.length}</span>
                             </div>
                         `: ''}
                         ${reward ? html`
@@ -2558,6 +2559,12 @@
             currentTask = e.target.closest('.task-list-item');
             const taskStatus = e.target.checked ? 'completed' : 'incomplete'
             RIBC.admin.putTaskStatus(taskStatus, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+            if (e.target.checked) {
+                // remove task from displayed list
+                const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
+                const filteredTasks = RIBC.getDisplayedTasks().filter(task => task !== taskId)
+                RIBC.admin.setDisplayedTasks(filteredTasks)
+            }
         })
         delegate(getRef('task_list'), 'change', 'sm-select', (e) => {
             currentTask = e.target.closest('.task-list-item');

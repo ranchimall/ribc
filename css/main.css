@@ -986,6 +986,7 @@ ul {
   background-color: rgba(var(--foreground-color), 1);
   width: 100%;
   border: solid thin rgba(var(--text-color), 0.1);
+  font-size: 0.9rem;
 }
 .display-task__category {
   display: inline-flex;
