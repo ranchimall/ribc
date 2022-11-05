@@ -105,7 +105,7 @@
     Ribc.getInternRating = (floID) => _.internRating[floID];
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
     Ribc.getAllTasks = () => _.projectTaskDetails
-    Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks.filter(v => v)
+    Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks.filter(v => v) || [];
 
     Admin.updateObjects = () => new Promise((resolve, reject) => {
         floCloudAPI.updateObjectData("RIBC")
@@ -165,6 +165,18 @@
             return false
         _.internList[floID] = internName
         _.internRating[floID] = 1
+        return true;
+    }
+
+    Admin.removeIntern = function (floID) {
+        if (!(floID in _.internList))
+            return false
+        delete _.internList[floID]
+        delete _.internRating[floID]
+        for (const taskId in _.projectTaskDetails) {
+            if (_.internsAssigned[taskId].includes(floID))
+                _.internsAssigned[taskId] = _.internsAssigned[taskId].filter(id => id != floID)
+        }
         return true;
     }
 

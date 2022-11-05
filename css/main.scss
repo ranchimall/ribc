@@ -170,6 +170,9 @@ button,
     background-color: transparent;
   }
 }
+button:disabled {
+  opacity: 0.5;
+}
 
 .cta {
   text-transform: uppercase;
@@ -190,10 +193,6 @@ button,
   padding: 0.5rem;
   border-radius: 0.3rem;
   aspect-ratio: 1/1;
-}
-
-button:disabled {
-  opacity: 0.5;
 }
 
 a:any-link:focus-visible {
@@ -698,17 +697,25 @@ ul {
 }
 
 .popup__header {
+  position: relative;
   display: grid;
   gap: 0.5rem;
   width: 100%;
   padding: 0 1.5rem 0 0.5rem;
   align-items: center;
-  grid-template-columns: auto 1fr auto;
-}
-
-.popup__header__close {
-  padding: 0.5rem;
-  cursor: pointer;
+  grid-template-columns: auto 1fr;
+  & > * {
+    grid-row: 1;
+  }
+  h3,
+  h4 {
+    grid-column: 1/-1;
+    justify-self: center;
+    align-self: center;
+  }
+  &__close {
+    grid-column: 1;
+  }
 }
 .page {
   height: 100%;
@@ -1942,13 +1949,13 @@ input[type="date"] {
 
   #dashboard_page {
     grid-template-columns: 1fr 18rem;
-    & > :not(#best_interns_container, #dashboard_view_selector) {
+    & > :not(#intern_leaderboard_container, #dashboard_view_selector) {
       grid-column: 1;
       width: min(48rem, 100%);
       margin: 0 auto;
     }
   }
-  #best_interns_container {
+  #intern_leaderboard_container {
     position: sticky;
     top: 0;
     grid-column: 2;

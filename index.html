@@ -265,8 +265,8 @@
                     Applications
                 </span>
             </a>
-            <a href="#/admin_page" class="admin-option nav-list__item interact open-first-project"
-                title="open admin panel">
+            <a id="admin_page_nav_button" href="#/admin_page"
+                class="admin-option nav-list__item interact open-first-project" title="open admin panel">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
                     <path fill="none" d="M0 0h24v24H0z" />
@@ -342,8 +342,8 @@
                         <section id="project_editing_panel" class="hidden">
                             <div id="project_details_wrapper"
                                 class="flex flex-direction-column gap-1 margin-bottom-2 align-items-start">
-                                <a class="flex gap-0-3 align-center button--colored hide-on-desktop" href="#/admin_page"
-                                    title="Go back">
+                                <a class="flex gap-0-3 align-center button--colored hide-on-desktop"
+                                    href="#/admin_page/projects" title="Go back">
                                     <svg class="icon" style="margin-left: -0.3rem;" xmlns="http://www.w3.org/2000/svg"
                                         height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
                                         <path d="M0 0h24v24H0V0z" fill="none" />
@@ -549,36 +549,7 @@
                     <h4 class="empty-state">No tasks are added to this projects</h4>
                 </section>
             </section>
-            <section id="settings_page" class="inner-page hidden">
-                <section class="grid gap-1 card">
-                    <div class="grid">
-                        <h4>FLO address</h4>
-                        <sm-copy id="user_flo_id"></sm-copy>
-                    </div>
-                    <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
-                        <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" />
-                        </svg>
-                        Sign out
-                    </button>
-                </section>
-                <div class="grid gap-1 card">
-                    <div class="grid gap-0-5">
-                        <h4>Secure private key</h4>
-                        <p>
-                            You can set a password to secure your private key and use the password instead of private
-                            key.
-                            This is applied to this browser only.
-                        </p>
-                    </div>
-                    <button id="secure_pwd_button" class="button button--primary justify-self-start secure-priv-key"
-                        onclick="openPopup('secure_pwd_popup')">Set
-                        password</button>
-                </div>
-            </section>
+            <section id="settings_page" class="inner-page hidden"></section>
         </article>
     </main>
     </main>
@@ -1147,8 +1118,8 @@
             switch (pageId) {
                 case 'landing':
                     renderElem(getRef('landing_tasks_wrapper'), render.displayTasks(params?.category, params?.search))
-                    if (subPageId1) {
-                        showTaskDetails(params.id)
+                    if (params?.taskId) {
+                        showTaskDetails(params.taskId)
                     } else {
                         hideTaskDetails()
                     }
@@ -1168,12 +1139,16 @@
                             renderedAssignedTasks = html`No task assigned yet.`;
                         }
                     }
+                    //creates cards for highest performing interns
+                    //sort interns earned points
+                    const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
+                    const routedToAllTasks = (subPageId1 && subPageId1 === 'all_tasks') || (!subPageId1 && typeOfUser !== 'intern');
                     renderElem(getRef('dashboard_page'), html`
                         <strip-select id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
                             ${typeOfUser === 'intern' ? html`<strip-option value="intern_view" selected>My tasks</strip-option>` : ''}
-                            <strip-option value="dashboard_tasks_wrapper" ?selected=${typeOfUser !== 'intern'}>All tasks</strip-option>
-                            <strip-option value="projects_wrapper">Projects</strip-option>
-                        ${floGlobals.isMobileView ? html`<strip-option value="best_interns_container">Leaderboard</strip-option>` : ''} 
+                            <strip-option value="dashboard_tasks_wrapper" ?selected=${routedToAllTasks}>All tasks</strip-option>
+                            <strip-option value="projects_wrapper" ?selected=${subPageId1 === 'projects'}>Projects</strip-option>
+                        ${floGlobals.isMobileView ? html`<strip-option value="intern_leaderboard_container">Leaderboard</strip-option>` : ''} 
                         </strip-select>
                         ${typeOfUser === 'intern' ? html`
                             <section id="intern_view" class="intern-option dashboard-view__item">
@@ -1181,60 +1156,25 @@
                             </section>
                         ` : ''}
                         <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column justify-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
-                        <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">
-                            <section id="pinned_project_section" class="w-100">
-                                <h4>Pinned</h4>
-                                <div id="pinned_projects" class="observe-empty-state"></div>
-                                <div class="empty-state">
-                                    <h4>There are no pinned projects</h4>
-                                    <p class="margin-block-0-5">
-                                        You can pin projects for easier monitoring by clicking on the 'pin' icon on project card.
-                                    </p>
-                                </div>
-                            </section>
-                            <div id="project_list_container" class=${`hidden`}>
-                                <div class="flex align-center space-between margin-bottom-0-5">
-                                    <h4>Projects</h4>
-                                    <a href="#/project_explorer" class="button open-first-project">All</a>
-                                </div>
-                                <div id="project_list" class="flex flex-direction-column gap-0-3"></div>
-                            </div>
-                        </div>
-                        <div id="best_interns_container" class="container-card dashboard-view__item hide-on-mobile">
+                        <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden"></div>
+                        <div id="intern_leaderboard_container" class="container-card dashboard-view__item hide-on-mobile">
                             <div class="container-header">
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" /> </svg>
                                 <h4>Leaderboard</h4>
                                 <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
                             </div>
-                            <div id="top_interns" class="observe-empty-state"></div>
+                            <div id="top_interns" class="observe-empty-state">${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}</div>
                             <div class="empty-state">
                                 <h4>There are no interns</h4>
                             </div>
                         </div>
                     `)
-                    render.dashProjects(getRef('pinned_projects'), pinnedProjects);
-                    // displays recent projects
-                    const unpinnedProjects = RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse()
-                    if (unpinnedProjects.length > 0) {
-                        getRef('project_list_container').classList.remove('hidden')
-                    } else {
-                        getRef('project_list_container').classList.add('hidden')
+                    renderElem(getRef('projects_wrapper'), render.dashProjects())
+                    if (params?.taskId) {
+                        showTaskDetails(params.taskId)
                     }
-                    render.dashProjects(getRef('project_list'), unpinnedProjects)
-                    delegate(getRef('top_interns'), 'click', '.intern-card', e => {
-                        showInternInfo(e.delegateTarget.dataset.internFloId)
-                    })
-                    //creates cards for highest performing interns
-                    //sort interns earned points
-                    const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => {
-                        return RIBC.getInternRating(b) - RIBC.getInternRating(a)
-                    });
-                    renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`);
-                    if (subPageId1) {
-                        showTaskDetails(params.id)
-                    } else {
+                    else
                         hideTaskDetails()
-                    }
                     break;
                 case 'updates_page': {
                     if (!getRef('updates_page__project_selector').children.length) {
@@ -1262,8 +1202,8 @@
                 } break;
                 case 'applications':
                     render.taskApplications()
-                    if (subPageId1) {
-                        showTaskDetails(params.id)
+                    if (params?.taskId) {
+                        showTaskDetails(params.taskId)
                     } else {
                         hideTaskDetails()
                     }
@@ -1300,91 +1240,103 @@
                 case 'admin_page':
                     if (typeOfUser !== 'admin') return;
                     //show projects
-                    render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
                     if (subPageId1) {
-                        if (params && RIBC.getProjectList().includes(params.id)) {
-                            const { id: projectCode, branch } = params
-                            renderAdminProjectView(projectCode)
-                            if (branch) {
-                                renderBranchTasks()
-                            }
-                            getRef('projects_container__left').classList.add('hide-on-mobile')
-                            getRef('project_editing_panel').classList.remove('hidden')
-                        }
-                    } else {
-                        getRef('projects_container__left').classList.remove('hide-on-mobile')
-                        getRef('project_editing_panel').classList.add('hidden')
-                        history.replaceState(null, '', '#/admin_page')
-                    }
-                    function removeRequest(requestCard) {
-                        requestCard.animate([
-                            {
-                                transform: 'translateX(0)',
-                                opacity: 1
-                            },
-                            {
-                                transform: 'translateX(-100%)',
-                                opacity: 0
-                            },
-                        ], {
-                            duration: floGlobals.prefersReducedMotion ? 0 : 300,
-                            easing: 'ease'
-                        }).onfinish = () => {
-                            requestCard.remove()
-                        }
-                    }
-                    render.internRequests()
-                    // accept task request
-                    delegate(getRef('requests_list'), 'click', '.accept-request', (e) => {
-                        getConfirmation('Are you sure you want to accept this request?').then(result => {
-                            if (result) {
-                                const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
-                                let result
-                                if (RIBC.getInternList())
-                                    result = RIBC.admin.processTaskRequest(vectorClock, true)
-                                if (result === 'Accepted') {
-                                    notify('Intern assigned, commit changes to make it permanent.', 'success')
-                                    removeRequest(e.delegateTarget.closest('.request-card'))
-                                }
-                            }
-                        })
-                    })
-                    // reject task request
-                    delegate(getRef('requests_list'), 'click', '.reject-request', (e) => {
-                        getConfirmation('Are you sure you want to reject this request?').then((result) => {
-                            if (result) {
-                                const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
-                                const type = e.delegateTarget.closest('.request-card').dataset.type
-                                let result
-                                if (type === 'task') {
-                                    result = RIBC.admin.processTaskRequest(vectorClock, false)
-                                    if (result === 'Rejected') {
-                                        notify('Request rejected', 'success')
-                                        removeRequest(e.delegateTarget.closest('.request-card'))
+                        getRef('admin_view_selector').value = ['projects', 'interns', 'task_display', 'requests'].findIndex(page => page === subPageId1)
+                        switch (subPageId1) {
+                            case 'projects':
+                                render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
+                                if (params && RIBC.getProjectList().includes(params.id)) {
+                                    const { id: projectCode, branch } = params
+                                    renderAdminProjectView(projectCode)
+                                    if (branch) {
+                                        renderBranchTasks()
                                     }
-                                } else if (type === 'internship') {
-                                    result = RIBC.admin.processInternRequest(vectorClock, false)
-                                    if (result === 'Rejected') {
-                                        notify('Request rejected', 'success')
-                                        removeRequest(e.delegateTarget.closest('.request-card'))
+                                    getRef('projects_container__left').classList.add('hide-on-mobile')
+                                    getRef('project_editing_panel').classList.remove('hidden')
+                                } else {
+                                    getRef('projects_container__left').classList.remove('hide-on-mobile')
+                                    getRef('project_editing_panel').classList.add('hidden')
+                                    history.replaceState(null, '', '#/admin_page/projects')
+                                }
+                                break;
+                            case 'interns':
+                                //show interns
+                                renderElem(getRef('admin_page__intern_list'), filterInterns(''))
+                                break;
+                            case 'requests':
+                                function removeRequest(requestCard) {
+                                    requestCard.animate([
+                                        {
+                                            transform: 'translateX(0)',
+                                            opacity: 1
+                                        },
+                                        {
+                                            transform: 'translateX(-100%)',
+                                            opacity: 0
+                                        },
+                                    ], {
+                                        duration: floGlobals.prefersReducedMotion ? 0 : 150,
+                                        easing: 'ease'
+                                    }).onfinish = () => {
+                                        requestCard.remove()
                                     }
                                 }
-                            }
-                        })
-                    })
-
-                    //show interns
-                    renderElem(getRef('admin_page__intern_list'), filterInterns(''))
-
-                    //show display tasks map
-                    render.taskDisplayMap()
-                    if (dragger)
-                        dragger.destroy()
-                    dragger = dragula([getRef('display_task_map'), getRef('all_tasks')])
-                    dragger.on('dragend', function (el, source) {
-                        const newOrder = Array.from(getRef('display_task_map').children).map(el => el.dataset.taskId)
-                        RIBC.admin.setDisplayedTasks(newOrder)
-                    });
+                                render.internRequests()
+                                // accept task request
+                                delegate(getRef('requests_list'), 'click', '.accept-request', (e) => {
+                                    getConfirmation('Are you sure you want to accept this request?').then(result => {
+                                        if (result) {
+                                            const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
+                                            let result
+                                            if (RIBC.getInternList())
+                                                result = RIBC.admin.processTaskRequest(vectorClock, true)
+                                            if (result === 'Accepted') {
+                                                notify('Intern assigned, commit changes to make it permanent.', 'success')
+                                                removeRequest(e.delegateTarget.closest('.request-card'))
+                                            }
+                                        }
+                                    })
+                                })
+                                // reject task request
+                                delegate(getRef('requests_list'), 'click', '.reject-request', (e) => {
+                                    getConfirmation('Are you sure you want to reject this request?').then((result) => {
+                                        if (result) {
+                                            const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
+                                            const type = e.delegateTarget.closest('.request-card').dataset.type
+                                            let result
+                                            if (type === 'task') {
+                                                result = RIBC.admin.processTaskRequest(vectorClock, false)
+                                                if (result === 'Rejected') {
+                                                    notify('Request rejected', 'success')
+                                                    removeRequest(e.delegateTarget.closest('.request-card'))
+                                                }
+                                            } else if (type === 'internship') {
+                                                result = RIBC.admin.processInternRequest(vectorClock, false)
+                                                if (result === 'Rejected') {
+                                                    notify('Request rejected', 'success')
+                                                    removeRequest(e.delegateTarget.closest('.request-card'))
+                                                }
+                                            }
+                                        }
+                                    })
+                                })
+                                break;
+                            case 'task_display':
+                                //show display tasks map
+                                render.taskDisplayMap()
+                                if (dragger)
+                                    dragger.destroy()
+                                dragger = dragula([getRef('display_task_map'), getRef('all_tasks')])
+                                dragger.on('dragend', function (el, source) {
+                                    const newOrder = Array.from(getRef('display_task_map').children).map(el => el.dataset.taskId)
+                                    RIBC.admin.setDisplayedTasks(newOrder)
+                                });
+                                break;
+                        }
+                    }
+                    break;
+                case 'settings_page':
+                    renderElem(getRef('settings_page'), render.settings())
                     break;
             }
             switch (appState.lastPage) {
@@ -1412,17 +1364,23 @@
                 let ogOverflow = getRef(pageId).parentNode.style.overflow
                 getRef(pageId).parentNode.style.overflow = 'hidden';
                 if (appState.lastPage) {
-                    getRef(appState.lastPage).animate(routingAnimation.out, { duration: floGlobals.prefersReducedMotion ? 0 : 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
+                    getRef(appState.lastPage).animate(routingAnimation.out, { duration: floGlobals.prefersReducedMotion ? 0 : 150, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
                         e.target.effect.target.classList.add('hidden')
                     }
                 }
                 getRef(pageId).classList.remove('hidden')
-                getRef(pageId).animate(routingAnimation.in, { duration: floGlobals.prefersReducedMotion ? 0 : 300, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
+                getRef(pageId).animate(routingAnimation.in, { duration: floGlobals.prefersReducedMotion ? 0 : 150, fill: 'forwards', easing: 'ease' }).onfinish = (e) => {
                     getRef(pageId).parentNode.style.overflow = ogOverflow;
                     switch (pageId) {
                         case 'sign_in':
                             getRef('private_key_field').focusIn()
                             break;
+                    }
+                    if (pageId !== 'dashboard_page') {
+                        renderElem(getRef('dashboard_page'), html``)
+                    }
+                    if (pageId !== 'settings_page') {
+                        renderElem(getRef('settings_page'), html``)
                     }
                 }
                 appState.lastPage = pageId
@@ -1738,12 +1696,12 @@
                     <li class=${`display-task`}>
                         <div class="flex align-center space-between">
                             <a class="display-task__category" href=${`#/landing?category=${category}`} title=${`See all ${floGlobals.taskCategories[category]} tasks`}>${floGlobals.taskCategories[category]}</a>
-                            <a href=${`#/${appState.currentPage}/task?id=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
+                            <a href=${`${location.hash.split('?')[0]}?taskId=${projectCode}_${branch}_${task}`} class="display-task__link button button--small button--colored">
                                 View details
                                 <svg class="icon" style="margin-right: -0.5rem" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
                             </a> 
                         </div>
-                        <a href=${`#/${appState.currentPage}/task?id=${projectCode}_${branch}_${task}`} class="display-task__link flex flex-direction-column gap-1">
+                        <a href=${`${location.hash.split('?')[0]}?taskId=${projectCode}_${branch}_${task}`} class="display-task__link flex flex-direction-column gap-1">
                             <h4 class="display-task__title">${title}</h4>
                             <div class="display-task__details flex flex-wrap gap-0-3">
                                 ${duration ? html`
@@ -1828,7 +1786,8 @@
             projectCard(projectCode, isAdmin = false, ref) {
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
-                return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${`#/${page}/project?id=${projectCode}&branch=mainLine`}>${projectName}</a>`
+                const projectLink = isAdmin ? `#/${page}/projects?id=${projectCode}&branch=mainLine` : `#/${page}/project?id=${projectCode}&branch=mainLine`
+                return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${projectLink}>${projectName}</a>`
             },
             taskCard(task) {
                 const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
@@ -1907,7 +1866,7 @@
                 const internPoints = RIBC.getInternRating(internFloId)
                 const initials = internName.split(' ').map(v => v.charAt(0)).join('');
                 return html`
-                    <label class="intern-card align-center interact" .dataset=${{ internFloId }} title="Intern Information">
+                    <label class="intern-card align-center interact" .dataset=${{ internFloId }} onclick=${showInternInfo} title="Intern Information">
                         ${selectable ? html`<input type="checkbox" class="intern-card__checkbox" value=${internFloId}>` : ''}
                         <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                         <div class="intern-card__name capitalize">${internName}</div>
@@ -2116,7 +2075,7 @@
                     </li>
                 `;
             },
-            dashProject(projectCode, ref) {
+            dashProject(projectCode) {
                 const { projectName } = RIBC.getProjectDetails(projectCode)
                 const projectMap = RIBC.getProjectMap(projectCode)
                 const projectTasks = []
@@ -2134,7 +2093,7 @@
                 } else {
                     pinIcon = html`<svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12ZM8.8 14L10 12.8V4H14V12.8L15.2 14H8.8Z"/> </svg>`;
                 }
-                return html.for(ref, projectCode)`
+                return html`
                     <div class="pinned-card" data-id=${projectCode}>
                         <div class="project-icon">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
@@ -2153,8 +2112,30 @@
                     </div>
                 `;
             },
-            dashProjects(where, projects) {
-                renderElem(where, html`${projects.map(project => render.dashProject(project, where))} `)
+            dashProjects() {
+                const unpinnedProjects = RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse().map(project => render.dashProject(project))
+                const renderedPinned = pinnedProjects.map(project => render.dashProject(project))
+                return html`
+                    <section id="pinned_project_section" class="w-100">
+                        <h4>Pinned</h4>
+                        <div id="pinned_projects" class="observe-empty-state">${renderedPinned}</div>
+                        <div class="empty-state">
+                            <h4>There are no pinned projects</h4>
+                            <p class="margin-block-0-5">
+                                You can pin projects for easier monitoring by clicking on the 'pin' icon on project card.
+                            </p>
+                        </div>
+                    </section>
+                    ${unpinnedProjects.length ? html`
+                        <div id="project_list_container">
+                            <div class="flex align-center space-between margin-bottom-0-5">
+                                <h4>Projects</h4>
+                                <a href="#/project_explorer" class="button open-first-project">All</a>
+                            </div>
+                            <div id="project_list" class="flex flex-direction-column gap-0-3">${unpinnedProjects}</div>
+                        </div>
+                    `: ''}
+                `;
             },
             internRequests() {
                 const requestCategories = new Set()
@@ -2208,7 +2189,7 @@
                     <li class=${`status-card ${status?.toLowerCase() || 'pending'}`}>
                         <time class="status-card__time capitalize">${getFormattedTime(timestamp, 'relative')}</time>
                         <p class="status-card__details">
-                            You applied for <a class="capitalize" href=${`#/${appState.currentPage}/task?id=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
+                            You applied for <a class="capitalize" href=${`${location.hash.split('?')[0]}?taskId=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
                         </p>
                         <div class="flex align-center status-card__status">
                             ${icon}
@@ -2249,6 +2230,29 @@
                         <p class="displayable-task__project">${RIBC.getProjectDetails(projectCode).projectName}</p>
                         <h4>${RIBC.getTaskDetails(projectCode, branch, task).title}</h4>
                     </li>
+                `;
+            },
+            settings() {
+                return html`
+                    <section class="grid gap-1 card">
+                        <div class="grid">
+                            <h4>FLO address</h4>
+                            <sm-copy id="user_flo_id" value=${myFloID}></sm-copy>
+                        </div>
+                        <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
+                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" /> </svg>
+                            Sign out
+                        </button>
+                    </section>
+                    <div class="grid gap-1 card">
+                        <div class="grid gap-0-5">
+                            <h4>Secure private key</h4>
+                            <p>
+                                You can set a password to secure your private key and use the password instead of private key. This is applied to this browser only.
+                            </p>
+                        </div>
+                        <button id="secure_pwd_button" class=${`button button--primary justify-self-start secure-priv-key ${floGlobals.isPrivKeySecured ? 'hidden' : ''}`} onclick="openPopup('secure_pwd_popup')">Set password</button>
+                    </div>
                 `;
             }
         }
@@ -2360,7 +2364,7 @@
         }
         function hideTaskDetails() {
             if (getRef('task_details').classList.contains('hidden')) return;
-            history.replaceState(null, null, `#/${appState.currentPage}`);
+            history.replaceState(null, null, location.hash.split('?')[0]);
             const animOptions = {
                 duration: floGlobals.prefersReducedMotion ? 0 : 300,
                 easing: 'ease',
@@ -2391,12 +2395,18 @@
 
         function handleDashboardViewChange(e) {
             document.querySelectorAll('.dashboard-view__item').forEach(item => {
-                if (item.id === 'best_interns_container')
+                if (item.id === 'intern_leaderboard_container')
                     item.classList.add('hide-on-mobile')
                 else
                     item.classList.add('hidden')
             })
             document.querySelector(`#${e.target.value}`).classList.remove('hide-on-mobile', 'hidden')
+            const dashboardPages = {
+                'intern_view': 'my_tasks',
+                'dashboard_tasks_wrapper': 'all_tasks',
+                'projects_wrapper': 'projects'
+            }
+            location.hash = `#/${appState.currentPage}/${dashboardPages[e.target.value]}`
         }
 
 
@@ -2455,7 +2465,8 @@
         })
 
         // opens a popup containing various intern information
-        function showInternInfo(internFloId) {
+        function showInternInfo(e) {
+            const internFloId = e.target.closest('.intern-card').dataset.internFloId;
             const internName = RIBC.getInternList()[internFloId]
             getRef('intern_info__initials').textContent = internName.split(' ').map(v => v.charAt(0)).join('');
             getRef('intern_info__initials').style.setProperty('--color', `var(${getInternColor(internFloId)})`)
@@ -2543,6 +2554,9 @@
             const newViewIndex = parseInt(e.target.value);
             showChildElement(getRef('admin_views'), newViewIndex, { entry: newViewIndex > currentViewIndex ? slideInLeft : slideInRight, exit: newViewIndex > currentViewIndex ? slideOutLeft : slideOutRight });
             currentViewIndex = parseInt(e.target.value);
+            const viewIds = ['projects', 'interns', 'task_display', 'requests']
+            location.hash = `#/${appState.currentPage}/${viewIds[e.target.value]}`
+            getRef('admin_page_nav_button').href = `#/${appState.currentPage}/${viewIds[e.target.value]}`
         })
 
         function toggleEditing(target) {
@@ -2947,14 +2961,7 @@
                 pinnedProjects.push(projectCode)
             }
             localStorage.setItem(`${myFloID}_pinned_projects`, pinnedProjects.join())
-            render.dashProjects(getRef('pinned_projects'), pinnedProjects)
-            const unpinnedProjects = RIBC.getProjectList().filter(project => !pinnedProjects.includes(project)).reverse()
-            if (unpinnedProjects.length > 0) {
-                getRef('project_list_container').classList.remove('hidden')
-            } else {
-                getRef('project_list_container').classList.add('hidden')
-            }
-            render.dashProjects(getRef('project_list'), unpinnedProjects)
+            renderElem(getRef('projects_wrapper'), render.dashProjects())
         }
 
         let sessionTaskRequests = new Set();
@@ -3012,13 +3019,6 @@
         function toggleUpdatesFilter() {
             getRef('update_filters_wrapper').classList.toggle('hide-on-mobile')
         }
-        // Event listeners
-        delegate(getRef('all_interns_page'), 'click', '.intern-card', e => {
-            showInternInfo(e.delegateTarget.dataset.internFloId)
-        })
-        delegate(getRef('admin_page__intern_list'), 'click', '.intern-card', e => {
-            showInternInfo(e.delegateTarget.dataset.internFloId)
-        })
 
         document.addEventListener('popupopened', e => {
             getRef('main_page').setAttribute('inert', '')
@@ -3048,7 +3048,8 @@
 
             let sortedProjectList = getSortedProjectList()
             document.querySelectorAll('.open-first-project').forEach(link => {
-                link.href = `${link.href}/project?id=${sortedProjectList[0]}&branch=mainLine`
+                const adminPage = link.id === 'admin_page_nav_button'
+                link.href = adminPage ? `${link.href}/projects?id=${sortedProjectList[0]}&branch=mainLine` : `${link.href}/project?id=${sortedProjectList[0]}&branch=mainLine`
             })
 
             pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
@@ -3125,7 +3126,6 @@
             delegate(getRef('explorer_task_list'), 'click', '.apply-button', e => {
                 requestForTask(e.delegateTarget)
             })
-            getRef('user_flo_id').value = myFloID;
         }
 
         let currentTaskId;
@@ -3245,13 +3245,11 @@
                         getRef('private_key_field').removeAttribute('data-private-key');
                         getRef('private_key_field').setAttribute('placeholder', 'Password');
                         getRef('private_key_field').customValidation = null
-                        getRef('secure_pwd_button').closest('.card').classList.add('hidden');
                     } else {
                         floGlobals.isPrivKeySecured = false;
                         getRef('private_key_field').dataset.privateKey = ''
                         getRef('private_key_field').setAttribute('placeholder', 'FLO private key');
                         getRef('private_key_field').customValidation = floCrypto.getPubKeyHex;
-                        getRef('secure_pwd_button').closest('.card').classList.remove('hidden');
                     }
                     if (!generalPages.find(page => window.location.hash.includes(page))) {
                         location.hash = floGlobals.isPrivKeySecured ? '#/sign_in' : `#/landing`;
