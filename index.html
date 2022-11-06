@@ -1329,6 +1329,7 @@
                                 dragger = dragula([getRef('display_task_map'), getRef('all_tasks')])
                                 dragger.on('dragend', function (el, source) {
                                     const newOrder = Array.from(getRef('display_task_map').children).map(el => el.dataset.taskId)
+                                    console.log(newOrder)
                                     RIBC.admin.setDisplayedTasks(newOrder)
                                 });
                                 break;
@@ -2756,7 +2757,7 @@
             getRef('task_list').lastElementChild.scrollIntoView({ behavior: "smooth" });
         }
         function commitToChanges() {
-            getConfirmation("Do you want to commit to changes?").then((result) => {
+            getConfirmation("Do you want to commit to changes?", { confirmText: 'Save' }).then((result) => {
                 if (result) {
                     RIBC.admin.updateObjects().then(res => {
                         notify('Changes committed.', 'success')
@@ -3022,14 +3023,14 @@
 
         document.addEventListener('popupopened', e => {
             getRef('main_page').setAttribute('inert', '')
-            switch (e.detail.popup.id) {
+            switch (e.target.id) {
                 case 'intern_list_popup':
                     renderElem(getRef('intern_list_container'), filterInterns('', { availableInternsOnly: true }))
                     break;
             }
         })
         document.addEventListener('popupclosed', e => {
-            switch (e.detail.popup.id) {
+            switch (e.target.id) {
                 case 'intern_list_popup':
                     renderElem(getRef('intern_list_container'), html``)
                     getRef('intern_search_field').value = ''

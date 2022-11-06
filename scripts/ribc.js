@@ -167,6 +167,12 @@
         _.internRating[floID] = 1
         return true;
     }
+    Admin.renameIntern = function (floID, newName) {
+        if (!(floID in _.internList))
+            return false;
+        _.internList[floID] = newName;
+        return true;
+    }
 
     Admin.removeIntern = function (floID) {
         if (!(floID in _.internList))
