@@ -44,7 +44,7 @@ body {
 }
 
 body[data-theme=dark] {
-  --accent-color: #6d83ff;
+  --accent-color: #92a2ff;
   --secondary-color: #d60739;
   --text-color: 200, 200, 200;
   --foreground-color: 27, 28, 29;
@@ -945,10 +945,12 @@ ul {
   color: rgba(var(--text-color), 0.8);
 }
 .nav-list__item--active {
-  color: var(--accent-color);
+  pointer-events: none;
+  background-color: rgba(var(--text-color), 1);
+  color: rgba(var(--foreground-color), 1);
 }
 .nav-list__item--active .icon {
-  fill: var(--accent-color);
+  fill: rgba(var(--foreground-color), 1);
 }
 .nav-list__item--active .icon--outlined {
   display: none;
@@ -1878,6 +1880,9 @@ input[type=date]:focus {
   .landing__card:first-of-type img {
     grid-area: 1/1/2/2;
   }
+  #main_nav {
+    justify-content: space-evenly;
+  }
   #task_search_input {
     width: 100%;
   }
@@ -1922,13 +1927,12 @@ input[type=date]:focus {
   .nav-list__item {
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     border-radius: 0.5rem;
     padding: 0.8rem;
     margin-bottom: 0.25rem;
     font-size: 1rem;
-  }
-  .nav-list__item--active {
-    background-color: rgba(var(--text-color), 0.06);
+    aspect-ratio: 1/1;
   }
   .nav-list__item .icon {
     margin-bottom: 0;
@@ -2069,6 +2073,10 @@ input[type=date]:focus {
   }
   #main_nav {
     align-items: flex-start;
+  }
+  .nav-list__item {
+    justify-content: flex-start;
+    aspect-ratio: initial;
   }
   .nav-list__item .icon {
     margin-right: 0.5rem;

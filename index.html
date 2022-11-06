@@ -568,30 +568,14 @@
             <div id="intern_info__initials" class="intern-card__initials"></div>
             <h3 id="intern_info__name">Intern name</h3>
             <sm-copy id="intern_info__flo_id"></sm-copy>
-            <div id="update_intern_score" class="flex align-center space-between">
-                <div class="flex align-center">
-                    <svg class="icon icon--star margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                        width="24" height="24">
-                        <path fill="none" d="M0 0h24v24H0z" />
-                        <path
-                            d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" />
-                    </svg>
-                    <h4 id="intern_info__score"></h4>
-                </div>
-                <div class="flex admin-option hidden">
-                    <button id="reduce_score_button" title="increase intern score" onclick="changeScore(-1)">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path d="M5 11h14v2H5z" />
-                        </svg>
-                    </button>
-                    <button id="increase_score_button" title="decrease intern score" onclick="changeScore(1)">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                            <path fill="none" d="M0 0h24v24H0z" />
-                            <path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z" />
-                        </svg>
-                    </button>
-                </div>
+            <div id="update_intern_score" class="flex align-center">
+                <svg class="icon icon--star margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path
+                        d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" />
+                </svg>
+                <h4 id="intern_info__score"></h4>
             </div>
         </section>
     </sm-popup>
@@ -1241,7 +1225,9 @@
                     if (typeOfUser !== 'admin') return;
                     //show projects
                     if (subPageId1) {
-                        getRef('admin_view_selector').value = ['projects', 'interns', 'task_display', 'requests'].findIndex(page => page === subPageId1)
+                        const viewIndex = ['projects', 'interns', 'task_display', 'requests'].findIndex(page => page === subPageId1);
+                        getRef('admin_view_selector').value = viewIndex;
+                        showChildElement(getRef('admin_views'), viewIndex);
                         switch (subPageId1) {
                             case 'projects':
                                 render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
@@ -2143,7 +2129,7 @@
                 const requestProjects = new Set()
                 const shouldFilterByProject = getRef('filter_requests_by_project').value !== 'all' ? getRef('filter_requests_by_project').value : false;
                 const shouldFilterByCategory = getRef('filter_requests_by_category').value !== 'all' ? getRef('filter_requests_by_category').value : false;
-                let requestCards = filterMap(RIBC.getTaskRequests().reverse(), (request) => {
+                const requestCards = filterMap(RIBC.getTaskRequests().reverse(), (request) => {
                     if (Array.isArray(request.details) || !request.details.taskId) return;
                     const [projectCode, branch, task] = request.details.taskId.split('_')
                     const taskDetails = RIBC.getTaskDetails(projectCode, branch, task)
@@ -2474,9 +2460,6 @@
             getRef('intern_info__name').textContent = internName;
             getRef('intern_info__flo_id').value = currentIntern = internFloId;
             getRef('intern_info__score').textContent = RIBC.getInternRating(internFloId); // points earned by intern
-            if (RIBC.getInternRating(internFloId) === 1) {
-                getRef('reduce_score_button').disabled = true;
-            }
             openPopup('intern_info_popup');
         }
 
@@ -2529,9 +2512,9 @@
             </p>`)
                 }
                 if (taskListContainer === 'task_list') {
-                    branchTasks.slice(4).filter(v => v).forEach((task) => tasks.push(render.taskListItem(task, getRef(taskListContainer))))
+                    branchTasks.slice(4).forEach((task) => tasks.push(render.taskListItem(task, getRef(taskListContainer))))
                 } else {
-                    branchTasks.slice(4).filter(v => v).forEach((task) => tasks.push(render.taskCard(task)))
+                    branchTasks.slice(4).forEach((task) => tasks.push(render.taskCard(task)))
                 }
                 renderElem(getRef(taskListContainer), html`${tasks}`)
             }
@@ -2728,8 +2711,7 @@
                                 <sm-input class="temp-task__duration flex-1" placeholder="Duration" type="number" style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);" animate>
                                     <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24" /> </g> <g> <g> <g> <path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z" /> </g> </g> </g> </svg>
                                 </sm-input>
-                                <sm-select class="temp-task__duration-type flex-shrink-0"
-                                    style="--select-border-radius: 0 0.5rem 0.5rem 0;">
+                                <sm-select class="temp-task__duration-type flex-shrink-0" style="--select-border-radius: 0 0.5rem 0.5rem 0;">
                                     <sm-option value="days" selected>Days</sm-option>
                                     <sm-option value="months">Months</sm-option>
                                 </sm-select>
@@ -2798,22 +2780,6 @@
 
         function renderAllInterns() {
             renderElem(getRef('all_interns_list'), filterInterns('', { sortByRating: true }))
-        }
-
-        function changeScore(scoreUpdate) {
-            let score = parseInt(getRef('intern_info__score').textContent)
-            score += scoreUpdate;
-            getRef('intern_info__score').textContent = score
-            document.querySelectorAll(`[data-intern-flo-id="${currentIntern}"]`).forEach(internCard => {
-                internCard.querySelector('.intern-card__score').textContent = score
-            })
-            if (score > 0) {
-                getRef('reduce_score_button').disabled = false;
-                RIBC.admin.updateInternRating(currentIntern, scoreUpdate)
-            }
-            if (score === 1 && scoreUpdate === -1) {
-                getRef('reduce_score_button').disabled = true;
-            }
         }
 
         function showNewBranchPopup() {
