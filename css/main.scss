@@ -73,9 +73,19 @@ body[data-theme="dark"] {
     filter: invert(1);
   }
 }
-.calistoga {
-  font-weight: 400;
-  font-family: "Calistoga", cursive;
+.overpass {
+  font-weight: 700;
+  font-family: "Overpass", sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-family: "Overpass", sans-serif;
 }
 p,
 strong {
@@ -278,10 +288,6 @@ cube-loader {
   --size: 1.2rem;
 }
 
-sm-form {
-  --gap: 1rem;
-}
-
 sm-select {
   --padding: 0.8rem;
   --min-width: fit-content;
@@ -295,30 +301,16 @@ sm-option {
   font-size: 0.9rem;
 }
 
-strip-select {
+sm-chips {
   --gap: 0.3rem;
 }
 
-strip-option {
+sm-chip {
   position: relative;
   font-size: 0.9rem;
   --border-radius: 0.3rem;
   user-select: none;
-}
-
-sm-button {
-  --border-radius: 0.3rem;
-
-  &[variant="primary"] {
-    .icon {
-      fill: rgba(var(--background-color), 1);
-    }
-  }
-
-  &[disabled] {
-    .icon {
-      fill: rgba(var(--text-color), 0.6);
-    }
+  &[selected] {
   }
 }
 
@@ -687,7 +679,6 @@ ul {
   flex-direction: column;
 
   h4 {
-    font-weight: 500;
     margin-bottom: 0.5rem;
   }
 
@@ -1122,10 +1113,6 @@ ul {
   background-color: #00c853 !important;
 }
 
-.task-title {
-  font-weight: 500;
-}
-
 .padding {
   padding: 1rem;
 }
@@ -1137,13 +1124,10 @@ ul {
   align-content: flex-start;
 }
 #dashboard_view_selector {
-  border-radius: 2rem;
+  border-radius: 0.5rem;
   margin: 0 auto;
   padding: 0.3rem;
   background-color: rgba(var(--text-color), 0.04);
-  strip-option {
-    --border-radius: 2rem;
-  }
 }
 .logo {
   display: flex;
@@ -1294,7 +1278,6 @@ ul {
 
 .container-header h4 {
   flex: 1;
-  font-weight: 500;
 }
 
 #intern_info_popup {
@@ -1339,7 +1322,6 @@ ul {
   align-items: center;
   user-select: none;
   font-size: 0.85rem;
-  font-weight: 500;
   &--active {
     opacity: 1;
     color: white;
@@ -1359,7 +1341,6 @@ ul {
   border-radius: 0.5rem;
   background: rgba(var(--foreground-color), 1);
   h4 {
-    font-weight: 500;
     margin: 0;
   }
   .task-title {
@@ -1801,7 +1782,6 @@ input[type="date"] {
     }
   }
   .project__title {
-    font-weight: 500;
     color: rgba(var(--text-color), 0.9);
     &:hover {
       color: var(--accent-color);

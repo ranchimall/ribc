@@ -72,9 +72,20 @@ body[data-theme=dark] ::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
-.calistoga {
-  font-weight: 400;
-  font-family: "Calistoga", cursive;
+.overpass {
+  font-weight: 700;
+  font-family: "Overpass", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-family: "Overpass", sans-serif;
 }
 
 p,
@@ -284,10 +295,6 @@ cube-loader {
   --size: 1.2rem;
 }
 
-sm-form {
-  --gap: 1rem;
-}
-
 sm-select {
   --padding: 0.8rem;
   --min-width: fit-content;
@@ -301,11 +308,11 @@ sm-option {
   font-size: 0.9rem;
 }
 
-strip-select {
+sm-chips {
   --gap: 0.3rem;
 }
 
-strip-option {
+sm-chip {
   position: relative;
   font-size: 0.9rem;
   --border-radius: 0.3rem;
@@ -313,17 +320,6 @@ strip-option {
      -moz-user-select: none;
           user-select: none;
 }
-
-sm-button {
-  --border-radius: 0.3rem;
-}
-sm-button[variant=primary] .icon {
-  fill: rgba(var(--background-color), 1);
-}
-sm-button[disabled] .icon {
-  fill: rgba(var(--text-color), 0.6);
-}
-
 ul {
   list-style: none;
 }
@@ -698,7 +694,6 @@ ul {
 }
 #confirmation_popup h4,
 #prompt_popup h4 {
-  font-weight: 500;
   margin-bottom: 0.5rem;
 }
 #confirmation_popup .flex,
@@ -1119,10 +1114,6 @@ ul {
   background-color: #00c853 !important;
 }
 
-.task-title {
-  font-weight: 500;
-}
-
 .padding {
   padding: 1rem;
 }
@@ -1135,13 +1126,10 @@ ul {
 }
 
 #dashboard_view_selector {
-  border-radius: 2rem;
+  border-radius: 0.5rem;
   margin: 0 auto;
   padding: 0.3rem;
   background-color: rgba(var(--text-color), 0.04);
-}
-#dashboard_view_selector strip-option {
-  --border-radius: 2rem;
 }
 
 .logo {
@@ -1299,7 +1287,6 @@ ul {
 
 .container-header h4 {
   flex: 1;
-  font-weight: 500;
 }
 
 #intern_info_popup .grid > * {
@@ -1346,7 +1333,6 @@ ul {
      -moz-user-select: none;
           user-select: none;
   font-size: 0.85rem;
-  font-weight: 500;
 }
 .branch-button--active {
   opacity: 1;
@@ -1368,7 +1354,6 @@ ul {
   background: rgba(var(--foreground-color), 1);
 }
 .task-list-item h4 {
-  font-weight: 500;
   margin: 0;
 }
 .task-list-item .task-title {
@@ -1827,7 +1812,6 @@ input[type=date]:focus {
   fill: var(--accent-color);
 }
 .pinned-card .project__title {
-  font-weight: 500;
   color: rgba(var(--text-color), 0.9);
 }
 .pinned-card .project__title:hover {

@@ -15,7 +15,7 @@
             floCloudAPI.requestObjectData("RIBC").then(result => {
                 if (!floGlobals.appObjects.RIBC)
                     floGlobals.appObjects.RIBC = {};
-                var objectList = ["projectMap", "projectBranches", "projectTaskDetails", "projectDetails", "internList", "internRating", "internsAssigned", "projectTaskStatus", "displayedTasks"]
+                var objectList = ["projectMap", "projectBranches", "projectTaskDetails", "projectDetails", "internList", "internRating", "internRecord", "internsAssigned", "projectTaskStatus", "displayedTasks"]
                 objectList.forEach(obj => {
                     if (!floGlobals.appObjects.RIBC[obj])
                         floGlobals.appObjects.RIBC[obj] = {};
@@ -103,6 +103,7 @@
     Ribc.getTaskStatus = (project, branch, task) => _.projectTaskStatus[project + "_" + branch + "_" + task];
     Ribc.getInternList = () => _.internList;
     Ribc.getInternRating = (floID) => _.internRating[floID];
+    Ribc.getInternRecord = (floID) => _.internRecord[floID];
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
     Ribc.getAllTasks = () => _.projectTaskDetails
     Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks || [];
@@ -164,7 +165,11 @@
         if (floID in _.internList)
             return false
         _.internList[floID] = internName
-        _.internRating[floID] = 1
+        _.internRating[floID] = 0
+        _.internRecord[floID] = {
+            active: true,
+            completedTasks: {},
+        }
         return true;
     }
     Admin.renameIntern = function (floID, newName) {
@@ -179,20 +184,38 @@
             return false
         delete _.internList[floID]
         delete _.internRating[floID]
+        delete _.internRecord[floID]
         for (const taskId in _.projectTaskDetails) {
             if (_.internsAssigned[taskId].includes(floID))
                 _.internsAssigned[taskId] = _.internsAssigned[taskId].filter(id => id != floID)
         }
         return true;
     }
-
-    Admin.updateInternRating = function (floID, change = 0) {
+    Admin.addTaskScore = function (floID, taskId, score, details = {}) {
         if (!(floID in _.internList))
-            return "Intern not found!"
-        _.internRating[floID] += change
-        return "Intern rating Updated";
+            return false;
+        if (!_.internRecord[floID])
+            _.internRecord[floID] = {
+                active: true,
+                completedTasks: {},
+            }
+        _.internRecord[floID].completedTasks[taskId] = {
+            score,
+            ...details
+        };
+        let totalScore = 0;
+        for (const taskId in _.internRecord[floID].completedTasks) {
+            totalScore += _.internRecord[floID].completedTasks[taskId].score;
+        }
+        _.internRating[floID] = totalScore;
+        return true;
     }
-
+    Admin.setInternStatus = function (floID, active = true) {
+        if (!(floID in _.internList))
+            return false;
+        _.internRecord[floID].active = active;
+        return true;
+    }
     Ribc.getTaskRequests = function (ignoreProcessed = true) {
         var taskRequests = Object.values(floGlobals.generalDataset("TaskRequests")).map(data => {
             return {

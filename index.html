@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Calistoga&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,700;0,900;1,700;1,900&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap"
         rel="stylesheet">
     <script src="components.js" defer></script>
     <script id="floGlobals">
@@ -93,7 +93,7 @@
         <div id="landing" class="grid inner-page hidden">
             <div class="gap-1-5 landing__card">
                 <div class="grid gap-1-5">
-                    <h1 class="calistoga" style="max-width: 26rem;">
+                    <h1 class="overpass" style="max-width: 26rem;">
                         Blockchain based <br> Internship Platform
                     </h1>
                     <div class="flex gap-0-3">
@@ -306,12 +306,12 @@
             <section id="dashboard_page" class="inner-page hidden"></section>
             <section id="admin_page" class="inner-page hidden">
                 <div id="admin_page__header" class="flex align-center space-between">
-                    <strip-select id="admin_view_selector">
-                        <strip-option value="0" selected>Projects</strip-option>
-                        <strip-option value="1">Interns</strip-option>
-                        <strip-option value="2">Task display</strip-option>
-                        <strip-option value="3">Requests</strip-option>
-                    </strip-select>
+                    <sm-chips id="admin_view_selector">
+                        <sm-chip value="projects" selected>Projects</sm-chip>
+                        <sm-chip value="interns">Interns</sm-chip>
+                        <sm-chip value="task_display">Task display</sm-chip>
+                        <sm-chip value="requests">Requests</sm-chip>
+                    </sm-chips>
                     <button class="button button--small button--primary admin-option" onclick="commitToChanges()">
                         <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                             width="24" height="24">
@@ -564,20 +564,7 @@
                 </svg>
             </button>
         </header>
-        <section class="grid gap-1">
-            <div id="intern_info__initials" class="intern-card__initials"></div>
-            <h3 id="intern_info__name">Intern name</h3>
-            <sm-copy id="intern_info__flo_id"></sm-copy>
-            <div id="update_intern_score" class="flex align-center">
-                <svg class="icon icon--star margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                    width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" />
-                </svg>
-                <h4 id="intern_info__score"></h4>
-            </div>
-        </section>
+        <section id="intern_info__wrapper" class="grid gap-1"></section>
     </sm-popup>
 
     <sm-popup id="intern_list_popup">
@@ -741,6 +728,20 @@
                 </button>
             </div>
         </sm-form>
+    </sm-popup>
+    <sm-popup id="rate_participants_popup">
+        <header slot="header" class="popup__header">
+            <button class="popup__header__close justify-self-start" onclick="closePopup()">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                    fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                </svg>
+            </button>
+            <h3>Rate participants</h3>
+        </header>
+        <div id="rating_wrapper" class="flex flex-direction-column gap-1-5"></div>
     </sm-popup>
     <sm-popup id="secure_pwd_popup">
         <header slot="header" class="popup__header">
@@ -1123,24 +1124,26 @@
                             renderedAssignedTasks = html`No task assigned yet.`;
                         }
                     }
+                    if (!subPageId1) {
+                        subPageId1 = typeOfUser === 'intern' ? 'my_tasks' : 'all_tasks'
+                    }
                     //creates cards for highest performing interns
                     //sort interns earned points
                     const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
-                    const routedToAllTasks = (subPageId1 && subPageId1 === 'all_tasks') || (!subPageId1 && typeOfUser !== 'intern');
                     renderElem(getRef('dashboard_page'), html`
-                        <strip-select id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
-                            ${typeOfUser === 'intern' ? html`<strip-option value="intern_view" selected>My tasks</strip-option>` : ''}
-                            <strip-option value="dashboard_tasks_wrapper" ?selected=${routedToAllTasks}>All tasks</strip-option>
-                            <strip-option value="projects_wrapper" ?selected=${subPageId1 === 'projects'}>Projects</strip-option>
-                        ${floGlobals.isMobileView ? html`<strip-option value="intern_leaderboard_container">Leaderboard</strip-option>` : ''} 
-                        </strip-select>
+                        <sm-chips id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
+                            ${typeOfUser === 'intern' ? html`<sm-chip value="intern_view" selected>My tasks</sm-chip>` : ''}
+                            <sm-chip value="dashboard_tasks_wrapper" ?selected=${subPageId1 === 'all_tasks'}>All tasks</sm-chip>
+                            <sm-chip value="projects_wrapper" ?selected=${subPageId1 === 'projects'}>Projects</sm-chip>
+                        ${floGlobals.isMobileView ? html`<sm-chip value="intern_leaderboard_container">Leaderboard</sm-chip>` : ''} 
+                        </sm-chips>
                         ${typeOfUser === 'intern' ? html`
                             <section id="intern_view" class="intern-option dashboard-view__item">
                                 <ul id="assigned_task_list">${renderedAssignedTasks}</ul>
                             </section>
                         ` : ''}
                         <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column justify-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
-                        <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden"></div>
+                        <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">${render.dashProjects()}</div>
                         <div id="intern_leaderboard_container" class="container-card dashboard-view__item hide-on-mobile">
                             <div class="container-header">
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 7a8 8 0 1 1 0 16 8 8 0 0 1 0-16zm0 3.5l-1.323 2.68-2.957.43 2.14 2.085-.505 2.946L12 17.25l2.645 1.39-.505-2.945 2.14-2.086-2.957-.43L12 10.5zm1-8.501L18 2v3l-1.363 1.138A9.935 9.935 0 0 0 13 5.049L13 2zm-2 0v3.05a9.935 9.935 0 0 0-3.636 1.088L6 5V2l5-.001z" /> </svg>
@@ -1153,11 +1156,10 @@
                             </div>
                         </div>
                     `)
-                    renderElem(getRef('projects_wrapper'), render.dashProjects())
+                    changeDashboardView(getKeyByValue(floGlobals.dashboardPages, subPageId1))
                     if (params?.taskId) {
                         showTaskDetails(params.taskId)
-                    }
-                    else
+                    } else
                         hideTaskDetails()
                     break;
                 case 'updates_page': {
@@ -1225,9 +1227,10 @@
                     if (typeOfUser !== 'admin') return;
                     //show projects
                     if (subPageId1) {
+                        getRef('admin_view_selector').value = subPageId1;
                         const viewIndex = ['projects', 'interns', 'task_display', 'requests'].findIndex(page => page === subPageId1);
-                        getRef('admin_view_selector').value = viewIndex;
-                        showChildElement(getRef('admin_views'), viewIndex);
+                        showChildElement(getRef('admin_views'), viewIndex, { entry: viewIndex > currentViewIndex ? slideInLeft : slideInRight, exit: viewIndex > currentViewIndex ? slideOutLeft : slideOutRight });
+                        currentViewIndex = viewIndex;
                         switch (subPageId1) {
                             case 'projects':
                                 render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
@@ -1243,6 +1246,7 @@
                                     getRef('projects_container__left').classList.remove('hide-on-mobile')
                                     getRef('project_editing_panel').classList.add('hidden')
                                     history.replaceState(null, '', '#/admin_page/projects')
+                                    getRef('admin_page__project_list').querySelectorAll('.project-card').forEach(project => project.classList.remove('project-card--active'))
                                 }
                                 break;
                             case 'interns':
@@ -1315,7 +1319,6 @@
                                 dragger = dragula([getRef('display_task_map'), getRef('all_tasks')])
                                 dragger.on('dragend', function (el, source) {
                                     const newOrder = Array.from(getRef('display_task_map').children).map(el => el.dataset.taskId)
-                                    console.log(newOrder)
                                     RIBC.admin.setDisplayedTasks(newOrder)
                                 });
                                 break;
@@ -1363,14 +1366,14 @@
                             getRef('private_key_field').focusIn()
                             break;
                     }
-                    if (pageId !== 'dashboard_page') {
+                    if (appState.lastPage === 'dashboard_page') {
                         renderElem(getRef('dashboard_page'), html``)
                     }
-                    if (pageId !== 'settings_page') {
+                    if (appState.lastPage === 'settings_page') {
                         renderElem(getRef('settings_page'), html``)
                     }
+                    appState.lastPage = pageId
                 }
-                appState.lastPage = pageId
             }
         }
         // class based lazy loading
@@ -1627,8 +1630,9 @@
                             parent.style.overflow = ''
                         }
                         parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
-                        if (entry)
+                        if (entry) {
                             parent.children[index].animate(entry, animOptions).onfinish = () => resolve()
+                        }
                     } else {
                         visibleElement.classList.add(mobileView ? 'hide-on-mobile' : 'hidden')
                         parent.children[index].classList.remove(mobileView ? 'hide-on-mobile' : 'hidden')
@@ -1739,9 +1743,9 @@
                 // render categories
                 let renderedCategories = []
                 if (availableCategories.size > 1) {
-                    renderedCategories = [html`<strip-option value='all' ?selected=${category === 'all'}>All</strip-option>`];
+                    renderedCategories = [html`<sm-chip value='all' ?selected=${category === 'all'}>All</sm-chip>`];
                     availableCategories.forEach(categoryID => {
-                        renderedCategories.push(html`<strip-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</strip-option>`)
+                        renderedCategories.push(html`<sm-chip value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</sm-chip>`)
                     })
                 }
                 setTimeout(() => {
@@ -1760,7 +1764,7 @@
                                 </sm-input>
                             `: ''}
                         </div>
-                        ${availableCategories.size > 1 ? html`<strip-select id="task_category_selector" onchange='filterTasks()'>${renderedCategories}</strip-select>` : ''}
+                        ${availableCategories.size > 1 ? html`<sm-chips id="task_category_selector" onchange='filterTasks()'>${renderedCategories}</sm-chips>` : ''}
                     </div>
                     <div class="grid gap-1">
                         <ul id="display_task_list" class="flex flex-direction-column gap-0-5 observe-empty-state">${renderedTasks}</ul>
@@ -2377,23 +2381,29 @@
         }
 
         let pinnedProjects = [];
-        let currentIntern;
         let typeOfUser = 'general';
-
+        floGlobals.dashboardPages = {
+            'intern_view': 'my_tasks',
+            'dashboard_tasks_wrapper': 'all_tasks',
+            'projects_wrapper': 'projects',
+            'intern_leaderboard_container': 'leaderboard',
+        }
+        // find key of the object by value
+        function getKeyByValue(object, value) {
+            return Object.keys(object).find(key => object[key] === value);
+        }
         function handleDashboardViewChange(e) {
+            changeDashboardView(e.target.value)
+            location.hash = `#/${appState.currentPage}/${floGlobals.dashboardPages[e.target.value]}`
+        }
+        function changeDashboardView(viewId = 'dashboard_tasks_wrapper') {
             document.querySelectorAll('.dashboard-view__item').forEach(item => {
                 if (item.id === 'intern_leaderboard_container')
                     item.classList.add('hide-on-mobile')
                 else
                     item.classList.add('hidden')
             })
-            document.querySelector(`#${e.target.value}`).classList.remove('hide-on-mobile', 'hidden')
-            const dashboardPages = {
-                'intern_view': 'my_tasks',
-                'dashboard_tasks_wrapper': 'all_tasks',
-                'projects_wrapper': 'projects'
-            }
-            location.hash = `#/${appState.currentPage}/${dashboardPages[e.target.value]}`
+            document.querySelector(`#${viewId}`).classList.remove('hide-on-mobile', 'hidden')
         }
 
 
@@ -2455,12 +2465,30 @@
         function showInternInfo(e) {
             const internFloId = e.target.closest('.intern-card').dataset.internFloId;
             const internName = RIBC.getInternList()[internFloId]
-            getRef('intern_info__initials').textContent = internName.split(' ').map(v => v.charAt(0)).join('');
-            getRef('intern_info__initials').style.setProperty('--color', `var(${getInternColor(internFloId)})`)
-            getRef('intern_info__name').textContent = internName;
-            getRef('intern_info__flo_id').value = currentIntern = internFloId;
-            getRef('intern_info__score').textContent = RIBC.getInternRating(internFloId); // points earned by intern
+            const { completedTasks = [], active = true } = RIBC.getInternRecord(internFloId) || {}
+            renderElem(getRef('intern_info__wrapper'), html`
+                <div id="intern_info__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${internName.split(' ').map(v => v.charAt(0)).join('')}</div>
+                <h3 id="intern_info__name">${internName}</h3>
+                <sm-copy id="intern_info__flo_id" value=${internFloId}></sm-copy>
+                <div id="update_intern_score" class="flex align-center">
+                    <svg class="icon icon--star margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
+                    <h4 id="intern_info__score">0</h4>
+                </div>
+            `)
             openPopup('intern_info_popup');
+            // animate number counting up within 1s from 0 to the intern's score
+            const scoreElem = getRef('intern_info__score')
+            const finalScore = RIBC.getInternRating(internFloId)
+            let score = 0;
+            const scoreInterval = setInterval(incrementNumber, 600 / finalScore)
+            function incrementNumber() {
+                scoreElem.textContent = score;
+                score++;
+                if (score > finalScore) {
+                    clearInterval(scoreInterval)
+                }
+            }
+            incrementNumber()
         }
 
         // opens a popup containing various project information
@@ -2535,12 +2563,8 @@
 
         let currentViewIndex = 0;
         getRef('admin_view_selector').addEventListener('change', (e) => {
-            const newViewIndex = parseInt(e.target.value);
-            showChildElement(getRef('admin_views'), newViewIndex, { entry: newViewIndex > currentViewIndex ? slideInLeft : slideInRight, exit: newViewIndex > currentViewIndex ? slideOutLeft : slideOutRight });
-            currentViewIndex = parseInt(e.target.value);
-            const viewIds = ['projects', 'interns', 'task_display', 'requests']
-            location.hash = `#/${appState.currentPage}/${viewIds[e.target.value]}`
-            getRef('admin_page_nav_button').href = `#/${appState.currentPage}/${viewIds[e.target.value]}`
+            location.hash = `#/${appState.currentPage}/${e.target.value}`
+            getRef('admin_page_nav_button').href = `#/${appState.currentPage}/${e.target.value}`
         })
 
         function toggleEditing(target) {
@@ -2555,17 +2579,63 @@
                 return '₹0';
             return amount.toLocaleString(currency === 'inr' ? `en-IN` : 'en-US', { style: 'currency', currency, maximumFractionDigits: 0 })
         }
-        delegate(getRef('task_list'), 'change', 'sm-checkbox', (e) => {
+        delegate(getRef('task_list'), 'mousedown', 'sm-checkbox', (e) => {
+            e.preventDefault();
             currentTask = e.target.closest('.task-list-item');
-            const taskStatus = e.target.checked ? 'completed' : 'incomplete'
-            RIBC.admin.putTaskStatus(taskStatus, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
-            if (e.target.checked) {
-                // remove task from displayed list
-                const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
-                const filteredTasks = RIBC.getDisplayedTasks().filter(task => task !== taskId)
-                RIBC.admin.setDisplayedTasks(filteredTasks)
+            if (e.delegateTarget.checked) {
+                getConfirmation('Mark this task as incomplete?', { confirmText: 'Mark as incomplete' }).then(res => {
+                    if (res) {
+                        RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+                        currentTask.querySelector('sm-checkbox').checked = false;
+                        // TODO: remove task scores from intern rating
+                    }
+                })
+            } else {
+                const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId);
+                renderElem(getRef('rating_wrapper'), html`
+                    <h4>${currentTask.querySelector('.task-title').textContent}</h4>
+                    <sm-form>
+                        ${assignedInterns.map((intern, index) => html`
+                            <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${intern}>
+                                <h4>${RIBC.getInternList()[intern]}</h4>  
+                                <div class="flex gap-0-5">
+                                    <sm-input type="number" min="0" max="50" class="flex-1" placeholder="Rate out of 50" error-text="Points must be between 0-50" required></sm-input>
+                                    <input class="flex-1" type="date" value=${formatDate(new Date())} placeholder="Completion date" aria-label="Set date of completion" required>
+                                </div>
+                            </div>
+                        `)}
+                        <button id="rate_participants_btn" class="button button--primary" type="submit" disabled onclick="rateParticipants()"> Rate </button>
+                    </sm-form>
+                `)
+                openPopup('rate_participants_popup')
             }
         })
+        // format unix timestamp to yyyy-mm-dd
+        function formatDate(unixTimestamp) {
+            const date = new Date(unixTimestamp);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+        }
+        function markTaskAsCompleted() {
+            RIBC.admin.putTaskStatus('completed', appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+            // remove task from displayed list
+            const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
+            const filteredTasks = RIBC.getDisplayedTasks().filter(task => task !== taskId)
+        }
+        function rateParticipants() {
+            document.querySelectorAll('.rating-part').forEach((ratingPart) => {
+                const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
+                const internId = ratingPart.dataset.internId;
+                const score = 50 + parseInt(ratingPart.querySelector('sm-input').value.trim());
+                const completionDate = ratingPart.querySelector('input').value;
+                RIBC.admin.addTaskScore(internId, taskId, score, { completionDate })
+            })
+            markTaskAsCompleted()
+            closePopup()
+            currentTask.querySelector('sm-checkbox').checked = true;
+        }
         delegate(getRef('task_list'), 'change', 'sm-select', (e) => {
             currentTask = e.target.closest('.task-list-item');
             if (!currentTask) return;
@@ -2580,16 +2650,14 @@
             if (!currentTask) return;
             const ogTaskDetails = RIBC.getTaskDetails(appState.params.id, appState.params.branch, currentTask.dataset.taskId)
             const newTaskDetails = {}
-            let valid = false;
             if (e.target.isContentEditable) {
                 e.target.contentEditable = false
                 newTaskDetails[e.target.dataset.editField] = DOMPurify.sanitize(e.target.innerHTML.trim())
-                valid = true;
             } else if (e.target.closest('sm-input')) {
                 newTaskDetails[e.target.dataset.editField] = parseInt(e.target.value)
-                valid = true;
+            } else {
+                return;
             }
-            if (!valid) return;
             if (ogTaskDetails[e.target.dataset.editField] !== newTaskDetails[e.target.dataset.editField]) {
                 RIBC.admin.editTaskDetails(newTaskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                 notify('Changes saved locally, commit the changes to make them permanent', 'success')
@@ -3002,6 +3070,9 @@
                     getRef('intern_search_field').value = ''
                     floGlobals.selectedInterns.clear()
                     getRef('assign_interns_button').disabled = true
+                    break;
+                case 'rate_participants_popup':
+                    renderElem(getRef('rating_wrapper'), html``)
                     break;
             }
             if (popupStack.items.length === 0) {
