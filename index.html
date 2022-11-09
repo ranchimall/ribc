@@ -426,17 +426,7 @@
                         </section>
                     </section>
                     <section id="interns_container" class="flex flex-direction-column hidden">
-                        <button class="button justify-content-start margin-block-0-5"
-                            onclick="openPopup('add_intern_popup')">
-                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                width="24" height="24">
-                                <path fill="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M14 14.252v2.09A6 6 0 0 0 6 22l-2-.001a8 8 0 0 1 10-7.748zM12 13c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm6 6v-3h2v3h3v2h-3v3h-2v-3h-3v-2h3z" />
-                            </svg>
-                            Add intern
-                        </button>
-                        <ul id="admin_page__intern_list" class="list-container observe-empty-state"></ul>
+                        <ul id="admin_page__intern_list" class="grid observe-empty-state"></ul>
                         <h4 class="empty-state">No interns added</h4>
                     </section>
                     <section id="task_display_container" class="flex hidden">
@@ -1255,7 +1245,7 @@
                                 break;
                             case 'interns':
                                 //show interns
-                                renderElem(getRef('admin_page__intern_list'), filterInterns(''))
+                                render.adminInterns()
                                 break;
                             case 'requests':
                                 function removeRequest(requestCard) {
@@ -1866,10 +1856,17 @@
                         <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                         <div class="intern-card__name capitalize">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
-                            <h4 class="intern-card__score">${internPoints}</h4>
+                            <b class="intern-card__score">${internPoints}</b>
                             <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
                         </div>
                     </label>`;
+            },
+            adminInterns() {
+                const addInternButton = html`<button class="button button--colored" onclick="openPopup('add_intern_popup')">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                    Add intern
+                </button>`
+                renderElem(getRef('admin_page__intern_list'), html`${[addInternButton, filterInterns('')]}`)
             },
             internUpdateCard(update) {
                 const { floID, time, note, update: { projectCode, branch, task, description, link } } = update
@@ -2461,8 +2458,8 @@
             let internName = getRef('intern_name_field').value.trim(),
                 internFloId = getRef('intern_flo_id_field').value.trim();
             if (RIBC.admin.addIntern(internFloId, internName)) {
-                renderElem(getRef('admin_page__intern_list'), filterInterns(''))
                 closePopup();
+                render.adminInterns();
                 notify(`${internName} added as an intern.`, 'success')
             }
         }

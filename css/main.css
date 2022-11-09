@@ -137,12 +137,13 @@ button,
   color: inherit;
   -webkit-tap-highlight-color: transparent;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: inherit;
   font-weight: 500;
   white-space: nowrap;
   padding: 0.8rem;
   border-radius: 0.3rem;
   justify-content: center;
+  text-transform: capitalize;
 }
 button:focus-visible,
 .button:focus-visible {
@@ -1144,6 +1145,18 @@ ul {
   color: rgba(var(--text-color), 0.8);
 }
 
+#all_interns_list,
+#admin_page__intern_list {
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+#all_interns_list .intern-card,
+#admin_page__intern_list .intern-card {
+  margin: 0;
+  gap: 1rem;
+  background-color: rgba(var(--foreground-color), 1);
+}
+
 .intern-card {
   display: flex;
   padding: 1rem;
@@ -1154,7 +1167,6 @@ ul {
           user-select: none;
   padding: 0.8rem 1rem;
   gap: 0.8rem;
-  cursor: pointer;
 }
 .intern-card input {
   height: 1.3em;
@@ -1335,7 +1347,6 @@ ul {
   stroke-dasharray: 400;
   stroke-dashoffset: var(--progress, 400);
   transform: rotate(-90deg);
-  stroke-linecap: round;
   transition: stroke-dashoffset 1s;
 }
 .stat__count {
@@ -1685,6 +1696,23 @@ ul {
   overflow-y: auto;
   padding-bottom: 2rem;
   flex: 1;
+}
+
+#admin_page__intern_list {
+  display: grid;
+  padding: 0 1rem;
+}
+#admin_page__intern_list .button {
+  justify-content: flex-start;
+  border-radius: 0.5rem;
+}
+#admin_page__intern_list .button .icon {
+  padding: 0.6rem;
+  height: 2.6rem;
+  width: 2.6rem;
+  background-color: rgba(var(--text-color), 0.04);
+  border-radius: 3rem;
+  margin-right: 1rem;
 }
 
 #update_of_project {
@@ -2087,16 +2115,6 @@ input[type=date]:focus {
     height: 100%;
     overflow-y: auto;
     grid-area: updates;
-  }
-  #all_interns_list {
-    gap: 0.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-  }
-  #all_interns_list .intern-card {
-    margin: 0;
-    gap: 1rem;
-    border-radius: 0.5rem;
-    background-color: rgba(var(--foreground-color), 1);
   }
   #intern_list_popup {
     --height: 80vh;

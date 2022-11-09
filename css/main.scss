@@ -125,12 +125,13 @@ button,
   color: inherit;
   -webkit-tap-highlight-color: transparent;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: inherit;
   font-weight: 500;
   white-space: nowrap;
   padding: 0.8rem;
   border-radius: 0.3rem;
   justify-content: center;
+  text-transform: capitalize;
 
   &:focus-visible {
     outline: var(--accent-color) solid medium;
@@ -1136,6 +1137,17 @@ ul {
   color: rgba(var(--text-color), 0.8);
 }
 
+#all_interns_list,
+#admin_page__intern_list {
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  .intern-card {
+    margin: 0;
+    gap: 1rem;
+    background-color: rgba(var(--foreground-color), 1);
+  }
+}
+
 .intern-card {
   display: flex;
   padding: 1rem;
@@ -1144,7 +1156,6 @@ ul {
   user-select: none;
   padding: 0.8rem 1rem;
   gap: 0.8rem;
-  cursor: pointer;
   input {
     height: 1.3em;
     width: 1.3em;
@@ -1271,9 +1282,6 @@ ul {
 .container-header h4 {
   flex: 1;
 }
-
-#intern_info_popup {
-}
 #intern_info__initials {
   position: relative;
   height: 4rem;
@@ -1318,7 +1326,6 @@ ul {
     stroke-dasharray: 400;
     stroke-dashoffset: var(--progress, 400);
     transform: rotate(-90deg);
-    stroke-linecap: round;
     transition: stroke-dashoffset 1s;
   }
   &__count {
@@ -1655,6 +1662,22 @@ ul {
   overflow-y: auto;
   padding-bottom: 2rem;
   flex: 1;
+}
+#admin_page__intern_list {
+  display: grid;
+  padding: 0 1rem;
+  .button {
+    justify-content: flex-start;
+    border-radius: 0.5rem;
+    .icon {
+      padding: 0.6rem;
+      height: 2.6rem;
+      width: 2.6rem;
+      background-color: rgba(var(--text-color), 0.04);
+      border-radius: 3rem;
+      margin-right: 1rem;
+    }
+  }
 }
 
 #update_of_project {
@@ -2068,16 +2091,6 @@ input[type="date"] {
     height: 100%;
     overflow-y: auto;
     grid-area: updates;
-  }
-  #all_interns_list {
-    gap: 0.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-    .intern-card {
-      margin: 0;
-      gap: 1rem;
-      border-radius: 0.5rem;
-      background-color: rgba(var(--foreground-color), 1);
-    }
   }
   #intern_list_popup {
     --height: 80vh;
