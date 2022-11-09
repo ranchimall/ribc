@@ -191,7 +191,7 @@
         }
         return true;
     }
-    Admin.addTaskScore = function (floID, taskId, score, details = {}) {
+    Admin.addTaskScore = function (floID, taskId, points, details = {}) {
         if (!(floID in _.internList))
             return false;
         if (!_.internRecord[floID])
@@ -200,14 +200,14 @@
                 completedTasks: {},
             }
         _.internRecord[floID].completedTasks[taskId] = {
-            score,
+            points,
             ...details
         };
         let totalScore = 0;
         for (const taskId in _.internRecord[floID].completedTasks) {
-            totalScore += _.internRecord[floID].completedTasks[taskId].score;
+            totalScore += _.internRecord[floID].completedTasks[taskId].points;
         }
-        _.internRating[floID] = totalScore;
+        _.internRating[floID] = parseInt(totalScore / (Object.keys(_.internRecord[floID].completedTasks).length || 1));
         return true;
     }
     Admin.setInternStatus = function (floID, active = true) {
