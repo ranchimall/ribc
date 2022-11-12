@@ -22,18 +22,18 @@
             application: "InternManage"
         }
     </script>
-    <script src="scripts/lib.min.js"></script>
-    <script src="scripts/floCrypto.min.js"></script>
-    <script src="scripts/floBlockchainAPI.min.js"></script>
-    <script src="scripts/compactIDB.min.js"></script>
-    <script src="scripts/floCloudAPI.min.js"></script>
-    <script src="scripts/floDapps.min.js"></script>
+    <script src="scripts/lib.min.js" defer></script>
+    <script src="scripts/floCrypto.min.js" defer></script>
+    <script src="scripts/floBlockchainAPI.min.js" defer></script>
+    <script src="scripts/compactIDB.min.js" defer></script>
+    <script src="scripts/floCloudAPI.min.js" defer></script>
+    <script src="scripts/floDapps.min.js" defer></script>
     <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"
         integrity="sha512-/hVAZO5POxCKdZMSLefw30xEVwjm94PAV9ynjskGbIpBvHO9EBplEcdUlBdCKutpZsF+La8Ag4gNrG0gAOn3Ig=="
         crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-    <script src="scripts/ribc.min.js"></script>
+    <script src="scripts/ribc.min.js" defer></script>
     <script id="onLoadStartUp">
         function onLoadStartUp() {
             routeTo('loading')
@@ -1818,10 +1818,9 @@
                                 ${applyButton}
                             </div>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
-                            <details>
-                                <summary class="task-details__summary">View task details</summary>
+                            <collapsed-text>
                                 ${linkifyDescription}
-                            </details>
+                            </collapsed-text>
                             <div class="timeline-task__details flex flex-wrap gap-0-3">
                                 ${duration ? html`
                                     <div class="display-task__detail">
@@ -1941,18 +1940,15 @@
                         })
                     }
                 })
-                const descriptionOptions = {
-                    className: 'task-description ws-pre-line wrap-around',
-                    innerHTML: DOMPurify.sanitize(description)
-                }
                 if (status === 'incomplete') {
-                    descriptionOptions.attributes = {
-                        'data-editable': '',
-                        'data-edit-field': 'description',
-                    }
-                }
-                const taskDescription = createElement('p', descriptionOptions)
-                if (status === 'incomplete') {
+                    const taskDescription = createElement('p', {
+                        className: 'task-description ws-pre-line wrap-around',
+                        attributes: {
+                            'data-editable': '',
+                            'data-edit-field': 'description',
+                        },
+                        innerHTML: DOMPurify.sanitize(description)
+                    })
                     const categories = [];
                     for (const categoryID in floGlobals.taskCategories) {
                         categories.push(html`<sm-option value=${categoryID} ?selected=${categoryID === category}>${floGlobals.taskCategories[categoryID]}</sm-option>`)
@@ -2003,6 +1999,10 @@
                     </li>
                 `;
                 } else {
+                    const taskDescription = createElement('p', {
+                        className: 'task-description ws-pre-line wrap-around',
+                        innerHTML: DOMPurify.sanitize(linkify(description))
+                    })
                     return html`
                     <li class=${`admin-task ${status}`} .dataset=${{ taskId: task }}>
                         <div class="flex align-center gap-0-3 space-between">
@@ -2016,8 +2016,7 @@
                         <div class="assigned-interns">
                             ${assignedInternsCards}
                         </div>
-                        <details>
-                            <summary>View details</summary>
+                        <collapsed-text>
                             ${taskDescription}
                             ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
                             <div class="display-task__details flex flex-wrap gap-0-3 margin-top-1">
@@ -2038,7 +2037,7 @@
                                     <span class="display-task__detail__value">${reward}</span>
                                 </div>
                             </div>
-                        </details>
+                        </collapsed-text>
                     </li>
                 `;
                 }

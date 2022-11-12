@@ -246,27 +246,6 @@ sm-textarea {
   --max-height: 32ch;
 }
 
-sm-button {
-  --padding: 0.8rem;
-
-  &[variant="primary"] {
-    .icon {
-      fill: rgba(var(--background-color), 1);
-    }
-  }
-
-  &[disabled] {
-    .icon {
-      fill: rgba(var(--text-color), 0.6);
-    }
-  }
-
-  &.danger {
-    --background: var(--danger-color);
-    color: rgba(var(--background-color), 1);
-  }
-}
-
 sm-spinner {
   --size: 1.5rem;
   --stroke-width: 0.1rem;
@@ -297,8 +276,10 @@ sm-chip {
   font-size: 0.9rem;
   --border-radius: 0.3rem;
   user-select: none;
-  &[selected] {
-  }
+}
+
+collapsed-text {
+  --button-background: rgba(var(--foreground-color), 1);
 }
 
 ul {
@@ -645,11 +626,10 @@ ul {
   display: grid;
   text-align: center;
   align-items: center;
-
+  justify-items: center;
   & > * {
     grid-area: 1/1/2/2;
   }
-
   button {
     z-index: 1;
   }
@@ -1200,9 +1180,6 @@ ul {
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
   border: solid rgba(var(--text-color), 0.1) thin;
-  sm-button {
-    --padding: 0.5rem 0.8rem;
-  }
 }
 
 .request-card__description {
