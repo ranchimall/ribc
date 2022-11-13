@@ -3211,6 +3211,11 @@
                 case 'rate_participants_popup':
                     renderElem(getRef('rating_wrapper'), html``)
                     break;
+                case 'intern_info_popup':
+                    getRef('intern_info__name').contentEditable = false
+                    renderElem(getRef('intern_info__name'), html`${floGlobals.tempEditableContent}`)
+                    getRef('intern_info__name').nextElementSibling.textContent = 'Edit'
+                    break;
             }
             if (popupStack.items.length === 0) {
                 getRef('main_page').removeAttribute('inert')
