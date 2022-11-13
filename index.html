@@ -806,16 +806,14 @@
                     count: 1,
                     ref: null,
                 };
+            }
+            if (domRefs[elementId].count < 3) {
+                domRefs[elementId].count += 1;
                 return document.getElementById(elementId);
             } else {
-                if (domRefs[elementId].count < 3) {
-                    domRefs[elementId].count = domRefs[elementId].count + 1;
-                    return document.getElementById(elementId);
-                } else {
-                    if (!domRefs[elementId].ref)
-                        domRefs[elementId].ref = document.getElementById(elementId);
-                    return domRefs[elementId].ref;
-                }
+                if (!domRefs[elementId]?.ref?.deref())
+                    domRefs[elementId].ref = new WeakRef(document.getElementById(elementId));
+                return domRefs[elementId].ref.deref();
             }
         }
 
@@ -1113,7 +1111,7 @@
                     break;
                 case 'dashboard_page':
                     let renderedAssignedTasks
-                    if (typeOfUser === 'intern') {
+                    if (userType === 'intern') {
                         // Render assigned task cards
                         if (floGlobals.assignedTasks.size) {
                             renderedAssignedTasks = filterMap(floGlobals.assignedTasks, id => render.internTaskCard(id))
@@ -1122,24 +1120,24 @@
                         }
                     }
                     if (!subPageId1) {
-                        subPageId1 = typeOfUser === 'intern' ? 'my_tasks' : 'all_tasks'
+                        subPageId1 = userType === 'intern' ? 'my_tasks' : 'all_tasks'
                     }
                     //creates cards for highest performing interns
                     //sort interns earned points
                     const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
                     renderElem(getRef('dashboard_page'), html`
                         <sm-chips id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
-                            ${typeOfUser === 'intern' ? html`<sm-chip value="intern_view" selected>My tasks</sm-chip>` : ''}
+                            ${userType === 'intern' ? html`<sm-chip value="intern_view" selected>My tasks</sm-chip>` : ''}
                             <sm-chip value="dashboard_tasks_wrapper" ?selected=${subPageId1 === 'all_tasks'}>All tasks</sm-chip>
                             <sm-chip value="projects_wrapper" ?selected=${subPageId1 === 'projects'}>Projects</sm-chip>
                         ${floGlobals.isMobileView ? html`<sm-chip value="intern_leaderboard_container">Leaderboard</sm-chip>` : ''} 
                         </sm-chips>
-                        ${typeOfUser === 'intern' ? html`
+                        ${userType === 'intern' ? html`
                             <section id="intern_view" class="intern-option dashboard-view__item">
                                 <ul id="assigned_task_list">${renderedAssignedTasks}</ul>
                             </section>
                         ` : ''}
-                        <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column justify-content-center dashboard-view__item ${typeOfUser === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
+                        <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column justify-content-center dashboard-view__item ${userType === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
                         <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">${render.dashProjects()}</div>
                         <div id="intern_leaderboard_container" class="container-card dashboard-view__item hide-on-mobile">
                             <div class="container-header">
@@ -1238,7 +1236,7 @@
                     renderElem(getRef('project_explorer__breadcrumbs'), html`${createBreadcrumbs(breadcrumbs)}`)
                     break;
                 case 'admin_page':
-                    if (typeOfUser !== 'admin') return;
+                    if (userType !== 'admin') return;
                     //show projects
                     if (subPageId1) {
                         getRef('admin_view_selector').value = subPageId1;
@@ -1647,7 +1645,7 @@
                     easing: 'ease',
                     fill: 'forwards'
                 }
-                const parent = typeof id === 'string' ? document.getElementById(id) : id;
+                const parent = typeof id === 'string' ? getRef(id) : id;
                 const visibleElement = [...parent.children].find(elem => !elem.classList.contains(mobileView ? 'hide-on-mobile' : 'hidden'));
                 if (visibleElement === parent.children[index]) return;
                 visibleElement.getAnimations().forEach(anim => anim.cancel())
@@ -1763,7 +1761,7 @@
                     if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
                     if (searchQuery && searchQuery !== '' && !allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase())) continue;
                     if (assignedInterns.length >= allTasks[taskId].maxSlots) continue;
-                    if (typeOfUser && typeOfUser === 'intern' && floDapps.user.id && assignedInterns.includes(floDapps.user.id)) continue;
+                    if (userType && userType === 'intern' && floDapps.user.id && assignedInterns.includes(floDapps.user.id)) continue;
                     filtered.push(render.displayTaskCard(projectCode, branch, task))
                 }
                 let renderedTasks = filtered
@@ -1779,8 +1777,8 @@
                     })
                 }
                 setTimeout(() => {
-                    if (document.getElementById('task_search_input') && document.getElementById('task_search_input').value.trim() !== searchQuery)
-                        document.getElementById('task_search_input').value = searchQuery || ''
+                    if (getRef('task_search_input') && getRef('task_search_input').value.trim() !== searchQuery)
+                        getRef('task_search_input').value = searchQuery || ''
                 }, 0);
                 return html`
                     <div id="display_task_search_wrapper" class="flex flex-direction-column gap-1">
@@ -1827,7 +1825,7 @@
                 const assignedInternsCards = filterMap(assignedInterns, (internFloId) => render.assignedInternCard(internFloId));
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let applyButton
-                if (!assignedInterns.includes(myFloID) && typeOfUser !== 'admin') {
+                if (!assignedInterns.includes(myFloID) && userType !== 'admin') {
                     const hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                         return `${appState.params.id}_${appState.params.branch}_${task}` === details.taskId
                     })
@@ -1912,7 +1910,7 @@
                 let topic = `${RIBC.getProjectDetails(projectCode).projectName} / ${RIBC.getTaskDetails(projectCode, branch, task).title}`
                 const internName = RIBC.getInternList()[floID]
                 let replyButton
-                if (typeOfUser === 'admin' && !note) {
+                if (userType === 'admin' && !note) {
                     replyButton = html`<button class="button button--small init-update-replay margin-left-auto">Reply</button>`
                 }
                 let providedLink
@@ -2466,7 +2464,7 @@
         }
 
         let pinnedProjects = [];
-        let typeOfUser = 'general';
+        let userType = 'general';
         floGlobals.dashboardPages = {
             'intern_view': 'my_tasks',
             'dashboard_tasks_wrapper': 'all_tasks',
@@ -2566,7 +2564,10 @@
             renderElem(getRef('intern_info__wrapper'), html`
                 <div class="flex flex-direction-column align-items-center gap-1 text-center">
                     <div id="intern_info__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
-                    <h3 id="intern_info__name">${internName}</h3>
+                    <div class="flex align-center gap-0-5">
+                        <h3 id="intern_info__name">${internName}</h3>
+                        ${userType === 'admin' ? html`<button class="button button--small button--colored" onclick=${toggleInternNameEditing}>Edit</button> ` : ''} 
+                    </div>
                 </div>
                 <sm-copy id="intern_info__flo_id" value=${internFloId}></sm-copy>
                 <div id="stats_wrapper"> 
@@ -2601,8 +2602,8 @@
                 color = '--orange'
             }
             setTimeout(() => {
-                document.getElementById('intern_rating').style.setProperty('--progress', `${400 - (rating * 4)}`)
-                document.getElementById('intern_rating').style.setProperty('--rating-color', `var(${color})`)
+                getRef('intern_rating').style.setProperty('--progress', `${400 - (rating * 4)}`)
+                getRef('intern_rating').style.setProperty('--rating-color', `var(${color})`)
             }, 0);
         }
 
@@ -2980,6 +2981,27 @@
             closePopup()
         }
 
+        function toggleInternNameEditing(e) {
+            const button = e.target.closest('button');
+            if (getRef('intern_info__name').isContentEditable) {
+                const floId = getRef('intern_info__flo_id').value;
+                const newName = getRef('intern_info__name').innerText.trim();
+                if (newName !== '' && floGlobals.tempEditableContent !== newName) {
+                    RIBC.admin.renameIntern(floId, newName)
+                    const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
+                    renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`)
+                    notify('Intern name updated', 'success')
+                }
+                getRef('intern_info__name').contentEditable = false;
+                button.textContent = 'Edit';
+                document.getSelection().collapseToEnd()
+                floGlobals.tempEditableContent = '';
+            } else {
+                makeEditable(getRef('intern_info__name'))
+                button.textContent = 'Done'
+            }
+        }
+
         function clearRequestFilters() {
             getRef('filter_requests_by_category').reset()
             getRef('filter_requests_by_project').reset()
@@ -3121,10 +3143,10 @@
                 floDapps.user.id
                 const taskId = btn ? btn.dataset.taskId : floGlobals.tempUserTaskRequest
                 floGlobals.tempUserTaskRequest = taskId
-                if (typeOfUser === 'general') {
+                if (userType === 'general') {
                     getRef('intern_apply__task').textContent = RIBC.getAllTasks()[taskId].title
                     openPopup('apply_for_task_popup', true)
-                } else if (typeOfUser === 'intern') {
+                } else if (userType === 'intern') {
                     const hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                         return taskId === details.taskId
                     })
@@ -3210,7 +3232,7 @@
             // Intern's view
 
             if (RIBC.getInternList()[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
-                typeOfUser = 'intern';
+                userType = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.remove('hidden')
                 })
@@ -3235,7 +3257,7 @@
 
             // admin view
             if (floGlobals.subAdmins.includes(myFloID)) {
-                typeOfUser = 'admin'
+                userType = 'admin'
                 document.querySelectorAll('.admin-option').forEach((option) => {
                     option.classList.remove('hidden')
                 })
@@ -3256,7 +3278,7 @@
                     elem.classList.add('hidden')
                 })
             }
-            if (typeOfUser === 'admin') {
+            if (userType === 'admin') {
                 document.querySelectorAll('.not-for-admin').forEach((elem) => {
                     elem.classList.add('hidden')
                 })
