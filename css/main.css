@@ -291,7 +291,9 @@ sm-chips {
 sm-chip {
   position: relative;
   font-size: 0.9rem;
-  --border-radius: 0.3rem;
+  --border-radius: 0.5rem;
+  --padding: 0.5rem 0.8rem;
+  --background: rgba(var(--text-color), 0.06);
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
@@ -545,14 +547,6 @@ ul {
   display: none !important;
 }
 
-.no-transformations {
-  transform: none !important;
-}
-
-.full-bleed {
-  grid-column: 1/4;
-}
-
 .h1 {
   font-size: 2.5rem;
 }
@@ -696,9 +690,8 @@ ul {
   display: grid;
   gap: 0.5rem;
   width: 100%;
-  padding: 0 1.5rem 0 0.5rem;
+  padding: 0 1.5rem;
   align-items: center;
-  grid-template-columns: auto 1fr;
 }
 .popup__header > * {
   grid-row: 1;
@@ -711,6 +704,8 @@ ul {
 }
 .popup__header__close {
   grid-column: 1;
+  margin-left: -1rem;
+  justify-self: flex-start;
 }
 
 .page {
@@ -1113,13 +1108,6 @@ ul {
   grid-template-columns: minmax(0, 1fr);
   overflow-y: auto;
   align-content: flex-start;
-}
-
-#dashboard_view_selector {
-  border-radius: 0.5rem;
-  margin: 0 auto;
-  padding: 0.3rem;
-  background-color: rgba(var(--text-color), 0.04);
 }
 
 .logo {
@@ -1643,13 +1631,29 @@ ul {
 
 #project_explorer {
   padding: 0;
+  grid-template-rows: -webkit-min-content 1fr;
+  grid-template-rows: min-content 1fr;
+}
+#project_explorer__breadcrumbs {
+  padding: 1rem;
+}
+
+.breadcrumb {
+  font-weight: 500;
+}
+.breadcrumb .icon {
+  margin: 0 0.5rem;
+}
+.breadcrumb--active {
+  pointer-events: none;
+  color: rgba(var(--text-color), 0.9);
 }
 
 #project_explorer__right {
   gap: 1rem;
   align-items: flex-start;
   align-content: flex-start;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 
 #pin_project_button {
@@ -1952,9 +1956,8 @@ input[type=date]:focus {
   #task_search_input {
     width: 100%;
   }
-  .hide-on-mobile,
-.hide-page-on-mobile {
-    display: none;
+  .hide-on-mobile {
+    display: none !important;
   }
 }
 @media only screen and (min-width: 640px) {
@@ -1965,7 +1968,7 @@ input[type=date]:focus {
     --width: 26rem;
   }
   .popup__header {
-    padding: 1.5rem 1.5rem 0 0.75rem;
+    padding: 1rem 1.5rem 0 1.5rem;
   }
   #secondary_pages header {
     padding: 1.5rem 8vw;
@@ -2034,6 +2037,9 @@ input[type=date]:focus {
     width: min(48rem, 100%);
     margin: 0 auto;
   }
+  #dashboard_view_selector {
+    margin: 0 auto;
+  }
   #intern_leaderboard_container {
     position: -webkit-sticky;
     position: sticky;
@@ -2056,24 +2062,15 @@ input[type=date]:focus {
     height: 100%;
     gap: 0;
     grid-template-columns: 16rem 3fr;
-    grid-template-areas: "left right";
     background-color: rgba(var(--foreground-color), 0.3);
     overflow-y: auto;
   }
   #project_explorer__left {
-    grid-area: left;
     height: 100%;
     overflow-y: auto;
     padding-bottom: 1.5rem;
   }
-  #project_explorer__left h4 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    color: var(--accent-color);
-    font-size: 0.9rem;
-  }
   #project_explorer__right {
-    grid-area: right;
     height: 100%;
     overflow-y: auto;
     padding: 1.5rem 4vw;

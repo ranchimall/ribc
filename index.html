@@ -512,21 +512,19 @@
                 <h4 class="empty-state">No intern found</h4>
             </section>
             <section id="project_explorer" class="inner-page hidden">
+                <div id="project_explorer__breadcrumbs" class="flex flex-wrap align-center full-bleed"></div>
                 <div id="project_explorer__left" class="list-container">
-                    <h4 class="padding intern-option hidden">My projects</h4>
-                    <div id="my_projects"></div>
-                    <h4 class="padding intern-option hidden">Other projects</h4>
-                    <div id="other_projects"></div>
+                    <div id="all_projects"></div>
                 </div>
-                <section id="project_explorer__right" class="grid hide-on-mobile">
+                <section id="project_explorer__right" class="grid hidden">
                     <header class="flex flex-direction-column gap-0-5 align-items-start">
-                        <a class="button icon-only hide-on-desktop" href="#/project_explorer" title="Go back">
+                        <!-- <a class="button icon-only hide-on-desktop" href="#/project_explorer" title="Go back">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
                                 width="24px" fill="#000000">
                                 <path d="M0 0h24v24H0V0z" fill="none"></path>
                                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
                             </svg>
-                        </a>
+                        </a> -->
                         <h2 id="project_explorer__project_title"></h2>
                     </header>
                     <p id="project_explorer__project_description" class="ws-pre-line wrap-around"></p>
@@ -793,12 +791,12 @@
         const domRefs = {}
         //Checks for internet connection status
         if (!navigator.onLine)
-            notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error', '', true)
+            floGlobals.connectionErrorNotification = notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error')
         window.addEventListener('offline', () => {
-            notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error', true, true)
+            floGlobals.connectionErrorNotification = notify('There seems to be a problem connecting to the internet, Please check you internet connection.', 'error')
         })
         window.addEventListener('online', () => {
-            getRef('notification_drawer').clearAll()
+            getRef('notification_drawer').remove(floGlobals.connectionErrorNotification)
             notify('We are back online.', 'success')
         })
         // Use instead of document.getElementById
@@ -853,15 +851,14 @@
         function openPopup(popupId, pinned) {
             zIndex++
             getRef(popupId).setAttribute('style', `z-index: ${zIndex}`)
-            getRef(popupId).show({ pinned })
-            return getRef(popupId);
+            return getRef(popupId).show({ pinned })
         }
 
         // hides the popup or modal
-        function closePopup() {
+        function closePopup(options = {}) {
             if (popupStack.peek() === undefined)
                 return;
-            popupStack.peek().popup.hide()
+            popupStack.peek().popup.hide(options)
         }
 
 
@@ -869,7 +866,6 @@
         const getConfirmation = (title, options = {}) => {
             return new Promise(resolve => {
                 const { message = '', cancelText = 'Cancel', confirmText = 'OK', danger = false } = options
-                openPopup('confirmation_popup', true)
                 getRef('confirm_title').innerText = title;
                 getRef('confirm_message').innerText = message;
                 const cancelButton = getRef('confirmation_popup').querySelector('.cancel-button');
@@ -880,14 +876,21 @@
                     confirmButton.classList.add('button--danger')
                 else
                     confirmButton.classList.remove('button--danger')
+                const { opened, closed } = openPopup('confirmation_popup')
                 confirmButton.onclick = () => {
-                    closePopup()
-                    resolve(true);
+                    closePopup({ payload: true })
                 }
                 cancelButton.onclick = () => {
                     closePopup()
-                    resolve(false);
                 }
+                closed.then((payload) => {
+                    confirmButton.onclick = null
+                    cancelButton.onclick = null
+                    if (payload)
+                        resolve(true)
+                    else
+                        resolve(false)
+                })
             })
         }
 
@@ -1192,9 +1195,11 @@
                     renderAllInterns()
                     break;
                 case 'project_explorer':
+                    let breadcrumbs = []
                     if (subPageId1) {
                         if (params) {
                             const { id: projectCode, branch } = params
+                            const { projectName, projectDescription } = RIBC.getProjectDetails(projectCode);
                             if (appState.params.projectCode !== projectCode) {
                                 showProjectInfo(projectCode)
                                 const allProjects = getRef('project_explorer__left').querySelectorAll('.project-card');
@@ -1207,15 +1212,30 @@
                                 renderBranchTasks()
                             }
                             getRef('project_explorer__left').classList.add('hide-on-mobile')
-                            getRef('project_explorer__right').classList.remove('hide-on-mobile')
+                            getRef('project_explorer__right').classList.remove('hidden')
+                            breadcrumbs = [
+                                ['Dashboard', '#/dashboard_page/projects'],
+                                ['All projects', '#/project_explorer/projects'],
+                                [projectName, `#/project_explorer/project?id=${projectCode}&branch=mainLine`],
+                            ]
                         } else {
                             getRef('project_explorer__left').querySelectorAll('.project-card').forEach(project => project.classList.remove('project-card--active'))
+                            getRef('project_explorer__left').classList.remove('hide-on-mobile')
+                            getRef('project_explorer__right').classList.add('hidden')
+                            breadcrumbs = [
+                                ['Dashboard', '#/dashboard_page/projects'],
+                                ['All projects', '#/project_explorer/projects']
+                            ]
                         }
                     } else {
                         getRef('project_explorer__left').classList.remove('hide-on-mobile')
-                        getRef('project_explorer__right').classList.add('hide-on-mobile')
-                        history.replaceState(null, '', '#/project_explorer')
+                        getRef('project_explorer__right').classList.add('hidden')
+                        history.replaceState(null, '', '#/project_explorer/projects')
+                        breadcrumbs = [
+                            ['Dashboard', '#/dashboard_page/projects'],
+                        ]
                     }
+                    renderElem(getRef('project_explorer__breadcrumbs'), html`${createBreadcrumbs(breadcrumbs)}`)
                     break;
                 case 'admin_page':
                     if (typeOfUser !== 'admin') return;
@@ -1341,8 +1361,12 @@
                 if (document.querySelector('.nav-list__item--active'))
                     document.querySelector('.nav-list__item--active').classList.remove('nav-list__item--active');
                 const targetListItem = [...document.querySelectorAll(`a.nav-list__item`)].find(item => item.href.includes(pageId))
-                if (targetListItem)
+                if (targetListItem) {
                     targetListItem.classList.add('nav-list__item--active')
+                    getRef('main_nav').classList.remove('hide-on-mobile')
+                } else {
+                    getRef('main_nav').classList.add('hide-on-mobile')
+                }
                 document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'))
                 getRef(pageId).closest('.page').classList.remove('hidden')
                 let ogOverflow = getRef(pageId).parentNode.style.overflow
@@ -1369,6 +1393,18 @@
                     appState.lastPage = pageId
                 }
             }
+        }
+        function createBreadcrumbs(links) {
+            const crumbs = []
+            links.forEach(([name, link], index) => {
+                crumbs.push(html`<a href="${link}" class=${`breadcrumb ${(index === links.length - 1) ? 'breadcrumb--active' : ''}`}>${name}</a>`)
+                if (index !== links.length - 1) {
+                    crumbs.push(html`
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                        `)
+                }
+            })
+            return crumbs
         }
         // class based lazy loading
         class LazyLoader {
@@ -1848,7 +1884,11 @@
             internCard(internFloId, { selectable = false } = {}) {
                 const internName = RIBC.getInternList()[internFloId]
                 const internPoints = RIBC.getInternRating(internFloId)
-                const initials = internName.split(' ').map(v => v.charAt(0)).join('');
+                const splitName = internName.split(' ')
+                let initials = splitName[0][0]
+                if (splitName.length > 1) {
+                    initials += splitName[splitName.length - 1][0]
+                }
                 return html`
                     <label class="intern-card align-center interact" .dataset=${{ internFloId }} onclick=${selectable ? false : showInternInfo} title="Intern Information">
                         ${selectable ? html`<input type="checkbox" class="intern-card__checkbox" value=${internFloId}>` : ''}
@@ -2518,9 +2558,14 @@
                 completedTasksCount++
                 totalPoints += completedTasks[task].points
             }
+            const splitName = internName.split(' ')
+            let initials = splitName[0][0]
+            if (splitName.length > 1) {
+                initials += splitName[splitName.length - 1][0]
+            }
             renderElem(getRef('intern_info__wrapper'), html`
                 <div class="flex flex-direction-column align-items-center gap-1 text-center">
-                    <div id="intern_info__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${internName.split(' ').map(v => v.charAt(0)).join('')}</div>
+                    <div id="intern_info__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                     <h3 id="intern_info__name">${internName}</h3>
                 </div>
                 <sm-copy id="intern_info__flo_id" value=${internFloId}></sm-copy>
@@ -2549,7 +2594,6 @@
                 </div>
             `)
             openPopup('intern_info_popup');
-            // TODO: popup opening should return a promise
             let color = '--green';
             if (rating < 50) {
                 color = '--danger-color'
@@ -3222,16 +3266,7 @@
                 })
             }
 
-            if (typeOfUser === 'intern') {
-                render.projectList(getRef('my_projects'), [...floGlobals.assignedProjectsList])
-                sortedProjectList = sortedProjectList.filter(val => !floGlobals.assignedProjectsList.has(val));
-            }
-            if (sortedProjectList.length > 0) {
-                getRef('other_projects').previousElementSibling.classList.remove('hidden')
-                render.projectList(getRef('other_projects'), sortedProjectList)
-            } else {
-                getRef('other_projects').previousElementSibling.classList.add('hidden')
-            }
+            render.projectList(getRef('all_projects'), sortedProjectList)
             delegate(getRef('explorer_task_list'), 'click', '.apply-button', e => {
                 requestForTask(e.delegateTarget)
             })
