@@ -811,7 +811,7 @@
                 domRefs[elementId].count += 1;
                 return document.getElementById(elementId);
             } else {
-                if (!domRefs[elementId]?.ref?.deref())
+                if (!domRefs[elementId].ref?.deref())
                     domRefs[elementId].ref = new WeakRef(document.getElementById(elementId));
                 return domRefs[elementId].ref.deref();
             }
@@ -2602,9 +2602,8 @@
                 color = '--orange'
             }
             setTimeout(() => {
-                getRef('intern_rating').style.setProperty('--progress', `${400 - (rating * 4)}`)
-                getRef('intern_rating').style.setProperty('--rating-color', `var(${color})`)
-            }, 0);
+                document.getElementById('intern_rating').style = `--progress: ${400 - (rating * 4)}; --rating-color:var(${color})`;
+            }, 100);
         }
 
         // opens a popup containing various project information
@@ -2985,7 +2984,7 @@
             const button = e.target.closest('button');
             if (getRef('intern_info__name').isContentEditable) {
                 const floId = getRef('intern_info__flo_id').value;
-                const newName = getRef('intern_info__name').innerText.trim();
+                const newName = getRef('intern_info__name').textContent.trim();
                 if (newName !== '' && floGlobals.tempEditableContent !== newName) {
                     RIBC.admin.renameIntern(floId, newName)
                     const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
@@ -3204,17 +3203,15 @@
             switch (e.target.id) {
                 case 'intern_list_popup':
                     renderElem(getRef('intern_list_container'), html``)
-                    getRef('intern_search_field').value = ''
+                    getRef('intern_search_field').value = '';
                     floGlobals.selectedInterns.clear()
-                    getRef('assign_interns_button').disabled = true
+                    getRef('assign_interns_button').disabled = true;
                     break;
                 case 'rate_participants_popup':
                     renderElem(getRef('rating_wrapper'), html``)
                     break;
                 case 'intern_info_popup':
-                    getRef('intern_info__name').contentEditable = false
-                    renderElem(getRef('intern_info__name'), html`${floGlobals.tempEditableContent}`)
-                    getRef('intern_info__name').nextElementSibling.textContent = 'Edit'
+                    renderElem(getRef('intern_info__wrapper'), html``)
                     break;
             }
             if (popupStack.items.length === 0) {
