@@ -104,7 +104,7 @@
     Ribc.getInternList = () => _.internList;
     Ribc.getInternRating = (floID) => _.internRating[floID];
     Ribc.getInternRecord = (floID) => _.internRecord[floID];
-    Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber]
+    Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber] || {};
     Ribc.getAllTasks = () => _.projectTaskDetails
     Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks || [];
 
@@ -160,16 +160,20 @@
         floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
         return status;
     }
-
+    Admin.initInternRecord = function (floID) {
+        if (!_.internRecord[floID])
+            _.internRecord[floID] = {
+                active: true,
+                joined: Date.now(),
+                completedTasks: {},
+            }
+    }
     const addIntern = Admin.addIntern = function (floID, internName) {
         if (floID in _.internList)
             return false
         _.internList[floID] = internName
         _.internRating[floID] = 0
-        _.internRecord[floID] = {
-            active: true,
-            completedTasks: {},
-        }
+        Admin.initInternRecord(floID)
         return true;
     }
     Admin.renameIntern = function (floID, newName) {
@@ -186,19 +190,15 @@
         delete _.internRating[floID]
         delete _.internRecord[floID]
         for (const taskId in _.projectTaskDetails) {
-            if (_.internsAssigned[taskId].includes(floID))
-                _.internsAssigned[taskId] = _.internsAssigned[taskId].filter(id => id != floID)
+            if (_.internsAssigned[taskId].hasOwnProperty(floID))
+                delete _.internsAssigned[taskId][floID]
         }
         return true;
     }
     Admin.addTaskScore = function (floID, taskId, points, details = {}) {
         if (!(floID in _.internList))
             return false;
-        if (!_.internRecord[floID])
-            _.internRecord[floID] = {
-                active: true,
-                completedTasks: {},
-            }
+        Admin.initInternRecord(floID)
         _.internRecord[floID].completedTasks[taskId] = {
             points,
             ...details
@@ -255,19 +255,23 @@
     }
 
     const assignInternToTask = Admin.assignInternToTask = function (floID, projectCode, branch, taskNumber) {
-        var index = projectCode + "_" + branch + "_" + taskNumber
-        if (!Array.isArray(_.internsAssigned[index]))
-            _.internsAssigned[index] = []
-        if (!_.internsAssigned[index].includes(floID)) {
-            _.internsAssigned[index].push(floID)
+        const key = projectCode + "_" + branch + "_" + taskNumber
+        if (!_.internsAssigned[key])
+            _.internsAssigned[key] = {}
+        if (!_.internsAssigned[key].hasOwnProperty(floID)) {
+            _.internsAssigned[key][floID] = { assignedOn: Date.now() }
             return true
         } else
             return false
     }
 
     Admin.unassignInternFromTask = function (floID, projectCode, branch, taskNumber) {
-        const index = projectCode + "_" + branch + "_" + taskNumber
-        _.internsAssigned[index] = _.internsAssigned[index].filter(id => id != floID)
+        const key = projectCode + "_" + branch + "_" + taskNumber
+        if (_.internsAssigned[key] && _.internsAssigned[key].hasOwnProperty(floID)) {
+            delete _.internsAssigned[key][floID]
+            return true
+        } else
+            return false
     }
 
     Admin.putTaskStatus = function (taskStatus, projectCode, branch, taskNumber) {

@@ -1285,6 +1285,15 @@ ul {
 
 #intern_info__name {
   font-size: 1.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.5rem;
+}
+#intern_info__name[contenteditable=true] {
+  background-color: rgba(var(--text-color), 0.1);
+}
+
+#edit_intern_name {
+  min-width: 3.5rem;
 }
 
 .icon--star {
