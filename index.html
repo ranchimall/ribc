@@ -1026,6 +1026,29 @@
                 return timestamp;
             }
         }
+        function getObjLength(obj) {
+            let count = 0
+            for (var i in obj) count++
+            return count
+        }
+        // obj forEach
+        function objForEach(obj, callback) {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    callback(key, obj[key])
+                }
+            }
+        }
+        // obj map
+        function objMap(obj, callback) {
+            const newObj = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    newObj.push(callback(key, obj[key]))
+                }
+            }
+            return newObj
+        }
 
         const appState = {
             params: {},
@@ -1717,7 +1740,7 @@
                                 ${maxSlots ? html`
                                     <div class="display-task__detail">
                                         <span class="display-task__detail__title">Slots: </span>
-                                        <span class="display-task__detail__value">${maxSlots - Object.keys(assignedInterns).length}</span>
+                                        <span class="display-task__detail__value">${maxSlots - getObjLength(assignedInterns)}</span>
                                     </div>
                                 `: ''}
                                 ${reward ? html`
@@ -1745,7 +1768,7 @@
                     const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task);
                     if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
                     if (searchQuery && searchQuery !== '' && !allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase())) continue;
-                    if (Object.keys(assignedInterns).length >= allTasks[taskId].maxSlots) continue;
+                    if (getObjLength(assignedInterns) >= allTasks[taskId].maxSlots) continue;
                     if (userType && userType === 'intern' && floDapps.user.id && assignedInterns.hasOwnProperty(floDapps.user.id)) continue;
                     filtered.push(render.displayTaskCard(projectCode, branch, task))
                 }
@@ -1807,7 +1830,7 @@
                     }
                 })
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task) || []
-                const assignedInternsCards = Object.keys(assignedInterns).map(internFloId => render.assignedInternCard(internFloId));
+                const assignedInternsCards = objMap(assignedInterns, internFloId => render.assignedInternCard(internFloId));
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let applyButton
                 if (!assignedInterns.hasOwnProperty(myFloID) && userType !== 'admin') {
@@ -1850,7 +1873,7 @@
                                 ${maxSlots ? html`
                                     <div class="display-task__detail">
                                         <span class="display-task__detail__title">Slots: </span>
-                                        <span class="display-task__detail__value">${maxSlots - Object.keys(assignedInterns).length}</span>
+                                        <span class="display-task__detail__value">${maxSlots - getObjLength(assignedInterns)}</span>
                                     </div>
                                 `: ''}
                                 ${reward ? html`
@@ -1948,7 +1971,7 @@
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task)
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
-                let assignedInternsCards = Object.keys(assignedInterns).map(internFloId => render.assignedInternCard(internFloId, status === 'incomplete'))
+                let assignedInternsCards = objMap(assignedInterns, internFloId => render.assignedInternCard(internFloId, status === 'incomplete'))
                 const branches = getAllBranches(appState.params.id)
                 const branchesButtons = filterMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
@@ -2381,7 +2404,7 @@
                         ${maxSlots ? html`
                             <div class="display-task__detail">
                                 <span class="display-task__detail__title">Slots: </span>
-                                <span class="display-task__detail__value">${maxSlots - Object.keys(assignedInterns).length}</span>
+                                <span class="display-task__detail__value">${maxSlots - getObjLength(assignedInterns)}</span>
                             </div>
                         `: ''}
                         ${reward ? html`
@@ -2526,6 +2549,13 @@
             }
         })
 
+        function getDaysTaken(start, end = Date.now()) {
+            const timeTaken = new Date(end) - new Date(start);
+            const days = Math.floor(timeTaken / (1000 * 60 * 60 * 24));
+            return days;
+        }
+
+
         // opens a popup containing various intern information
         function showInternInfo(e) {
             const internFloId = e.target.closest('.intern-card').dataset.internFloId;
@@ -2543,7 +2573,6 @@
             if (splitName.length > 1) {
                 initials += splitName[splitName.length - 1][0]
             }
-            console.log(joined)
             renderElem(getRef('intern_info__wrapper'), html`
                 <div class="flex flex-direction-column align-items-center gap-1-5">
                     <div id="intern_info__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
@@ -2683,21 +2712,28 @@
         function initTaskScoring(e) {
             currentTask = e.target.closest('.admin-task');
             const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId);
-            renderElem(getRef('rating_wrapper'), html`
-                    <h4>${currentTask.querySelector('.task-title').textContent}</h4>
-                    <sm-form>
-                        ${Object.keys(assignedInterns).map((intern, index) => html`
-                            <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${intern}>
-                                <h4>${RIBC.getInternList()[intern]}</h4>  
+            const taskScoreElems = []
+            let index = 0;
+            for (const internId in assignedInterns) {
+                taskScoreElems.push(html`
+                            <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${internId}>
+                                <h4>${RIBC.getInternList()[internId]}</h4>  
                                 <div class="flex gap-0-5">
-                                    <sm-input type="number" min="0" max="50" class="flex-1" placeholder="Rate out of 50" error-text="Points must be between 0-50" ?autofocus=${index === 0} required></sm-input>
+                                    <sm-input type="number" min="0" max="40" class="flex-1" placeholder="Rate out of 40" error-text="Points must be between 0-40" ?autofocus=${index === 0} required></sm-input>
                                     <input class="flex-1" type="date" value=${formatDate(new Date())} placeholder="Completion date" aria-label="Set date of completion" required>
                                 </div>
                             </div>
-                        `)}
+                        `)
+                index++;
+            }
+            renderElem(getRef('rating_wrapper'), html`
+                    <h4>${currentTask.querySelector('.task-title').textContent}</h4>
+                    <sm-form>
+                        ${taskScoreElems}
                         <button id="rate_participants_btn" class="button button--primary" type="submit" disabled onclick="rateParticipants()"> Rate </button>
                     </sm-form>
                 `)
+
             openPopup('rate_participants_popup')
         }
         function markTaskAsIncomplete(e) {
@@ -2730,8 +2766,21 @@
             document.querySelectorAll('.rating-part').forEach((ratingPart) => {
                 const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
                 const internId = ratingPart.dataset.internId;
-                const points = 50 + parseInt(ratingPart.querySelector('sm-input').value.trim());
-                const completionDate = ratingPart.querySelector('input').value;
+                const { duration, durationType } = RIBC.getAllTasks()[taskId];
+                const deadlineDays = durationType === 'days' ? duration : duration * 30;
+                const daysTaken = getDaysTaken(RIBC.getAssignedInterns(taskId)[internId].assignedOn)
+                let quicknessScore = 0;
+                if (daysTaken < deadlineDays * 0.6) {
+                    quicknessScore = 30
+                } else if (daysTaken < deadlineDays * 0.8) {
+                    quicknessScore = 25
+                } else if (daysTaken < deadlineDays) {
+                    quicknessScore = 20
+                }
+                const completionPoints = 30;
+                const subjectivePoints = parseFloat(ratingPart.querySelector('sm-input').value.trim());
+                const points = completionPoints + quicknessScore + subjectivePoints;
+                const completionDate = new Date(ratingPart.querySelector('input').value).getTime();
                 RIBC.admin.addTaskScore(internId, taskId, points, { completionDate })
             })
             markTaskAsCompleted()

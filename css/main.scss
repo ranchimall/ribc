@@ -1394,7 +1394,7 @@ ul {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--green);
-  background-color: rgba(var(--text-color), 0.06);
+  border: solid 0.1rem var(--green);
 }
 .task__branch_container {
   &:not(:empty) {
@@ -1797,9 +1797,10 @@ ul {
 input[type="date"] {
   display: flex;
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.8rem 0.6rem;
   border: none;
   border-radius: 0.5rem;
+  font-weight: 500;
   font-family: inherit;
   font-size: inherit;
   color: inherit;
