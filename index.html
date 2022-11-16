@@ -2769,17 +2769,17 @@
                 const { duration, durationType } = RIBC.getAllTasks()[taskId];
                 const deadlineDays = durationType === 'days' ? duration : duration * 30;
                 const daysTaken = getDaysTaken(RIBC.getAssignedInterns(taskId)[internId].assignedOn)
-                let quicknessScore = 0;
+                let quicknessPoints = 0;
                 if (daysTaken < deadlineDays * 0.6) {
-                    quicknessScore = 30
+                    quicknessPoints = 30
                 } else if (daysTaken < deadlineDays * 0.8) {
-                    quicknessScore = 25
+                    quicknessPoints = 25
                 } else if (daysTaken < deadlineDays) {
-                    quicknessScore = 20
+                    quicknessPoints = 20
                 }
                 const completionPoints = 30;
                 const subjectivePoints = parseFloat(ratingPart.querySelector('sm-input').value.trim());
-                const points = completionPoints + quicknessScore + subjectivePoints;
+                const points = completionPoints + quicknessPoints + subjectivePoints;
                 const completionDate = new Date(ratingPart.querySelector('input').value).getTime();
                 RIBC.admin.addTaskScore(internId, taskId, points, { completionDate })
             })
@@ -3024,7 +3024,7 @@
                     RIBC.admin.renameIntern(floId, newName)
                     const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
                     renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`)
-                    notify('Intern name updated', 'success')
+                    notify('Intern name updated locally, please commit changes to make them permanent.', 'success')
                 }
                 getRef('intern_info__name').contentEditable = false;
                 button.textContent = 'Edit';
