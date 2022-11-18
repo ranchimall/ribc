@@ -81,7 +81,7 @@ h5,
 h6 {
   letter-spacing: -0.01em;
   font-weight: 700;
-  font-family: "Rubik", sans-serif;
+  // font-family: "Rubik", sans-serif;
 }
 p,
 strong {
@@ -645,9 +645,9 @@ ul {
 #confirmation_popup,
 #prompt_popup {
   flex-direction: column;
-
   h4 {
-    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
   }
 
   .flex {
@@ -1401,13 +1401,9 @@ ul {
   gap: 0.5rem;
   border-radius: 0.5rem;
   background: rgba(var(--foreground-color), 1);
-  &.completed {
-  }
-  h4 {
-    margin: 0;
-  }
   .task-title {
     line-height: 1.6;
+    font-size: 1.1rem;
   }
   &__task-number {
     font-size: 0.8rem;
@@ -1481,7 +1477,7 @@ ul {
     position: relative;
     user-select: none;
     display: flex;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding: 0 0.4rem;
     border-radius: 0.3rem;
     border: 1px solid rgba(var(--text-color), 0.24);
@@ -1961,6 +1957,10 @@ input[type="date"] {
   }
   #task_search_input {
     width: 100%;
+  }
+  .admin-task {
+    margin: 0 -1rem;
+    border-radius: 0;
   }
   .hide-on-mobile {
     display: none !important;
