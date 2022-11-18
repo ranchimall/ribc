@@ -102,8 +102,8 @@
     Ribc.getTaskDetails = (project, branch, task) => _.projectTaskDetails[project + "_" + branch + "_" + task];
     Ribc.getTaskStatus = (project, branch, task) => _.projectTaskStatus[project + "_" + branch + "_" + task];
     Ribc.getInternList = () => _.internList;
-    Ribc.getInternRating = (floID) => _.internRating[floID];
-    Ribc.getInternRecord = (floID) => _.internRecord[floID];
+    Ribc.getInternRating = (floID) => _.internRating[floID] || 0;
+    Ribc.getInternRecord = (floID) => _.internRecord[floID] || {};
     Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber] || {};
     Ribc.getAllTasks = () => _.projectTaskDetails
     Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks || [];
@@ -166,6 +166,7 @@
                 active: true,
                 joined: Date.now(),
                 completedTasks: {},
+                failedTasks: {},
             }
     }
     const addIntern = Admin.addIntern = function (floID, internName) {
@@ -189,25 +190,38 @@
         delete _.internList[floID]
         delete _.internRating[floID]
         delete _.internRecord[floID]
-        for (const taskId in _.projectTaskDetails) {
-            if (_.internsAssigned[taskId].hasOwnProperty(floID))
-                delete _.internsAssigned[taskId][floID]
+        for (const taskKey in _.projectTaskDetails) {
+            if (_.internsAssigned[taskKey].hasOwnProperty(floID))
+                delete _.internsAssigned[taskKey][floID]
         }
         return true;
     }
-    Admin.addTaskScore = function (floID, taskId, points, details = {}) {
+    Admin.addCompletedTask = function (floID, taskKey, points, details = {}) {
         if (!(floID in _.internList))
             return false;
         Admin.initInternRecord(floID)
-        _.internRecord[floID].completedTasks[taskId] = {
+        _.internRecord[floID].completedTasks[taskKey] = {
             points,
             ...details
         };
+        // calculate rating
         let totalScore = 0;
-        for (const taskId in _.internRecord[floID].completedTasks) {
-            totalScore += _.internRecord[floID].completedTasks[taskId].points;
+        for (const taskKey in _.internRecord[floID].completedTasks) {
+            totalScore += _.internRecord[floID].completedTasks[taskKey].points;
         }
-        _.internRating[floID] = parseInt(totalScore / (Object.keys(_.internRecord[floID].completedTasks).length || 1));
+        const completedTasks = Object.keys(_.internRecord[floID].completedTasks).length;
+        const failedTasks = Object.keys(_.internRecord[floID].failedTasks).length;
+        _.internRating[floID] = parseInt(totalScore / (completedTasks + failedTasks) || 1);
+        return true;
+    }
+    Admin.addFailedTask = function (floID, taskKey, details = {}) {
+        if (!(floID in _.internList))
+            return false;
+        Admin.initInternRecord(floID)
+        _.internRecord[floID].failedTasks[taskKey] = {
+            ...details
+        };
+        Admin.unassignInternFromTask(floID, taskKey);
         return true;
     }
     Admin.setInternStatus = function (floID, active = true) {
@@ -265,10 +279,9 @@
             return false
     }
 
-    Admin.unassignInternFromTask = function (floID, projectCode, branch, taskNumber) {
-        const key = projectCode + "_" + branch + "_" + taskNumber
-        if (_.internsAssigned[key] && _.internsAssigned[key].hasOwnProperty(floID)) {
-            delete _.internsAssigned[key][floID]
+    Admin.unassignInternFromTask = function (floID, taskKey) {
+        if (_.internsAssigned[taskKey] && _.internsAssigned[taskKey].hasOwnProperty(floID)) {
+            delete _.internsAssigned[taskKey][floID]
             return true
         } else
             return false
