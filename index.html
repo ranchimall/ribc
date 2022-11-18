@@ -29,7 +29,6 @@
     <script src="scripts/floCloudAPI.min.js" defer></script>
     <script src="scripts/floDapps.min.js" defer></script>
     <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6" defer></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"
         integrity="sha512-/hVAZO5POxCKdZMSLefw30xEVwjm94PAV9ynjskGbIpBvHO9EBplEcdUlBdCKutpZsF+La8Ag4gNrG0gAOn3Ig=="
         crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
@@ -1789,10 +1788,12 @@
                     availableCategories.add(allTasks[taskId].category)
                     const [projectCode, branch, task] = taskId.split('_')
                     const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task);
-                    if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
-                    if (searchQuery && searchQuery !== '' && !allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase())) continue;
                     if (getObjLength(assignedInterns) >= allTasks[taskId].maxSlots) continue;
                     if (userType && userType === 'intern' && floDapps.user.id && assignedInterns.hasOwnProperty(floDapps.user.id)) continue;
+                    if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
+                    if (searchQuery && searchQuery !== '') {
+                        if (!allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase()) && !floGlobals.taskCategories[allTasks[taskId].category].toLowerCase().includes(searchQuery.toLowerCase())) continue;
+                    }
                     filtered.push(render.displayTaskCard(projectCode, branch, task))
                 }
                 let renderedTasks = filtered
