@@ -104,7 +104,7 @@
     Ribc.getInternList = () => _.internList;
     Ribc.getInternRating = (floID) => _.internRating[floID] || 0;
     Ribc.getInternRecord = (floID) => _.internRecord[floID] || {};
-    Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber] || {};
+    Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber] || [];
     Ribc.getAllTasks = () => _.projectTaskDetails
     Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks || [];
 
@@ -165,6 +165,7 @@
             _.internRecord[floID] = {
                 active: true,
                 joined: Date.now(),
+                assignedTasks: {},
                 completedTasks: {},
                 failedTasks: {},
             }
@@ -191,8 +192,8 @@
         delete _.internRating[floID]
         delete _.internRecord[floID]
         for (const taskKey in _.projectTaskDetails) {
-            if (_.internsAssigned[taskKey].hasOwnProperty(floID))
-                delete _.internsAssigned[taskKey][floID]
+            if (_.internsAssigned[taskKey].includes(floID))
+                _.internsAssigned[taskKey] = _.internsAssigned[taskKey].filter(id => id !== floID)
         }
         return true;
     }
@@ -271,17 +272,18 @@
     const assignInternToTask = Admin.assignInternToTask = function (floID, projectCode, branch, taskNumber) {
         const key = projectCode + "_" + branch + "_" + taskNumber
         if (!_.internsAssigned[key])
-            _.internsAssigned[key] = {}
-        if (!_.internsAssigned[key].hasOwnProperty(floID)) {
-            _.internsAssigned[key][floID] = { assignedOn: Date.now() }
+            _.internsAssigned[key] = []
+        if (!_.internsAssigned[key].includes(floID)) {
+            _.internsAssigned[key].push(floID)
+            _.internRecord[floID].assignedTasks[key] = Date.now()
             return true
         } else
             return false
     }
 
     Admin.unassignInternFromTask = function (floID, taskKey) {
-        if (_.internsAssigned[taskKey] && _.internsAssigned[taskKey].hasOwnProperty(floID)) {
-            delete _.internsAssigned[taskKey][floID]
+        if (_.internsAssigned[taskKey] && _.internsAssigned[taskKey].includes(floID)) {
+            _.internsAssigned[taskKey] = _.internsAssigned[taskKey].filter(id => id !== floID)
             return true
         } else
             return false
