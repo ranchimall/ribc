@@ -284,6 +284,7 @@
     Admin.unassignInternFromTask = function (floID, taskKey) {
         if (_.internsAssigned[taskKey] && _.internsAssigned[taskKey].includes(floID)) {
             _.internsAssigned[taskKey] = _.internsAssigned[taskKey].filter(id => id !== floID)
+            delete _.internRecord[floID].assignedTasks[taskKey]
             return true
         } else
             return false

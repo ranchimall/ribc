@@ -1107,7 +1107,7 @@
 
             if (!document.querySelector(`#${pageId}`)?.classList.contains('inner-page')) return
             try {
-                if (floDapps.user.id && (['sign_up', 'sign_in', 'loading', 'landing'].includes(pageId))) {
+                if (floDapps.user.id && (generalPages.includes(pageId))) {
                     history.replaceState(null, null, '#/dashboard_page');
                     pageId = 'dashboard_page'
                 }
