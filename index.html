@@ -806,6 +806,7 @@
         const relativeTime = new RelativeTime({ style: 'narrow' });
     </script>
     <script id="default_ui_library">
+        "use strict";
         // Global variables
         const { html, render: renderElem } = uhtml;
         //Checks for internet connection status
@@ -862,7 +863,6 @@
             if (popupStack.peek() === undefined)
                 return;
             popupStack.peek().popup.hide(options)
-            zIndex--
         }
 
 
@@ -1729,7 +1729,7 @@
         floGlobals.prefersReducedMotion = reduceMotionQuery.matches   
     </script>
     <script id="app_ui">
-
+        "use strict";
         floGlobals.taskCategories = {
             c00: 'Creative Writing',
             c01: 'Marketing',
@@ -1881,7 +1881,7 @@
                         </div>
                         <div class="right">
                             <div class="apply-container flex space-between align-items-start">
-                                <h4 class="timeline-task__title capitalize">${title}</h4>
+                                <h4 class="timeline-task__title">${title}</h4>
                                 ${applyButton}
                             </div>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
@@ -1924,7 +1924,7 @@
                     <label class="intern-card align-center interact" .dataset=${{ internFloId }} onclick=${selectable ? false : showInternInfo} title="Intern Information">
                         ${selectable ? html`<input type="checkbox" class="intern-card__checkbox" value=${internFloId}>` : ''}
                         <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
-                        <div class="intern-card__name capitalize">${internName}</div>
+                        <div class="intern-card__name">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
                             <b class="intern-card__score">${internPoints}</b>
                             <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
@@ -2011,7 +2011,7 @@
             adminTask(task) {
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task)
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
-                const taskDetails = { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
+                const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
                 let assignedInternsCards = assignedInterns.map(internFloId => render.assignedInternCard(internFloId, status === 'incomplete'))
                 const branches = getAllBranches(appState.params.id)
                 const branchesButtons = filterMap(branches, (branch) => {
@@ -2135,8 +2135,8 @@
                     <li class="request-card" .dataset=${{ vectorClock, type: 'task' }}>
                         <div class="display-task__category justify-self-start">${floGlobals.taskCategories[category]}</div>
                         <p class="request-card__description">
-                            <b class="capitalize">${internName || name}</b> applied for 
-                            <b class="capitalize">${RIBC.getTaskDetails(projectCode, branch, task).title}</b>
+                            <b>${internName || name}</b> applied for 
+                            <b>${RIBC.getTaskDetails(projectCode, branch, task).title}</b>
                         </p>
                         ${!internName ? html`
                             <div class="request-card__details grid gap-0-5 margin-top-1">
@@ -2309,7 +2309,7 @@
                     <li class=${`status-card ${status?.toLowerCase() || 'pending'}`}>
                         <time class="status-card__time capitalize">${getFormattedTime(timestamp, 'relative')}</time>
                         <p class="status-card__details">
-                            You applied for <a class="capitalize" href=${`${location.hash.split('?')[0]}?taskId=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
+                            You applied for <a href=${`${location.hash.split('?')[0]}?taskId=${taskId}`}>${RIBC.getTaskDetails(projectCode, branch, task).title}</a>
                         </p>
                         <div class="flex align-center status-card__status">
                             ${icon}
@@ -3354,6 +3354,7 @@
             if (popupStack.items.length === 0) {
                 getRef('main_page').removeAttribute('inert')
             }
+            zIndex--;
         })
 
         floGlobals.assignedTasks = new Set()
