@@ -1779,10 +1779,10 @@
             },
             displayTasks(category = 'all', searchQuery) {
                 // render tasks
-                if (!RIBC) return
+                if (!RIBC) return html``;
                 const allTasks = RIBC.getAllTasks();
                 const displayedTasks = RIBC.getDisplayedTasks()
-                if (!displayedTasks || !Array.isArray(displayedTasks)) return
+                if (!displayedTasks || !Array.isArray(displayedTasks)) return html``;
                 const filterCategory = category === 'all' ? false : category;
                 const filtered = []
                 const availableCategories = new Set();
