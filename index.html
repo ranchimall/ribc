@@ -1782,6 +1782,7 @@
                 if (!RIBC) return
                 const allTasks = RIBC.getAllTasks();
                 const displayedTasks = RIBC.getDisplayedTasks()
+                if (!displayedTasks || !Array.isArray(displayedTasks)) return
                 const filterCategory = category === 'all' ? false : category;
                 const filtered = []
                 const availableCategories = new Set();
@@ -2407,7 +2408,7 @@
         const filterTasks = debounce((e) => {
             const searchQuery = getRef('task_search_input')?.value.trim() || '';
             const category = getRef('task_category_selector')?.value || 'all';
-            window.location.hash = `#/${appState.currentPage}?category=${category}${searchQuery !== '' ? `&search=${searchQuery}` : ''}`;
+            window.location.hash = `${location.hash.split('?')[0]}?category=${category}${searchQuery !== '' ? `&search=${searchQuery}` : ''}`;
         }, 100)
 
         function showTaskDetails(taskId) {
