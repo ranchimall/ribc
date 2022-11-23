@@ -1782,7 +1782,6 @@
                 if (!RIBC) return html``;
                 const allTasks = RIBC.getAllTasks();
                 const displayedTasks = RIBC.getDisplayedTasks()
-                if (!displayedTasks || !Array.isArray(displayedTasks)) return html``;
                 const filterCategory = category === 'all' ? false : category;
                 const filtered = []
                 const availableCategories = new Set();
@@ -2134,7 +2133,10 @@
                 const { category } = RIBC.getTaskDetails(projectCode, branch, task);
                 return html`
                     <li class="request-card" .dataset=${{ vectorClock, type: 'task' }}>
-                        <div class="display-task__category justify-self-start">${floGlobals.taskCategories[category]}</div>
+                        <div class="flex align-center space-between">
+                            <div class="display-task__category justify-self-start">${floGlobals.taskCategories[category]}</div>
+                            <time>${getFormattedTime(vectorClock.split('_')[0])}</time>
+                        </div>
                         <p class="request-card__description">
                             <b>${internName || name}</b> applied for 
                             <b>${RIBC.getTaskDetails(projectCode, branch, task).title}</b>
