@@ -265,8 +265,7 @@
             status = "Accepted";
         else
             status = "Rejected";
-        floCloudAPI.noteApplicationData(vectorClock, status).then(_ => null).catch(e => console.error(e))
-        return status;
+        return floCloudAPI.noteApplicationData(vectorClock, status)
     }
 
     const assignInternToTask = Admin.assignInternToTask = function (floID, projectCode, branch, taskNumber) {

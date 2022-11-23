@@ -1197,6 +1197,10 @@ ul {
   margin-bottom: 0.5rem;
   border: solid rgba(var(--text-color), 0.1) thin;
 }
+.request-card time {
+  font-size: 0.9rem;
+  color: rgba(var(--text-color), 0.8);
+}
 
 .request-card__description {
   width: 100%;

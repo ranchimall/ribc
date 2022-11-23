@@ -1320,13 +1320,13 @@
                                     getConfirmation('Are you sure you want to accept this request?').then(result => {
                                         if (result) {
                                             const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
-                                            let result
                                             if (RIBC.getInternList())
-                                                result = RIBC.admin.processTaskRequest(vectorClock, true)
-                                            if (result === 'Accepted') {
-                                                notify('Intern assigned, commit changes to make it permanent.', 'success')
-                                                removeRequest(e.delegateTarget.closest('.request-card'))
-                                            }
+                                                RIBC.admin.processTaskRequest(vectorClock, true).then(() => {
+                                                    notify('Intern assigned, commit changes to make it permanent.', 'success')
+                                                    removeRequest(e.delegateTarget.closest('.request-card'))
+                                                }).catch(err => {
+                                                    notify(err.message, 'error')
+                                                })
                                         }
                                     })
                                 })
@@ -1336,15 +1336,15 @@
                                         if (result) {
                                             const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
                                             const type = e.delegateTarget.closest('.request-card').dataset.type
-                                            let result
                                             if (type === 'task') {
-                                                result = RIBC.admin.processTaskRequest(vectorClock, false)
-                                                if (result === 'Rejected') {
+                                                RIBC.admin.processTaskRequest(vectorClock, false).then(() => {
                                                     notify('Request rejected', 'success')
                                                     removeRequest(e.delegateTarget.closest('.request-card'))
-                                                }
+                                                }).catch(err => {
+                                                    notify(err, 'error')
+                                                })
                                             } else if (type === 'internship') {
-                                                result = RIBC.admin.processInternRequest(vectorClock, false)
+                                                const result = RIBC.admin.processInternRequest(vectorClock, false)
                                                 if (result === 'Rejected') {
                                                     notify('Request rejected', 'success')
                                                     removeRequest(e.delegateTarget.closest('.request-card'))
@@ -2127,6 +2127,7 @@
                 }
             },
             taskRequestCard(request) {
+                console.log(request);
                 const { details: { taskId, name, brief, contact, portfolioLink }, floID, vectorClock } = request
                 const internName = RIBC.getInternList()[floID];
                 const [projectCode, branch, task] = taskId.split('_');
