@@ -1152,6 +1152,7 @@ ul {
           user-select: none;
   padding: 0.8rem 1rem;
   gap: 0.8rem;
+  color: inherit;
 }
 .intern-card input {
   height: 1.3em;
@@ -1284,7 +1285,7 @@ ul {
   flex: 1;
 }
 
-#intern_info__initials {
+#intern_profile__initials {
   position: relative;
   height: 4rem;
   width: 4rem;
@@ -1292,12 +1293,12 @@ ul {
   color: var(--color);
 }
 
-#intern_info__name {
+#intern_profile__name {
   font-size: 1.5rem;
   padding: 0.4rem 0.5rem;
   border-radius: 0.5rem;
 }
-#intern_info__name[contenteditable=true] {
+#intern_profile__name[contenteditable=true] {
   background-color: rgba(var(--text-color), 0.1);
 }
 
@@ -1379,33 +1380,39 @@ ul {
   color: var(--nice-blue);
 }
 
-#intern_info__wrapper {
+#intern_profile {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
 }
-#intern_info__wrapper > * {
+#intern_profile__left {
+  width: min(26rem, 100%);
+  border-radius: 0.5rem;
+  background-color: rgba(var(--foreground-color), 1);
+  padding: 1rem;
+}
+#intern_profile__right {
   flex: 1;
 }
 
-.intern_info__task {
+.intern_profile__task {
   display: grid;
   align-items: center;
   width: 100%;
   gap: 0.3rem;
   margin-top: 1rem;
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 0.5rem;
-  background-color: rgba(var(--text-color), 0.06);
+  background-color: rgba(var(--foreground-color), 1);
   grid-template-columns: minmax(0, 1fr) auto;
 }
-.intern_info__task h4 {
+.intern_profile__task h4 {
   grid-column: 1/-1;
 }
-.intern_info__task p {
+.intern_profile__task p {
   font-weight: 500;
 }
-.intern_info__task time {
+.intern_profile__task time {
   font-size: 0.9rem;
   color: rgba(var(--text-color), 0.8);
 }
@@ -1853,16 +1860,6 @@ ul {
   margin-top: 0.2rem;
 }
 
-.send-update-button,
-.init-update-replay {
-  color: var(--accent-color);
-  background-color: rgba(var(--text-color), 0.04);
-}
-.send-update-button .icon,
-.init-update-replay .icon {
-  fill: var(--accent-color);
-}
-
 .temp-task {
   padding: 1rem;
   background-color: rgba(var(--foreground-color), 1);
@@ -2222,6 +2219,13 @@ input[type=date]:focus {
   #requests_container > :nth-child(2) {
     width: min(48rem, 100%);
     margin: 0 auto;
+  }
+  #intern_profile__left {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 1rem;
+    align-self: flex-start;
+    padding: 1.5rem;
   }
 }
 @media only screen and (min-width: 1280px) {

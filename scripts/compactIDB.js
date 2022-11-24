@@ -1,4 +1,4 @@
-(function(EXPORTS) { //compactIDB v2.1.0
+(function (EXPORTS) { //compactIDB v2.1.0
     /* Compact IndexedDB operations */
     'use strict';
     const compactIDB = EXPORTS;
@@ -59,7 +59,7 @@
         })
     }
 
-    compactIDB.initDB = function(dbName, objectStores = {}) {
+    compactIDB.initDB = function (dbName, objectStores = {}) {
         return new Promise((resolve, reject) => {
             if (!(objectStores instanceof Object))
                 return reject('ObjectStores must be an object or array')
@@ -87,14 +87,14 @@
                     resolve("Initiated IndexedDB");
                 else
                     upgradeDB(dbName, a_obs, d_obs)
-                    .then(result => resolve(result))
-                    .catch(error => reject(error))
+                        .then(result => resolve(result))
+                        .catch(error => reject(error))
                 db.close();
             }
         });
     }
 
-    const openDB = compactIDB.openDB = function(dbName = defaultDB) {
+    const openDB = compactIDB.openDB = function (dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             var idb = indexedDB.open(dbName);
             idb.onerror = (event) => reject("Error in opening IndexedDB");
@@ -106,7 +106,7 @@
         });
     }
 
-    const deleteDB = compactIDB.deleteDB = function(dbName = defaultDB) {
+    const deleteDB = compactIDB.deleteDB = function (dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             var deleteReq = indexedDB.deleteDatabase(dbName);;
             deleteReq.onerror = (event) => reject("Error deleting database!");
@@ -114,7 +114,7 @@
         });
     }
 
-    compactIDB.writeData = function(obsName, data, key = false, dbName = defaultDB) {
+    compactIDB.writeData = function (obsName, data, key = false, dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             openDB(dbName).then(db => {
                 var obs = db.transaction(obsName, "readwrite").objectStore(obsName);
@@ -128,7 +128,7 @@
         });
     }
 
-    compactIDB.addData = function(obsName, data, key = false, dbName = defaultDB) {
+    compactIDB.addData = function (obsName, data, key = false, dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             openDB(dbName).then(db => {
                 var obs = db.transaction(obsName, "readwrite").objectStore(obsName);
@@ -142,7 +142,7 @@
         });
     }
 
-    compactIDB.removeData = function(obsName, key, dbName = defaultDB) {
+    compactIDB.removeData = function (obsName, key, dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             openDB(dbName).then(db => {
                 var obs = db.transaction(obsName, "readwrite").objectStore(obsName);
@@ -156,7 +156,7 @@
         });
     }
 
-    compactIDB.clearData = function(obsName, dbName = defaultDB) {
+    compactIDB.clearData = function (obsName, dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             openDB(dbName).then(db => {
                 var obs = db.transaction(obsName, "readwrite").objectStore(obsName);
@@ -168,7 +168,7 @@
         });
     }
 
-    compactIDB.readData = function(obsName, key, dbName = defaultDB) {
+    compactIDB.readData = function (obsName, key, dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             openDB(dbName).then(db => {
                 var obs = db.transaction(obsName, "readonly").objectStore(obsName);
@@ -182,7 +182,7 @@
         });
     }
 
-    compactIDB.readAllData = function(obsName, dbName = defaultDB) {
+    compactIDB.readAllData = function (obsName, dbName = defaultDB) {
         return new Promise((resolve, reject) => {
             openDB(dbName).then(db => {
                 var obs = db.transaction(obsName, "readonly").objectStore(obsName);
@@ -223,7 +223,7 @@
         })
     }*/
 
-    compactIDB.searchData = function(obsName, options = {}, dbName = defaultDB) {
+    compactIDB.searchData = function (obsName, options = {}, dbName = defaultDB) {
         options.lowerKey = options.atKey || options.lowerKey || 0
         options.upperKey = options.atKey || options.upperKey || false
         options.patternEval = options.patternEval || ((k, v) => {

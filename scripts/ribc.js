@@ -71,7 +71,8 @@
                 floID: data.senderID,
                 update: data.message,
                 time: data.vectorClock.split('_')[0],
-                note: data.note
+                note: data.note,
+                tag: data.tag
             }
         })
         internUpdates = internUpdates.filter(data => data.floID in _.internList)

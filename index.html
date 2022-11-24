@@ -517,6 +517,7 @@
                 <ul id="task_requests_list" class="grid gap-0-5 observe-empty-state margin-top-1"></ul>
                 <h4 class="empty-state">No task requests</h4>
             </section>
+            <section id="intern_profile" class="inner-page hidden flex align-start"></section>
             <section id="all_interns_page" class="inner-page hidden flex flex-direction-column align-start">
                 <div id="all_interns_page__header" class="grid gap-0-5">
                     <h2>Interns</h2>
@@ -562,19 +563,6 @@
         </article>
     </main>
     </main>
-
-    <sm-popup id="intern_info_popup">
-        <header slot="header" class="popup__header">
-            <button class="popup__header__close" onclick="closePopup()">
-                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
-                </svg>
-            </button>
-        </header>
-        <section id="intern_info__wrapper" class="grid gap-1"></section>
-    </sm-popup>
 
     <sm-popup id="intern_list_popup">
         <header slot="header" class="popup__header">
@@ -1223,6 +1211,9 @@
                     break;
                 case 'all_interns_page':
                     renderAllInterns()
+                    break;
+                case 'intern_profile':
+                    render.internProfile(params?.id)
                     break;
                 case 'project_explorer':
                     let breadcrumbs = []
@@ -1917,7 +1908,8 @@
                     </div>
                 `;
             },
-            internCard(internFloId, { selectable = false } = {}) {
+            internCard(internFloId, options = {}) {
+                const { selectable } = options
                 const internName = RIBC.getInternList()[internFloId]
                 const internPoints = RIBC.getInternRating(internFloId)
                 const splitName = internName.split(' ')
@@ -1925,9 +1917,10 @@
                 if (splitName.length > 1) {
                     initials += splitName[splitName.length - 1][0]
                 }
-                return html`
-                    <label class="intern-card align-center interact" .dataset=${{ internFloId }} onclick=${selectable ? false : showInternInfo} title="Intern Information">
-                        ${selectable ? html`<input type="checkbox" class="intern-card__checkbox" value=${internFloId}>` : ''}
+                if (selectable) {
+                    return html`
+                    <label class="intern-card align-center interact" .dataset=${{ internFloId }} title="Intern Information">
+                        <input type="checkbox" class="intern-card__checkbox" value=${internFloId}>
                         <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                         <div class="intern-card__name">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
@@ -1935,6 +1928,17 @@
                             <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
                         </div>
                     </label>`;
+                } else {
+                    return html`
+                        <a class="intern-card align-center interact" href=${`#/intern_profile?id=${internFloId}`} title="Intern Information">
+                            <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
+                            <div class="intern-card__name">${internName}</div>
+                            <div class="intern-card__score-wrapper flex align-center">
+                                <b class="intern-card__score">${internPoints}</b>
+                                <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
+                            </div>
+                        </a>`;
+                }
             },
             adminInterns() {
                 const addInternButton = html`<button class="button button--colored" onclick="openPopup('add_intern_popup')">
@@ -1944,12 +1948,16 @@
                 renderElem(getRef('admin_page__intern_list'), html`${[addInternButton, filterInterns('')]}`)
             },
             internUpdateCard(update) {
-                const { floID, time, note, update: { projectCode, branch, task, description, link } } = update
+                const { floID, time, note, update: { projectCode, branch, task, description, link }, tag } = update
                 let topic = `${RIBC.getProjectDetails(projectCode).projectName} / ${RIBC.getTaskDetails(projectCode, branch, task).title}`
                 const internName = RIBC.getInternList()[floID]
                 let replyButton
-                if (userType === "admin" && !note) {
-                    replyButton = html`<button class="button button--small init-update-replay margin-left-auto">Reply</button>`
+                let saveButton
+                if (userType === "admin") {
+                    if (!note)
+                        replyButton = html`<button class="button button--small button--colored init-update-replay">Reply</button>`
+                    if (!tag)
+                        saveButton = html`<button class="button button--small button--colored save-update margin-left-auto">Save</button>`
                 }
                 let providedLink
                 if (link) {
@@ -1971,8 +1979,8 @@
                         <h4 class="update__topic">${topic}</h4>
                         <p class="update__message ws-pre-line wrap-around">${description}</p>
                         ${providedLink}
-                        ${replyButton}
                         ${adminReply}
+                        ${saveButton || replyButton ? html`<div class="flex align-center gap-0-3">${saveButton}${replyButton}</div>` : ''}
                     </li>`;
             },
             branchButton(obj = {}) {
@@ -1997,14 +2005,33 @@
                     </span>
                 `
             },
-            internSpecificTasks(internId) {
+            assignedInternTasks(internId) {
+                const { assignedTasks, completedTasks } = RIBC.getInternRecord(internId)
+                if (getObjLength(assignedTasks) === 0) return false
+                const assignedTasksList = [];
+                for (const task in assignedTasks) {
+                    if (completedTasks[task]) continue;
+                    const { points, assignedOn } = assignedTasks[task];
+                    const { title } = RIBC.getAllTasks()[task];
+                    assignedTasksList.push(html`
+                        <div class="intern_profile__task">
+                            <h4>${title}</h4>
+                            <time>${getFormattedTime(assignedOn, 'date-only')}</time>
+                            <p class="flex align-center gap-0-3">
+                                ${points}
+                                <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"></path> </svg>
+                            </p>
+                        </div>`)
+                }
+            },
+            completedInternTasks(internId) {
                 const { completedTasks } = RIBC.getInternRecord(internId)
                 if (getObjLength(completedTasks) === 0) return false
                 return Object.keys(completedTasks).map(task => {
                     const { points, completionDate } = completedTasks[task];
                     const { title } = RIBC.getAllTasks()[task];
                     return html`
-                        <div class="intern_info__task">
+                        <div class="intern_profile__task">
                             <h4>${title}</h4>
                             <time>${getFormattedTime(completionDate, 'date-only')}</time>
                             <p class="flex align-center gap-0-3">
@@ -2197,12 +2224,93 @@
                             <h4 class="task__title">${title}</h4>
                             ${linkifyDescription}
                         </div>
-                        <button class="send-update-button button--small margin-left-auto" onclick=${initTaskUpdate}>
+                        <button class="send-update-button button--small button--colored margin-left-auto" onclick=${initTaskUpdate}>
                             <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"/></svg>    
                             Post an update
                         </button>
                     </li>
                 `;
+            },
+            internProfile(internFloId) {
+                const { joined, completedTasks = {}, active = true } = RIBC.getInternRecord(internFloId) || {}
+                const internName = RIBC.getInternList()[internFloId]
+                const rating = RIBC.getInternRating(internFloId)
+                let completedTasksCount = 0;
+                let totalPoints = 0
+                for (const task in completedTasks) {
+                    completedTasksCount++
+                    totalPoints += completedTasks[task].points
+                }
+                const splitName = internName.split(' ')
+                let initials = splitName[0][0]
+                if (splitName.length > 1) {
+                    initials += splitName[splitName.length - 1][0]
+                }
+                renderElem(getRef('intern_profile'), html`
+                <div id="intern_profile__left">
+                    <div class="flex flex-direction-column align-items-center gap-1-5">
+                        <div id="intern_profile__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
+                        <div class="flex flex-direction-column align-items-center gap-0-5">
+                            <div class="flex align-center gap-0-5">
+                                <h3 id="intern_profile__name" class="text-center">${internName}</h3>
+                                ${userType === "admin" ? html`<button id="edit_intern_name" class="button button--small button--colored" onclick=${toggleInternNameEditing}>Edit</button> ` : ''} 
+                            </div>
+                            <sm-copy id="intern_profile__flo_id" value=${internFloId}></sm-copy>
+                        </div>
+                        ${joined ? html`<p>Joined on ${getFormattedTime(joined, 'date-only')}</p>` : ''}
+                    </div>
+                    <div id="stats_wrapper"> 
+                        <div id="intern_rating" class="stat">
+                            <div class="stat__display">
+                                <svg class="stat__circle" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"> <circle cx="64" cy="64" r="63.5"/> </svg>
+                                <span class="stat__count">${rating}%</h4>
+                            </div>
+                            <p>Rating</p>
+                        </div>
+                        <div id="intern_complete_tasks" class="stat">
+                            <div class="stat__display">
+                                <svg class="stat__circle" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"> <circle cx="64" cy="64" r="63.5"/> </svg>
+                                <span class="stat__count">${completedTasksCount}</h4>
+                            </div>
+                            <p>Task completed</p>
+                        </div>
+                        <div id="intern_points" class="stat">
+                            <div class="stat__display">
+                                <svg class="stat__circle" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"> <circle cx="64" cy="64" r="63.5"/> </svg>
+                                <span class="stat__count">${totalPoints}</h4>
+                            </div>
+                            <p>Points earned</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="intern_profile__right" class="flex flex-direction-column gap-1-5"> 
+                    <div class="flex align-center space-between gap-1">
+                        <h3>Tasks</h3>
+                        <a href=${`#/updates_page?projectCode=all&internId=${internFloId}`} class="button button--small button--colored">See updates</a>
+                    </div>
+                    <div>
+                        <h4>Assigned</h4>
+                        <div>
+                            ${render.assignedInternTasks(internFloId) || html`<p>No currently assigned tasks</p>`}
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Completed</h4>
+                        <div>
+                            ${render.completedInternTasks(internFloId) || html`<p>No tasks completed yet</p>`}
+                        </div>
+                    </div>
+                </div>
+            `)
+                let color = '--green';
+                if (rating < 50) {
+                    color = '--danger-color'
+                } else if (rating < 80) {
+                    color = '--orange'
+                }
+                setTimeout(() => {
+                    getRef('intern_rating').style = `--progress: ${400 - (rating * 4)}; --rating-color:var(${color})`;
+                }, 100);
             },
             dashProject(projectCode) {
                 const { projectName } = RIBC.getProjectDetails(projectCode)
@@ -2618,85 +2726,6 @@
             const timeTaken = new Date(end) - new Date(start);
             const days = Math.floor(timeTaken / (1000 * 60 * 60 * 24));
             return days;
-        }
-
-
-        // opens a popup containing various intern information
-        function showInternInfo(e) {
-            const internFloId = e.target.closest('.intern-card').dataset.internFloId;
-            const { joined, completedTasks = {}, active = true } = RIBC.getInternRecord(internFloId) || {}
-            const internName = RIBC.getInternList()[internFloId]
-            const rating = RIBC.getInternRating(internFloId)
-            let completedTasksCount = 0;
-            let totalPoints = 0
-            for (const task in completedTasks) {
-                completedTasksCount++
-                totalPoints += completedTasks[task].points
-            }
-            const splitName = internName.split(' ')
-            let initials = splitName[0][0]
-            if (splitName.length > 1) {
-                initials += splitName[splitName.length - 1][0]
-            }
-            renderElem(getRef('intern_info__wrapper'), html`
-                <div id="intern_info__left">
-                    <div class="flex flex-direction-column align-items-center gap-1-5">
-                        <div id="intern_info__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
-                        <div class="flex flex-direction-column align-items-center gap-0-5">
-                            <div class="flex align-center gap-0-5">
-                                <h3 id="intern_info__name" class="text-center">${internName}</h3>
-                                ${userType === "admin" ? html`<button id="edit_intern_name" class="button button--small button--colored" onclick=${toggleInternNameEditing}>Edit</button> ` : ''} 
-                            </div>
-                            <sm-copy id="intern_info__flo_id" value=${internFloId}></sm-copy>
-                        </div>
-                        ${joined ? html`<p>Joined on ${getFormattedTime(joined, 'date-only')}</p>` : ''}
-                    </div>
-                    <div id="stats_wrapper"> 
-                        <div id="intern_rating" class="stat">
-                            <div class="stat__display">
-                                <svg class="stat__circle" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"> <circle cx="64" cy="64" r="63.5"/> </svg>
-                                <span class="stat__count">${rating}%</h4>
-                            </div>
-                            <p>Rating</p>
-                        </div>
-                        <div id="intern_complete_tasks" class="stat">
-                            <div class="stat__display">
-                                <svg class="stat__circle" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"> <circle cx="64" cy="64" r="63.5"/> </svg>
-                                <span class="stat__count">${completedTasksCount}</h4>
-                            </div>
-                            <p>Task completed</p>
-                        </div>
-                        <div id="intern_points" class="stat">
-                            <div class="stat__display">
-                                <svg class="stat__circle" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg"> <circle cx="64" cy="64" r="63.5"/> </svg>
-                                <span class="stat__count">${totalPoints}</h4>
-                            </div>
-                            <p>Points earned</p>
-                        </div>
-                    </div>
-                </div>
-                <div id="intern_info__right"> 
-                    <div id="intern_info__tasks">
-                        <div class="flex align-center space-between gap-1">
-                            <h3>Tasks completed</h3>
-                            <a href=${`#/updates_page?projectCode=all&internId=${internFloId}`} class="button button--small button--colored">See updates</a>
-                        </div>
-                        <div id="intern_info__tasks_list">
-                            ${render.internSpecificTasks(internFloId) || html`<p>No tasks completed yet</p>`}
-                        </div>
-                    </div>
-                </div>
-            `)
-            openPopup('intern_info_popup');
-            let color = '--green';
-            if (rating < 50) {
-                color = '--danger-color'
-            } else if (rating < 80) {
-                color = '--orange'
-            }
-            setTimeout(() => {
-                getRef('intern_rating').style = `--progress: ${400 - (rating * 4)}; --rating-color:var(${color})`;
-            }, 100);
         }
 
         // opens a popup containing various project information
@@ -3156,22 +3185,22 @@
 
         function toggleInternNameEditing(e) {
             const button = e.target.closest('button');
-            if (getRef('intern_info__name').isContentEditable) {
-                const floId = getRef('intern_info__flo_id').value;
-                const newName = getRef('intern_info__name').textContent.trim();
+            if (getRef('intern_profile__name').isContentEditable) {
+                const floId = getRef('intern_profile__flo_id').value;
+                const newName = getRef('intern_profile__name').textContent.trim();
                 if (newName !== '' && floGlobals.tempEditableContent !== newName) {
                     RIBC.admin.renameIntern(floId, newName)
                     const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
                     renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`)
                     notify('Intern name updated locally, please commit changes to make them permanent.', 'success')
                 }
-                getRef('intern_info__name').contentEditable = false;
+                getRef('intern_profile__name').contentEditable = false;
                 button.textContent = 'Edit';
                 document.getSelection().collapseToEnd()
                 floGlobals.tempEditableContent = '';
                 adminDataChanged();
             } else {
-                makeEditable(getRef('intern_info__name'))
+                makeEditable(getRef('intern_profile__name'))
                 button.textContent = 'Done'
             }
         }
@@ -3233,7 +3262,7 @@
         }
         delegate(getRef('all_updates_list'), 'click', '.init-update-replay', (e) => {
             const vectorClock = e.delegateTarget.closest('.intern-update').dataset.vectorClock;
-            e.delegateTarget.after(html.node`
+            e.delegateTarget.parentNode.after(html.node`
                 <sm-form class="update-replay grid gap-0-5">
                     <sm-textarea placeholder="Enter your reply here" class="update-reply-textarea" rows="4" required></sm-textarea>
                     <div class="flex align-center gap-0-3 margin-left-auto">
@@ -3244,8 +3273,21 @@
                     </div>
                 </sm-form>
             `)
-            e.delegateTarget.classList.add('hidden')
+            e.delegateTarget.parentNode.classList.add('hidden')
             e.target.closest('.intern-update').querySelector('.update-reply-textarea').focusIn()
+        })
+        delegate(getRef('all_updates_list'), 'click', '.save-update', (e) => {
+            const vectorClock = e.delegateTarget.closest('.intern-update').dataset.vectorClock;
+            getConfirmation('Are you sure you want to save this update?', { confirmText: 'Save' }).then((res) => {
+                if (res) {
+                    floCloudAPI.tagApplicationData(vectorClock, 'saved').then(() => {
+                        notify('Update saved', 'success')
+                        e.delegateTarget.remove()
+                    }).catch(() => {
+                        notify('Failed to save update', 'error')
+                    })
+                }
+            })
         })
 
         function cancelUpdateReply(replayBox) {
@@ -3384,9 +3426,6 @@
                     break;
                 case 'rate_participants_popup':
                     renderElem(getRef('rating_wrapper'), html``)
-                    break;
-                case 'intern_info_popup':
-                    renderElem(getRef('intern_info__wrapper'), html``)
                     break;
             }
             if (popupStack.items.length === 0) {
