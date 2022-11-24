@@ -332,7 +332,8 @@
                         <sm-chip value="task_display">Task display</sm-chip>
                         <sm-chip value="requests">Requests</sm-chip>
                     </sm-chips>
-                    <button class="button button--small button--primary admin-option" onclick="commitToChanges()">
+                    <button id="commit_changes_button" class="button button--small button--primary admin-option"
+                        onclick="commitToChanges()">
                         <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                             width="24" height="24">
                             <path fill="none" d="M0 0h24v24H0z" />
@@ -724,8 +725,8 @@
             <sm-input id="intern_apply__portfolio_link" placeholder="Portfolio link (optional)" animate>
             </sm-input>
             <div class="multi-state-button">
-                <button id="intern_apply__button" title="post this update" class="button button--primary" type="submit"
-                    disabled onclick="applyForInternship()">
+                <button id="intern_apply__button" title="post this update" class="button button--primary w-100"
+                    type="submit" disabled onclick="applyForInternship()">
                     <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                         height="24">
                         <path fill="none" d="M0 0h24v24H0z" />
@@ -1317,22 +1318,23 @@
                                 render.internRequests()
                                 // accept task request
                                 delegate(getRef('requests_list'), 'click', '.accept-request', (e) => {
-                                    getConfirmation('Are you sure you want to accept this request?').then(result => {
+                                    getConfirmation('Are you sure you want to accept this request?', { confirmText: 'Accept' }).then(result => {
                                         if (result) {
                                             const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
                                             if (RIBC.getInternList())
                                                 RIBC.admin.processTaskRequest(vectorClock, true).then(() => {
                                                     notify('Intern assigned, commit changes to make it permanent.', 'success')
                                                     removeRequest(e.delegateTarget.closest('.request-card'))
+                                                    adminDataChanged();
                                                 }).catch(err => {
-                                                    notify(err.message, 'error')
+                                                    notify(err, 'error')
                                                 })
                                         }
                                     })
                                 })
                                 // reject task request
                                 delegate(getRef('requests_list'), 'click', '.reject-request', (e) => {
-                                    getConfirmation('Are you sure you want to reject this request?').then((result) => {
+                                    getConfirmation('Are you sure you want to reject this request?', { confirmText: 'Reject' }).then((result) => {
                                         if (result) {
                                             const vectorClock = e.delegateTarget.closest('.request-card').dataset.vectorClock
                                             const type = e.delegateTarget.closest('.request-card').dataset.type
@@ -1340,6 +1342,7 @@
                                                 RIBC.admin.processTaskRequest(vectorClock, false).then(() => {
                                                     notify('Request rejected', 'success')
                                                     removeRequest(e.delegateTarget.closest('.request-card'))
+                                                    adminDataChanged();
                                                 }).catch(err => {
                                                     notify(err, 'error')
                                                 })
@@ -1348,6 +1351,7 @@
                                                 if (result === 'Rejected') {
                                                     notify('Request rejected', 'success')
                                                     removeRequest(e.delegateTarget.closest('.request-card'))
+                                                    adminDataChanged();
                                                 }
                                             }
                                         }
@@ -1363,6 +1367,7 @@
                                 dragger.on('dragend', function (el, source) {
                                     const newOrder = Array.from(getRef('display_task_map').children).map(el => el.dataset.taskId)
                                     RIBC.admin.setDisplayedTasks(newOrder)
+                                    adminDataChanged();
                                 });
                                 break;
                         }
@@ -1943,7 +1948,7 @@
                 let topic = `${RIBC.getProjectDetails(projectCode).projectName} / ${RIBC.getTaskDetails(projectCode, branch, task).title}`
                 const internName = RIBC.getInternList()[floID]
                 let replyButton
-                if (userType === 'admin' && !note) {
+                if (userType === "admin" && !note) {
                     replyButton = html`<button class="button button--small init-update-replay margin-left-auto">Reply</button>`
                 }
                 let providedLink
@@ -2407,6 +2412,18 @@
             }
             return renderedIntensColor[floId]
         }
+        floGlobals.adminChanges = 0;
+        const beforeUnloadListener = (event) => {
+            event.preventDefault();
+            return event.returnValue = "Are you sure you want to exit?";
+        };
+        function adminDataChanged() {
+            floGlobals.adminChanges++;
+            getRef('commit_changes_button').setAttribute('data-badge', floGlobals.adminChanges)
+            if (floGlobals.adminChanges === 1) {
+                addEventListener("beforeunload", beforeUnloadListener, { capture: true });
+            }
+        }
 
         const filterTasks = debounce((e) => {
             const searchQuery = getRef('task_search_input')?.value.trim() || '';
@@ -2548,6 +2565,7 @@
                 closePopup();
                 render.adminInterns();
                 notify(`${internName} added as an intern.`, 'success')
+                adminDataChanged();
             }
         }
         function addProjectToList() {
@@ -2565,6 +2583,7 @@
             render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
             getRef('admin_page__project_list').querySelector(`[href="#/admin_page/project?id=${projectCode}&branch=mainLine"]`)?.click()
             closePopup();
+            adminDataChanged();
         }
 
         function makeEditable(elem) {
@@ -2588,6 +2607,7 @@
                     RIBC.admin.addProjectDetails(appState.params.id, { projectName: newTitle, projectDescription: newDescription })
                     notify('Changes saved locally, commit the changes to make them permanent', 'success')
                     render.projectList(getRef('admin_page__project_list'), getSortedProjectList(), true)
+                    adminDataChanged();
                 } else {
                     e.target.innerHTML = floGlobals.tempEditableContent
                 }
@@ -2625,7 +2645,7 @@
                         <div class="flex flex-direction-column align-items-center gap-0-5">
                             <div class="flex align-center gap-0-5">
                                 <h3 id="intern_info__name" class="text-center">${internName}</h3>
-                                ${userType === 'admin' ? html`<button id="edit_intern_name" class="button button--small button--colored" onclick=${toggleInternNameEditing}>Edit</button> ` : ''} 
+                                ${userType === "admin" ? html`<button id="edit_intern_name" class="button button--small button--colored" onclick=${toggleInternNameEditing}>Edit</button> ` : ''} 
                             </div>
                             <sm-copy id="intern_info__flo_id" value=${internFloId}></sm-copy>
                         </div>
@@ -2798,6 +2818,7 @@
                     RIBC.admin.putTaskStatus('incomplete', appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                     // TODO: remove task scores from intern rating
                     renderBranchTasks()
+                    adminDataChanged();
                 }
             })
         }
@@ -2816,6 +2837,7 @@
             const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
             const filteredTasks = RIBC.getDisplayedTasks().filter(task => task !== taskId)
             renderBranchTasks()
+            adminDataChanged();
         }
         function rateParticipants() {
             document.querySelectorAll('.rating-part').forEach((ratingPart) => {
@@ -2849,6 +2871,7 @@
             }
             RIBC.admin.editTaskDetails(taskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
             notify('Changes saved locally, commit the changes to make them permanent', 'success')
+            adminDataChanged();
         })
         getRef('task_list').addEventListener('focusout', (e) => {
             currentTask = e.target.closest('.admin-task');
@@ -2866,6 +2889,7 @@
             if (ogTaskDetails[e.target.dataset.editField] !== newTaskDetails[e.target.dataset.editField]) {
                 RIBC.admin.editTaskDetails(newTaskDetails, appState.params.id, appState.params.branch, currentTask.dataset.taskId)
                 notify('Changes saved locally, commit the changes to make them permanent', 'success')
+                adminDataChanged();
             }
         })
         getRef('task_list').addEventListener('dblclick', (e) => {
@@ -2990,6 +3014,7 @@
                 renderBranchTasks()
                 getRef('add_task').classList.remove('hidden')
                 notify('Task added to current branch', 'success')
+                adminDataChanged();
             }
         })
         function markAsFailed(e) {
@@ -3001,6 +3026,7 @@
                     if (done) {
                         notify('Task marked as failed', 'success')
                         renderBranchTasks()
+                        adminDataChanged();
                     } else {
                         notify('Failed to mark task as failed', 'error')
                     }
@@ -3013,6 +3039,7 @@
                     RIBC.admin.unassignInternFromTask(e.target.closest('.menu').dataset.floId, `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`)
                     notify('Intern removed from the task')
                     renderBranchTasks()
+                    adminDataChanged();
                 }
             })
         }
@@ -3067,6 +3094,9 @@
                 if (result) {
                     RIBC.admin.updateObjects().then(res => {
                         notify('Changes committed.', 'success')
+                        floGlobals.adminChanges = 0
+                        getRef('commit_changes_button').removeAttribute('data-badge')
+                        removeEventListener("beforeunload", beforeUnloadListener, { capture: true });
                     }).catch(err => {
                         console.error(err)
                     })
@@ -3080,6 +3110,7 @@
                     const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
                     RIBC.admin.setDisplayedTasks(RIBC.getDisplayedTasks().filter(task => task !== taskId))
                     renderBranchTasks()
+                    adminDataChanged();
                 }
             })
         }
@@ -3100,6 +3131,7 @@
             })
             notify(`Assigned task`, 'success')
             closePopup()
+            adminDataChanged();
         }
 
         function renderAllInterns() {
@@ -3119,6 +3151,7 @@
             notify(`Branch added ${branchName}`, 'success')
             renderBranches()
             closePopup()
+            adminDataChanged();
         }
 
         function toggleInternNameEditing(e) {
@@ -3136,6 +3169,7 @@
                 button.textContent = 'Edit';
                 document.getSelection().collapseToEnd()
                 floGlobals.tempEditableContent = '';
+                adminDataChanged();
             } else {
                 makeEditable(getRef('intern_info__name'))
                 button.textContent = 'Done'
@@ -3422,7 +3456,7 @@
                     elem.classList.add('hidden')
                 })
             }
-            if (userType === 'admin') {
+            if (userType === "admin") {
                 document.querySelectorAll('.not-for-admin').forEach((elem) => {
                     elem.classList.add('hidden')
                 })

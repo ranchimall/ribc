@@ -1075,9 +1075,9 @@ ul {
 }
 
 .completed .left .circle {
-  background: #00c85320;
+  background: var(--green);
   .icon {
-    fill: #00c853;
+    fill: rgba(var(--foreground-color), 1);
   }
 }
 
@@ -1377,7 +1377,34 @@ ul {
     color: rgba(var(--text-color), 0.8);
   }
 }
-
+#commit_changes_button {
+  &[data-badge] {
+    &::after {
+      content: attr(data-badge);
+      display: inline-flex;
+      padding: 0.2em;
+      background-color: rgba(var(--foreground-color), 1);
+      color: var(--accent-color);
+      font-weight: 700;
+      line-height: 1em;
+      min-width: 1em;
+      justify-content: center;
+      border-radius: 1rem;
+      font-size: 0.9rem;
+      margin-left: 0.3rem;
+      animation: bounce 0.5s infinite alternate;
+      transform-origin: bottom;
+    }
+  }
+}
+@keyframes bounce {
+  0% {
+    transform: translateY(0) scaleY(0.9);
+  }
+  100% {
+    transform: translateY(-0.2rem);
+  }
+}
 .branch-button {
   display: flex;
   padding: 0.5rem;
@@ -2141,7 +2168,6 @@ input[type="date"] {
     grid-template-columns: 6rem 1fr 8rem;
   }
   #requests_container {
-    padding: 1rem;
     grid-template-columns: 14rem 1fr;
     & > :nth-child(2) {
       width: min(48rem, 100%);
