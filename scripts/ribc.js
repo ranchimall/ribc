@@ -275,7 +275,7 @@
             _.internsAssigned[key] = []
         if (!_.internsAssigned[key].includes(floID)) {
             _.internsAssigned[key].push(floID)
-            _.internRecord[floID].assignedTasks[key] = Date.now()
+            _.internRecord[floID].assignedTasks[key] = { assignedOn: Date.now() }
             return true
         } else
             return false

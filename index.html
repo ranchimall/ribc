@@ -2016,19 +2016,15 @@
                 const assignedTasksList = [];
                 for (const task in assignedTasks) {
                     if (completedTasks.hasOwnProperty(task) || failedTasks.hasOwnProperty(task)) continue;
-                    const { points, assignedOn } = assignedTasks[task];
+                    const { assignedOn } = assignedTasks[task];
                     const { title } = RIBC.getAllTasks()[task];
                     assignedTasksList.push(html`
                         <div class="intern_profile__task">
                             <h4>${title}</h4>
-                            <time>${getFormattedTime(assignedOn, 'date-only')}</time>
-                            <p class="flex align-center gap-0-3">
-                                ${points}
-                                <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"></path> </svg>
-                            </p>
+                            <time>${getFormattedTime(assignedOn || assignedTasks[task], 'date-only')}</time>
                         </div>`)
                 }
-                return assignedTasksList
+                return assignedTasksList.length > 0 ? assignedTasksList : false
             },
             completedInternTasks(internId) {
                 const { completedTasks } = RIBC.getInternRecord(internId)
@@ -3196,8 +3192,6 @@
                 const newName = getRef('intern_profile__name').textContent.trim();
                 if (newName !== '' && floGlobals.tempEditableContent !== newName) {
                     RIBC.admin.renameIntern(floId, newName)
-                    const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
-                    renderElem(getRef('top_interns'), html`${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}`)
                     notify('Intern name updated locally, please commit changes to make them permanent.', 'success')
                 }
                 getRef('intern_profile__name').contentEditable = false;
