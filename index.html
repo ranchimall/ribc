@@ -1412,6 +1412,9 @@
                     if (appState.lastPage === 'dashboard_page') {
                         renderElem(getRef('dashboard_page'), html``)
                     }
+                    if (appState.lastPage === 'intern_profile') {
+                        renderElem(getRef('intern_profile'), html``)
+                    }
                     if (appState.lastPage === 'settings_page') {
                         renderElem(getRef('settings_page'), html``)
                     }
@@ -2006,11 +2009,11 @@
                 `
             },
             assignedInternTasks(internId) {
-                const { assignedTasks, completedTasks } = RIBC.getInternRecord(internId)
+                const { assignedTasks, completedTasks, failedTasks } = RIBC.getInternRecord(internId)
                 if (getObjLength(assignedTasks) === 0) return false
                 const assignedTasksList = [];
                 for (const task in assignedTasks) {
-                    if (completedTasks[task]) continue;
+                    if (completedTasks[task] || failedTasks[task]) continue;
                     const { points, assignedOn } = assignedTasks[task];
                     const { title } = RIBC.getAllTasks()[task];
                     assignedTasksList.push(html`
@@ -2310,7 +2313,7 @@
                 }
                 setTimeout(() => {
                     getRef('intern_rating').style = `--progress: ${400 - (rating * 4)}; --rating-color:var(${color})`;
-                }, 100);
+                }, 0)
             },
             dashProject(projectCode) {
                 const { projectName } = RIBC.getProjectDetails(projectCode)
