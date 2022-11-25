@@ -1736,6 +1736,8 @@
             c03: 'Development',
             c04: 'Social Media Management',
             c05: 'Video Making',
+            c06: 'Project Scouting & Capital Raising',
+            c07: 'Investment & Finance',
         }
         const render = {
             displayTaskCard(projectCode, branch, task) {
@@ -2013,7 +2015,7 @@
                 if (getObjLength(assignedTasks) === 0) return false
                 const assignedTasksList = [];
                 for (const task in assignedTasks) {
-                    if (completedTasks[task] || failedTasks[task]) continue;
+                    if (completedTasks.hasOwnProperty(task) || failedTasks.hasOwnProperty(task)) continue;
                     const { points, assignedOn } = assignedTasks[task];
                     const { title } = RIBC.getAllTasks()[task];
                     assignedTasksList.push(html`
@@ -2026,6 +2028,7 @@
                             </p>
                         </div>`)
                 }
+                return assignedTasksList
             },
             completedInternTasks(internId) {
                 const { completedTasks } = RIBC.getInternRecord(internId)
