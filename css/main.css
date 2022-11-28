@@ -958,19 +958,6 @@ ul {
   border-radius: 0.5rem;
 }
 
-#sign_in_page {
-  display: grid;
-  position: fixed;
-  z-index: 5;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  place-content: center;
-  background-color: rgba(var(--foreground-color), 1);
-  gap: 1rem;
-}
-
 .display-task {
   display: flex;
   flex-direction: column;
@@ -1396,7 +1383,6 @@ ul {
 }
 
 .intern_profile__task {
-  display: grid;
   align-items: center;
   width: 100%;
   gap: 0.3rem;
@@ -1404,10 +1390,6 @@ ul {
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: rgba(var(--foreground-color), 1);
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-.intern_profile__task h4 {
-  grid-column: 1/-1;
 }
 .intern_profile__task p {
   font-weight: 500;
@@ -1415,6 +1397,18 @@ ul {
 .intern_profile__task time {
   font-size: 0.9rem;
   color: rgba(var(--text-color), 0.8);
+}
+.intern_profile__task--assigned {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.intern_profile__task--completed {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.intern_profile__task--completed h4 {
+  grid-column: 1/-1;
 }
 
 #commit_changes_button[data-badge]::after {
@@ -1837,6 +1831,36 @@ ul {
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: rgba(var(--foreground-color), 1);
+}
+.task-card .task__completion-timeline {
+  gap: 1rem;
+  background-color: rgba(var(--text-color), 0.04);
+  padding: 0.5rem 1rem;
+  margin: 0 -1rem 0.5rem -1rem;
+  border: solid thin rgba(var(--text-color), 0.1);
+}
+.task-card .task__completion-timeline__progress {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 0.2rem;
+  background-color: rgba(var(--text-color), 0.2);
+  border-radius: 0.5rem;
+}
+.task-card .task__completion-timeline__progress__bar {
+  height: 0.2rem;
+  background-color: var(--accent-color);
+  border-radius: inherit;
+  width: var(--progress);
+}
+.task-card .task__completion-timeline__progress__disc {
+  display: flex;
+  height: 0.8rem;
+  aspect-ratio: 1/1;
+  background-color: var(--accent-color);
+  border-radius: 0.5rem;
+  z-index: 1;
+  margin-left: -0.4rem;
 }
 
 .task__project-title {
