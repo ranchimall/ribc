@@ -1796,9 +1796,9 @@ ul {
         top: calc(100% + 0.5rem);
         left: 50%;
         transform: translateX(-50%);
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         text-align: center;
-        width: 10rem;
+        width: 11rem;
         padding: 0.5rem;
         color: rgba(var(--text-color), 0.8);
         background-color: var(--accent-color);
@@ -1821,7 +1821,7 @@ ul {
       border-radius: 0.5rem;
       &__bar {
         height: 0.2rem;
-        background-color: var(--accent-color);
+        background-color: rgba(var(--text-color), 1);
         border-radius: inherit;
         width: var(--progress);
       }
