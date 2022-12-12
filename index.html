@@ -28,6 +28,7 @@
     <script src="scripts/compactIDB.min.js" defer></script>
     <script src="scripts/floCloudAPI.min.js" defer></script>
     <script src="scripts/floDapps.min.js" defer></script>
+    <script src="scripts/btcOperator.min.js" defer></script>
     <script src="https://unpkg.com/uhtml@3.0.1/es.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"
         integrity="sha512-/hVAZO5POxCKdZMSLefw30xEVwjm94PAV9ynjskGbIpBvHO9EBplEcdUlBdCKutpZsF+La8Ag4gNrG0gAOn3Ig=="
@@ -53,9 +54,29 @@
                 })
             )
             floDapps.launchStartUp().then(result => {
-                floGlobals.loaded = true
                 console.log(result)
-                console.log(`Welcome FLO_ID: ${myFloID}`)
+                let floId = floDapps.user.id
+                if (!floCrypto.validateFloID(floId)) {
+                    const type = coinjs.addressDecode(floId).type
+                    if (type === 'standard') {
+                        floId = btcOperator.convert.legacy2legacy(floId, 0x23);
+                    } else if (type === 'bech32') {
+                        floId = btcOperator.convert.bech2legacy(floId, 0x23);
+                    } else {
+                        notify(`Multisig address can't be used to sign in`, 'error');
+                        return;
+                    }
+                }
+                floGlobals.myFloID = floId
+                floGlobals.myBtcID = btcOperator.convert.legacy2bech(floId)
+                getRef('user_profile_id').textContent = floGlobals.myFloID
+                let showingFloID = true
+                // alternating between floID and btcID every 10 seconds
+                setInterval(() => {
+                    getRef('user_profile_id').textContent = showingFloID ? floGlobals.myBtcID : floGlobals.myFloID
+                    showingFloID = !showingFloID
+                }, 10000)
+                floGlobals.loaded = true
                 RIBC.init(floGlobals.subAdmins.includes(myFloID)).then(result => {
                     console.log(result)
                     renderAllElements()
@@ -104,8 +125,7 @@
                 </div>
                 <img src="assets/working-intern.svg" alt="">
             </div>
-            <div id="landing_tasks_wrapper" class="flex flex-direction-column justify-content-center">
-            </div>
+            <div id="landing_tasks_wrapper" class="flex flex-direction-column justify-content-center"></div>
         </div>
         <article id="sign_in" class="inner-page hidden">
             <section>
@@ -184,7 +204,7 @@
         <div id="task_details_wrapper" class="flex flex-direction-column gap-1-5"></div>
     </div>
     <main id="main_page" class="grid page hidden">
-        <header id="main_header" class="hide-on-desktop space-between">
+        <header id="main_header" class="space-between">
             <div class="flex align-center flex-1">
                 <svg class="icon margin-right-0-3" viewBox="0 0 27.25 32">
                     <title>RanchiMall</title>
@@ -195,15 +215,18 @@
                 <h4>RanchiMall Internships</h4>
             </div>
             <theme-toggle></theme-toggle>
+            <button id="user_profile_button" class="user-content button--small" onclick="openPopup('profile_popup')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon margin-right-0-5" height="24px" viewBox="0 0 24 24"
+                    width="24px" fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none"></path>
+                    <path
+                        d="M12 5.9c1.16 0 2.1.94 2.1 2.1s-.94 2.1-2.1 2.1S9.9 9.16 9.9 8s.94-2.1 2.1-2.1m0 9c2.97 0 6.1 1.46 6.1 2.1v1.1H5.9V17c0-.64 3.13-2.1 6.1-2.1M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 9c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z">
+                    </path>
+                </svg>
+                <div id="user_profile_id" class="overflow-ellipsis"></div>
+            </button>
         </header>
         <nav id="main_nav">
-            <div class="nav-list__item hide-on-mobile">
-                <svg class="icon rm-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                        d="M20.46,21.32C20,19.78,18.6,18.59,15.3,17a12.67,12.67,0,0,1-2.64-1.56,4.27,4.27,0,0,1-.79-1,2.6,2.6,0,0,1,0-1.41c.24-.68.49-1,2.43-2.85a7.18,7.18,0,0,0,2.09-2.92,4.25,4.25,0,0,0,0-1.77,6.52,6.52,0,0,0-2.85-3.11c-.56-.36-.81-.4-.81-.15a2.33,2.33,0,0,1-.18.45L12.4,3l-.53-.36c-.28-.21-.64-.41-.77-.49s-.46-.11-.46,0a6.21,6.21,0,0,1-.37.83s-.08,0-.17-.08c-1.15-.83-1.64-1-1.64-.73A7.33,7.33,0,0,1,7.7,3.65C6.48,5.68,5.24,6.7,4,6.7c-.56,0-.54,0-.37.64s.2.58.68.43a3.37,3.37,0,0,0,1.09-.54.86.86,0,0,1,.3-.17,1.34,1.34,0,0,1,.13.39.79.79,0,0,0,.17.4A3.5,3.5,0,0,0,7.37,7.3L7.8,7l.09.34c.12.45.19.51.62.39a4.25,4.25,0,0,0,2.17-1.54l.38-.45,0,.39A5.92,5.92,0,0,1,8.89,9.54L7.67,10.71c-2,1.93-1.89,3.51.37,5a27.41,27.41,0,0,0,2.89,1.51c.17.07.62.32,1,.54C14,19,15,20.23,15,21.48a2,2,0,0,0,0,.49h0c0,.05,0,.05.56-.1a1.89,1.89,0,0,0,.53-.21,2.41,2.41,0,0,0-.34-1.15,7.05,7.05,0,0,0-1.68-1.77,21.91,21.91,0,0,0-3.2-1.83A9.53,9.53,0,0,1,8.16,15.2a2.18,2.18,0,0,1-.74-1.55C7.42,12.79,7.86,12,9,11c1.77-1.64,2.45-2.45,2.92-3.55a2.28,2.28,0,0,0,.26-1.26A2,2,0,0,0,12,5.06l-.2-.45L12,4.3l.28-.49.09-.18L12.6,4a3.69,3.69,0,0,1,.61,1.76A3.47,3.47,0,0,1,12.94,7l-.09.25s-.21.37-.41.69A17.78,17.78,0,0,1,9.91,10.6c-1.07,1-1.43,1.62-1.47,2.47a2.05,2.05,0,0,0,.7,1.73,10.47,10.47,0,0,0,3.28,2.08c2.28,1.13,3.26,1.81,4,2.73a2.94,2.94,0,0,1,.74,1.75,1.26,1.26,0,0,0,.09.57.48.48,0,0,0,.26,0l.51-.13.29-.08,0-.28c-.13-1-1-2-2.47-3a25.52,25.52,0,0,0-3.26-1.77,8.59,8.59,0,0,1-2.23-1.43,2.09,2.09,0,0,1-.5-2.62c.26-.53.5-.83,2.35-2.6,1.51-1.45,2.15-2.58,2.15-3.79A3.67,3.67,0,0,0,13,3.48a3,3,0,0,1-.4-.42A1.85,1.85,0,0,1,13,2.33a6.74,6.74,0,0,1,1.83,1.73,2.62,2.62,0,0,1,.47,1.68,3,3,0,0,1-.55,1.84c-.45.78-.79,1.14-2.67,2.93a5.56,5.56,0,0,0-1.3,1.64,1.77,1.77,0,0,0-.21,1,1.76,1.76,0,0,0,.19.92,6.28,6.28,0,0,0,2.9,2.34,21.6,21.6,0,0,1,3.66,2c1.35,1,2,2,2,3a1.06,1.06,0,0,0,.05.47,2.83,2.83,0,0,0,1-.24C20.56,21.68,20.56,21.66,20.46,21.32ZM7.29,6.4h0a2.23,2.23,0,0,1-.9.28L6,6.72l.43-.53a15.22,15.22,0,0,0,1.89-3,3.52,3.52,0,0,1,.38-.67c.07-.08.49.2,1,.64l.39.35L9.66,4A6.7,6.7,0,0,1,7.29,6.4Zm3.58-1.11A5.8,5.8,0,0,1,9.25,6.51h0a3.3,3.3,0,0,1-.74.17l-.35,0,.39-.49a15.64,15.64,0,0,0,1.32-2,4.63,4.63,0,0,1,.28-.49c.06-.08.33.26.57.77l.28.57Zm1-1.4a1.63,1.63,0,0,1-.28.4A6.63,6.63,0,0,1,11,3.72l-.53-.56.12-.29c.2-.49.24-.51.64-.19a5.57,5.57,0,0,1,.85.78A2.78,2.78,0,0,1,11.87,3.89Z" />
-                </svg>
-                <h4 class="hide-on-mobile nav-list__item_title">RanchiMall Internships</h4>
-            </div>
             <a id="dashboard_btn" href="#/dashboard_page" class="nav-list__item nav-list__item--active interact"
                 title="open dashboard page">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
@@ -303,24 +326,6 @@
                     Manage
                 </span>
             </a>
-            <a id="settings_btn" href="#/settings_page" class="nav-list__item interact" title="open settings page">
-                <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                    height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M2 12c0-.865.11-1.703.316-2.504A3 3 0 0 0 4.99 4.867a9.99 9.99 0 0 1 4.335-2.505 3 3 0 0 0 5.348 0 9.99 9.99 0 0 1 4.335 2.505 3 3 0 0 0 2.675 4.63c.206.8.316 1.638.316 2.503 0 .865-.11 1.703-.316 2.504a3 3 0 0 0-2.675 4.629 9.99 9.99 0 0 1-4.335 2.505 3 3 0 0 0-5.348 0 9.99 9.99 0 0 1-4.335-2.505 3 3 0 0 0-2.675-4.63C2.11 13.704 2 12.866 2 12zm4.804 3c.63 1.091.81 2.346.564 3.524.408.29.842.541 1.297.75A4.993 4.993 0 0 1 12 18c1.26 0 2.438.471 3.335 1.274.455-.209.889-.46 1.297-.75A4.993 4.993 0 0 1 17.196 15a4.993 4.993 0 0 1 2.77-2.25 8.126 8.126 0 0 0 0-1.5A4.993 4.993 0 0 1 17.195 9a4.993 4.993 0 0 1-.564-3.524 7.989 7.989 0 0 0-1.297-.75A4.993 4.993 0 0 1 12 6a4.993 4.993 0 0 1-3.335-1.274 7.99 7.99 0 0 0-1.297.75A4.993 4.993 0 0 1 6.804 9a4.993 4.993 0 0 1-2.77 2.25 8.126 8.126 0 0 0 0 1.5A4.993 4.993 0 0 1 6.805 15zM12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                </svg>
-                <svg class="icon icon--filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                    height="24">
-                    <path fill="none" d="M0 0h24v24H0z" />
-                    <path
-                        d="M5.334 4.545a9.99 9.99 0 0 1 3.542-2.048A3.993 3.993 0 0 0 12 3.999a3.993 3.993 0 0 0 3.124-1.502 9.99 9.99 0 0 1 3.542 2.048 3.993 3.993 0 0 0 .262 3.454 3.993 3.993 0 0 0 2.863 1.955 10.043 10.043 0 0 1 0 4.09c-1.16.178-2.23.86-2.863 1.955a3.993 3.993 0 0 0-.262 3.455 9.99 9.99 0 0 1-3.542 2.047A3.993 3.993 0 0 0 12 20a3.993 3.993 0 0 0-3.124 1.502 9.99 9.99 0 0 1-3.542-2.047 3.993 3.993 0 0 0-.262-3.455 3.993 3.993 0 0 0-2.863-1.954 10.043 10.043 0 0 1 0-4.091 3.993 3.993 0 0 0 2.863-1.955 3.993 3.993 0 0 0 .262-3.454zM13.5 14.597a3 3 0 1 0-3-5.196 3 3 0 0 0 3 5.196z" />
-                </svg>
-                <span class="nav-list__item_title">
-                    Settings
-                </span>
-            </a>
-            <theme-toggle class="hide-on-mobile"></theme-toggle>
         </nav>
         <article id="sub_page_container">
             <section id="dashboard_page" class="inner-page hidden"></section>
@@ -540,13 +545,6 @@
                 </div>
                 <section id="project_explorer__right" class="grid hidden">
                     <header class="flex flex-direction-column gap-0-5 align-items-start">
-                        <!-- <a class="button icon-only hide-on-desktop" href="#/project_explorer" title="Go back">
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
-                                width="24px" fill="#000000">
-                                <path d="M0 0h24v24H0V0z" fill="none"></path>
-                                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
-                            </svg>
-                        </a> -->
                         <h2 id="project_explorer__project_title"></h2>
                     </header>
                     <p id="project_explorer__project_description" class="ws-pre-line wrap-around"></p>
@@ -559,7 +557,6 @@
                     <h4 class="empty-state">No tasks are added to this projects</h4>
                 </section>
             </section>
-            <section id="settings_page" class="inner-page hidden"></section>
         </article>
     </main>
     </main>
@@ -778,6 +775,20 @@
                 Set
             </button>
         </sm-form>
+    </sm-popup>
+    <sm-popup id="profile_popup">
+        <header slot="header" class="popup__header">
+            <button class="popup__header__close justify-self-start" onclick="closePopup()">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                    fill="#000000">
+                    <path d="M0 0h24v24H0V0z" fill="none" />
+                    <path
+                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                </svg>
+            </button>
+            <h3>Profile</h3>
+        </header>
+        <div id="profile_popup__content" class="grid gap-3"></div>
     </sm-popup>
     <script>
         // dragula
@@ -1099,7 +1110,7 @@
 
             if (!document.querySelector(`#${pageId}`)?.classList.contains('inner-page')) return
             try {
-                if (floDapps.user.id && !location.hash) {
+                if (floDapps.user.id && (!location.hash || generalPages.includes(pageId))) {
                     history.replaceState(null, null, '#/dashboard_page');
                     pageId = 'dashboard_page'
                 }
@@ -1119,6 +1130,7 @@
             }
             switch (pageId) {
                 case 'landing':
+                    if (!getRef('landing_tasks_wrapper')) return
                     renderElem(getRef('landing_tasks_wrapper'), render.displayTasks(params?.category, params?.search))
                     if (params?.taskId) {
                         showTaskDetails(params.taskId)
@@ -1366,9 +1378,6 @@
                                 break;
                         }
                     }
-                    break;
-                case 'settings_page':
-                    renderElem(getRef('settings_page'), render.settings())
                     break;
             }
             switch (appState.lastPage) {
@@ -2497,17 +2506,28 @@
             },
             settings() {
                 return html`
-                    <section class="grid gap-1 card">
-                        <div class="grid">
-                            <h4>FLO address</h4>
-                            <sm-copy id="user_flo_id" value=${myFloID}></sm-copy>
+                    <div class="grid gap-1-5">
+                        <div class="grid gap-0-5">
+                            <h4>
+                                BTC integrated with FLO
+                            </h4>
+                            <p>
+                                You can use your FLO private key to perform transactions on the BTC network within our
+                                app
+                                ecosystem. The private key is the same for both.
+                            </p>
                         </div>
-                        <button id="logout" class="justify-self-start button button--danger" onclick="signOut()">
-                            <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3zm2-7h7v2H6v3l-5-4 5-4v3z" /> </svg>
-                            Sign out
-                        </button>
-                    </section>
-                    <div class="grid gap-1 card">
+                        <div class="grid gap-0-5">
+                            <b>My FLO address</b>
+                            <sm-copy class="user-flo-id" clip-text value=${floGlobals.myFloID}></sm-copy>
+                        </div>
+                        <div class="grid gap-0-5">
+                            <b>My Bitcoin address</b>
+                            <sm-copy class="user-btc-id" clip-text value=${floGlobals.myBtcID}></sm-copy>
+                        </div>
+                        <button class="button button--danger justify-self-start" onclick="signOut()">Sign out</button>
+                    </div>
+                    <div class="grid gap-1">
                         <div class="grid gap-0-5">
                             <h4>Secure private key</h4>
                             <p>
@@ -3437,6 +3457,9 @@
             switch (e.target.id) {
                 case 'intern_list_popup':
                     renderElem(getRef('intern_list_container'), filterInterns('', { availableInternsOnly: true }))
+                    break;
+                case 'profile_popup':
+                    renderElem(getRef('profile_popup__content'), render.settings())
                     break;
             }
         })

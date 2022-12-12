@@ -761,7 +761,6 @@ ul {
   padding: 1rem;
   grid-template-columns: minmax(0, 1fr);
   height: 100%;
-  background-color: rgba(var(--foreground-color), 0.3);
 }
 
 #landing {
@@ -807,7 +806,7 @@ ul {
   top: 0;
   z-index: 1;
   padding-bottom: 0.5rem;
-  background: linear-gradient(rgba(var(--foreground-color), 0.3), rgba(var(--foreground-color), 0.3)), linear-gradient(rgba(var(--background-color), 1), rgba(var(--background-color), 1));
+  background: rgba(var(--background-color), 1);
 }
 
 #display_task_list {
@@ -899,14 +898,19 @@ ul {
 
 #main_header {
   grid-area: main-header;
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  position: -webkit-sticky;
-  position: sticky;
+  display: grid;
+  gap: 0.8rem 1rem;
   padding: 1rem;
-  background: rgba(var(--foreground-color), 1);
-  z-index: 1;
+  width: 100%;
+  align-items: center;
+  grid-template-columns: 1fr auto;
+}
+
+#user_profile_button {
+  background-color: rgba(var(--text-color), 0.06);
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  padding: 0.6rem 0.8rem;
 }
 
 #main_nav {
@@ -1096,6 +1100,7 @@ ul {
 }
 
 #dashboard_page {
+  padding-top: 0;
   padding-bottom: 5rem;
   grid-template-columns: minmax(0, 1fr);
   overflow-y: auto;
@@ -1201,6 +1206,7 @@ ul {
 }
 
 #updates_page {
+  padding-top: 0;
   align-content: flex-start;
 }
 #updates_page sm-select {
@@ -2067,14 +2073,6 @@ input[type=date]:focus {
   transition: width 0.3s;
 }
 
-#settings_page {
-  align-content: flex-start;
-}
-#settings_page > * {
-  width: min(48rem, 100%);
-  margin: 0 auto;
-}
-
 @media only screen and (max-width: 640px) {
   .list-container {
     padding-bottom: 5rem;
@@ -2094,6 +2092,9 @@ input[type=date]:focus {
   }
   .landing__card:first-of-type img {
     grid-area: 1/1/2/2;
+  }
+  #user_profile_button {
+    grid-column: 1/-1;
   }
   #main_nav {
     justify-content: space-evenly;
@@ -2133,6 +2134,9 @@ input[type=date]:focus {
     width: -webkit-max-content;
     width: -moz-max-content;
     width: max-content;
+  }
+  #main_header {
+    grid-template-columns: 1fr auto auto;
   }
   #main_nav {
     padding: 0.5rem;
@@ -2279,6 +2283,9 @@ input[type=date]:focus {
     top: 1rem;
     align-self: flex-start;
     padding: 1.5rem;
+  }
+  #profile_popup {
+    --width: 32rem;
   }
 }
 @media only screen and (min-width: 1280px) {
