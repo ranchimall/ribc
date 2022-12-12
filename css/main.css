@@ -746,7 +746,6 @@ ul {
 }
 #secondary_pages header {
   padding: 1rem;
-  background-color: rgba(var(--foreground-color), 0.3);
 }
 #secondary_pages .inner-page {
   width: 100%;
@@ -900,10 +899,12 @@ ul {
   grid-area: main-header;
   display: grid;
   gap: 0.8rem 1rem;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
   width: 100%;
   align-items: center;
   grid-template-columns: 1fr auto;
+  border-bottom: solid thin rgba(var(--text-color), 0.2);
 }
 
 #user_profile_button {
@@ -1722,7 +1723,6 @@ ul {
   text-align: center;
   place-content: center;
   justify-items: center;
-  background-color: rgba(var(--foreground-color), 1);
 }
 
 #pinned_project_section {
@@ -1770,7 +1770,6 @@ ul {
   grid-template-rows: auto 1fr;
 }
 #admin_page__header {
-  background-color: rgba(var(--foreground-color), 0.5);
   padding: 0.5rem 1rem;
 }
 
@@ -2120,9 +2119,6 @@ input[type=date]:focus {
   .popup__header {
     padding: 1rem 1.5rem 0 1.5rem;
   }
-  #secondary_pages header {
-    padding: 1.5rem 8vw;
-  }
   .landing__card {
     grid-template-columns: -webkit-max-content 1fr;
     grid-template-columns: max-content 1fr;
@@ -2139,7 +2135,7 @@ input[type=date]:focus {
     grid-template-columns: 1fr auto auto;
   }
   #main_nav {
-    padding: 0.5rem;
+    padding: 0 0.5rem;
     background-color: rgba(var(--background-color), 1);
     flex-direction: column;
   }
