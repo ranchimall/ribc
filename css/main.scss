@@ -859,7 +859,6 @@ ul {
   display: grid;
   gap: 0.8rem 1rem;
   padding: 0.5rem 1rem;
-  margin-bottom: 0.5rem;
   width: 100%;
   align-items: center;
   grid-template-columns: 1fr auto;
@@ -1074,7 +1073,6 @@ ul {
 }
 
 #dashboard_page {
-  padding-top: 0;
   padding-bottom: 5rem;
   grid-template-columns: minmax(0, 1fr);
   overflow-y: auto;
@@ -1175,7 +1173,6 @@ ul {
 }
 
 #updates_page {
-  padding-top: 0;
   align-content: flex-start;
   sm-select {
     --max-height: 50vh;
@@ -2032,7 +2029,10 @@ input[type="date"] {
     }
   }
   #user_profile_button {
-    grid-column: 1/-1;
+    grid-area: 1/1/2/2;
+  }
+  theme-toggle {
+    grid-area: 1/2/2/3;
   }
   #main_nav {
     justify-content: space-evenly;
@@ -2075,7 +2075,7 @@ input[type="date"] {
     grid-template-columns: 1fr auto auto;
   }
   #main_nav {
-    padding: 0 0.5rem;
+    padding: 1rem 0.5rem;
     background-color: rgba(var(--background-color), 1);
     flex-direction: column;
     theme-toggle {
