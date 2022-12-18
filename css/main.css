@@ -292,6 +292,10 @@ sm-chip {
      -moz-user-select: none;
           user-select: none;
 }
+sm-chip[selected] {
+  --background: var(--accent-color);
+  color: rgba(var(--background-color), 1);
+}
 
 collapsed-text {
   --button-background: rgba(var(--foreground-color), 1);

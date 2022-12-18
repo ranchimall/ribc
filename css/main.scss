@@ -273,6 +273,10 @@ sm-chip {
   --padding: 0.5rem 0.8rem;
   --background: rgba(var(--text-color), 0.06);
   user-select: none;
+  &[selected] {
+    --background: var(--accent-color);
+    color: rgba(var(--background-color), 1);
+  }
 }
 
 collapsed-text {

@@ -674,17 +674,19 @@
             <sm-textarea id="update__brief" placeholder="Type the update" rows="4" autofocus required>
             </sm-textarea>
             <sm-input id="update__link" placeholder="Related link (optional)" animate></sm-input>
-            <button id="post_update_btn" title="post this update" class="button button--primary" type="submit" disabled
-                onclick="postUpdate()">
-                <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
-                    height="24">
-                    <path fill="none" d="M0 0h24v24H0z"></path>
-                    <path
-                        d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z">
-                    </path>
-                </svg>
-                Post update
-            </button>
+            <div class="multi-state-button">
+                <button id="post_update_btn" title="post this update" class="button button--primary" type="submit"
+                    disabled onclick="postUpdate()">
+                    <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
+                        height="24">
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path
+                            d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z">
+                        </path>
+                    </svg>
+                    Post update
+                </button>
+            </div>
         </sm-form>
     </sm-popup>
 
@@ -2864,13 +2866,27 @@
         }
         function initTaskScoring(e) {
             currentTask = e.target.closest('.admin-task');
+            const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
             const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId);
+            const completionPoints = 30;
             const taskScoreElems = assignedInterns.map((internId, index) => {
+                const { duration, durationType } = RIBC.getAllTasks()[taskId];
+                const deadlineDays = durationType === 'days' ? duration : duration * 30;
+                const daysTaken = getDaysTaken(RIBC.getInternRecord(internId).assignedTasks[taskId].assignedOn)
+                let quicknessPoints = 0;
+                if (daysTaken < deadlineDays * 0.6) {
+                    quicknessPoints = 30
+                } else if (daysTaken < deadlineDays * 0.8) {
+                    quicknessPoints = 25
+                } else if (daysTaken < deadlineDays) {
+                    quicknessPoints = 20
+                }
                 return html`
                     <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${internId}>
                         <h4>${RIBC.getInternList()[internId]}</h4>  
                         <div class="flex gap-0-5">
-                            <sm-input type="number" min="0" max="40" class="flex-1" placeholder="Rate out of 40" error-text="Points must be between 0-40" ?autofocus=${index === 0} required></sm-input>
+                            <sm-input value=${completionPoints + quicknessPoints} type="number" min="0" max="60" class="flex-1 automated-points" placeholder="Out of 60" error-text="Points must be between 0-60" ?autofocus=${index === 0} required></sm-input>
+                            <sm-input type="number" min="0" max="40" class="flex-1 subjective-points" placeholder="Out of 40" error-text="Points must be between 0-40" required></sm-input>
                             <input class="flex-1" type="date" value=${formatDate(new Date())} placeholder="Completion date" aria-label="Set date of completion" required>
                         </div>
                     </div>
@@ -2918,19 +2934,8 @@
             document.querySelectorAll('.rating-part').forEach((ratingPart) => {
                 const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
                 const internId = ratingPart.dataset.internId;
-                const { duration, durationType } = RIBC.getAllTasks()[taskId];
-                const deadlineDays = durationType === 'days' ? duration : duration * 30;
-                const daysTaken = getDaysTaken(RIBC.getInternRecord[internId].assignedTasks[taskId].assignedOn)
-                let quicknessPoints = 0;
-                if (daysTaken < deadlineDays * 0.6) {
-                    quicknessPoints = 30
-                } else if (daysTaken < deadlineDays * 0.8) {
-                    quicknessPoints = 25
-                } else if (daysTaken < deadlineDays) {
-                    quicknessPoints = 20
-                }
-                const completionPoints = 30;
-                const subjectivePoints = parseFloat(ratingPart.querySelector('sm-input').value.trim());
+                const automatedPoints = parseFloat(ratingPart.querySelector('.automated-points').value.trim());
+                const subjectivePoints = parseFloat(ratingPart.querySelector('.subjective-points').value.trim());
                 const points = completionPoints + quicknessPoints + subjectivePoints;
                 const completionDate = new Date(ratingPart.querySelector('input').value).getTime();
                 RIBC.admin.addCompletedTask(internId, taskId, points, { completionDate })
@@ -3574,16 +3579,17 @@
             const linkText = getRef('update__link').value.trim()
             const link = linkText !== '' ? linkText : null
             if (description !== '') {
+                buttonLoader(getRef('post_update_btn'), true)
                 RIBC.postInternUpdate({ projectCode, branch, task, description, link })
                     .then((result) => {
                         notify('Update posted', 'success')
                         closePopup()
-                    })
-                    .catch((error) => {
+                    }).catch((error) => {
                         notify(error, 'error')
+                    }).finally(() => {
+                        buttonLoader(getRef('post_update_btn'), false)
                     })
-            }
-            else {
+            } else {
                 notify('Please enter description', 'error')
             }
         }
