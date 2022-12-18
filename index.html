@@ -2927,8 +2927,10 @@
             // remove task from displayed list
             const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
             const filteredTasks = RIBC.getDisplayedTasks().filter(task => task !== taskId)
+            RIBC.admin.setDisplayedTasks(filteredTasks)
             renderBranchTasks()
             adminDataChanged();
+            notify('Task marked as completed', 'success')
         }
         function rateParticipants() {
             document.querySelectorAll('.rating-part').forEach((ratingPart) => {

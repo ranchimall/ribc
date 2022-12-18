@@ -771,9 +771,9 @@ ul {
 }
 #display_task_search_wrapper {
   position: sticky;
-  top: 0;
+  top: -1rem;
   z-index: 1;
-  padding-bottom: 0.5rem;
+  padding: 0.5rem 0;
   background: rgba(var(--background-color), 1);
 }
 #display_task_list {
