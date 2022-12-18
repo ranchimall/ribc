@@ -2885,8 +2885,8 @@
                     <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${internId}>
                         <h4>${RIBC.getInternList()[internId]}</h4>  
                         <div class="flex gap-0-5">
-                            <sm-input value=${completionPoints + quicknessPoints} type="number" min="0" max="60" class="flex-1 automated-points" placeholder="Out of 60" error-text="Points must be between 0-60" ?autofocus=${index === 0} required></sm-input>
-                            <sm-input type="number" min="0" max="40" class="flex-1 subjective-points" placeholder="Out of 40" error-text="Points must be between 0-40" required></sm-input>
+                            <sm-input value=${completionPoints + quicknessPoints} type="number" min="0" max="60" class="flex-1 automated-points" placeholder="Out of 60" error-text="Points must be between 0-60" ?autofocus=${index === 0} animate required></sm-input>
+                            <sm-input type="number" min="0" max="40" class="flex-1 subjective-points" placeholder="Out of 40" error-text="Points must be between 0-40" animate required></sm-input>
                             <input class="flex-1" type="date" value=${formatDate(new Date())} placeholder="Completion date" aria-label="Set date of completion" required>
                         </div>
                     </div>
@@ -2936,7 +2936,7 @@
                 const internId = ratingPart.dataset.internId;
                 const automatedPoints = parseFloat(ratingPart.querySelector('.automated-points').value.trim());
                 const subjectivePoints = parseFloat(ratingPart.querySelector('.subjective-points').value.trim());
-                const points = completionPoints + quicknessPoints + subjectivePoints;
+                const points = automatedPoints + subjectivePoints;
                 const completionDate = new Date(ratingPart.querySelector('input').value).getTime();
                 RIBC.admin.addCompletedTask(internId, taskId, points, { completionDate })
             })
