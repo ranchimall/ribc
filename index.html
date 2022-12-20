@@ -134,7 +134,7 @@
                 <sm-form id="sign_in_form">
                     <sm-input id="private_key_field" class="password-field" type="password"
                         placeholder="FLO private key" error-text="Private key is invalid" data-private-key required>
-                        <label slot="right" class="interact">
+                        <label slot="right" class="interactive">
                             <input type="checkbox" class="hidden" autocomplete="off" readonly
                                 onchange="togglePrivateKeyVisibility(this)">
                             <svg class="icon invisible" xmlns="http://www.w3.org/2000/svg" height="24px"
@@ -227,7 +227,7 @@
             </button>
         </header>
         <nav id="main_nav">
-            <a id="dashboard_btn" href="#/dashboard_page" class="nav-list__item nav-list__item--active interact"
+            <a id="dashboard_btn" href="#/dashboard_page" class="nav-list__item nav-list__item--active interactive"
                 title="open dashboard page">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                     height="24">
@@ -244,7 +244,7 @@
                     Dashboard
                 </span>
             </a>
-            <a id="update_panel_btn" href="#/updates_page" class="nav-list__item interact" title="show updates">
+            <a id="update_panel_btn" href="#/updates_page" class="nav-list__item interactive" title="show updates">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
                     width="24px" fill="#000000">
                     <path d="M0 0h24v24H0V0z" fill="none" />
@@ -260,7 +260,8 @@
                     Updates
                 </span>
             </a>
-            <a href="#/applications" class="nav-list__item interact not-for-admin" title="See status of applications">
+            <a href="#/applications" class="nav-list__item interactive not-for-admin"
+                title="See status of applications">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
                     height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
                     <g>
@@ -290,7 +291,7 @@
                 </span>
             </a>
             <a id="admin_page_nav_button" href="#/admin_page"
-                class="admin-option nav-list__item interact open-first-project" title="open admin panel">
+                class="admin-option nav-list__item interactive open-first-project" title="open admin panel">
                 <svg class="icon icon--outlined" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
                     height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
                     <g>
@@ -421,7 +422,7 @@
                                 Add task
                             </button>
                             <ul id="task_context" class="hidden">
-                                <li tabindex="0" class="interact" onclick="toggleEditing('title')">
+                                <li tabindex="0" class="interactive" onclick="toggleEditing('title')">
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                         height="24">
                                         <path fill="none" d="M0 0h24v24H0z" />
@@ -430,7 +431,7 @@
                                     </svg>
                                     Edit title
                                 </li>
-                                <li tabindex="0" class="interact" onclick="toggleEditing()">
+                                <li tabindex="0" class="interactive" onclick="toggleEditing()">
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                         height="24">
                                         <path fill="none" d="M0 0h24v24H0z" />
@@ -439,7 +440,7 @@
                                     </svg>
                                     Edit description
                                 </li>
-                                <li onclick="showNewBranchPopup()" tabindex="0" class="interact">
+                                <li onclick="showNewBranchPopup()" tabindex="0" class="interactive">
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24"
                                         height="24">
                                         <path fill="none" d="M0 0h24v24H0z" />
@@ -447,6 +448,14 @@
                                             d="M7.105 15.21A3.001 3.001 0 1 1 5 15.17V8.83a3.001 3.001 0 1 1 2 0V12c.836-.628 1.874-1 3-1h4a3.001 3.001 0 0 0 2.895-2.21 3.001 3.001 0 1 1 2.032.064A5.001 5.001 0 0 1 14 13h-4a3.001 3.001 0 0 0-2.895 2.21zM6 17a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM6 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm12 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
                                     </svg>
                                     Create new Branch
+                                </li>
+                                <li onclick="markTaskAsCompleted()" tabindex="0" class="interactive">
+                                    <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px"
+                                        viewBox="0 0 24 24" width="24px" fill="#000000">
+                                        <path d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
+                                    </svg>
+                                    Mark as complete
                                 </li>
                             </ul>
                         </section>
@@ -735,7 +744,7 @@
                         d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
                 </svg>
             </button>
-            <h3>Rate participants</h3>
+            <h3>Rate interns</h3>
         </header>
         <div id="rating_wrapper" class="flex flex-direction-column gap-1-5"></div>
     </sm-popup>
@@ -754,7 +763,7 @@
         <sm-form>
             <sm-input id="secure_pwd_input" class="password-field" type="password" placeholder="Password" animate
                 required autofocus>
-                <label slot="right" class="interact">
+                <label slot="right" class="interactive">
                     <input type="checkbox" class="hidden" autocomplete="off" readonly
                         onchange="togglePrivateKeyVisibility(this)">
                     <svg class="icon invisible" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24"
@@ -976,8 +985,8 @@
                 }
             })
             document.addEventListener("pointerdown", (e) => {
-                if (e.target.closest("button:not([disabled]), .interact")) {
-                    createRipple(e, e.target.closest("button, .interact"));
+                if (e.target.closest("button:not([disabled]), .interactive")) {
+                    createRipple(e, e.target.closest("button, .interactive"));
                 }
             });
             document.addEventListener('copy', () => {
@@ -1854,7 +1863,7 @@
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
                 const page = isAdmin ? 'admin_page' : 'project_explorer'
                 const projectLink = isAdmin ? `#/${page}/projects?id=${projectCode}&branch=mainLine` : `#/${page}/project?id=${projectCode}&branch=mainLine`
-                return html.for(ref, projectCode)`<a class="project-card flex align-center interact" title="Project information" href=${projectLink}>${projectName}</a>`
+                return html.for(ref, projectCode)`<a class="project-card flex align-center interactive" title="Project information" href=${projectLink}>${projectName}</a>`
             },
             taskCard(task) {
                 const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
@@ -1938,7 +1947,7 @@
                 }
                 if (selectable) {
                     return html`
-                    <label class="intern-card align-center interact" .dataset=${{ internFloId }} title="Intern Information">
+                    <label class="intern-card align-center interactive" .dataset=${{ internFloId }} title="Intern Information">
                         <input type="checkbox" class="intern-card__checkbox" value=${internFloId}>
                         <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                         <div class="intern-card__name">${internName}</div>
@@ -1949,7 +1958,7 @@
                     </label>`;
                 } else {
                     return html`
-                        <a class="intern-card align-center interact" href=${`#/intern_profile?id=${internFloId}`} title="Intern Information">
+                        <a class="intern-card align-center interactive" href=${`#/intern_profile?id=${internFloId}`} title="Intern Information">
                             <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                             <div class="intern-card__name">${internName}</div>
                             <div class="intern-card__score-wrapper flex align-center">
@@ -2073,6 +2082,14 @@
                     }
                 })
                 if (status === 'incomplete') {
+                    const taskTitle = createElement('h4', {
+                        className: 'task-title',
+                        attributes: {
+                            'data-editable': '',
+                            'data-edit-field': 'title',
+                        },
+                        innerHTML: DOMPurify.sanitize(title)
+                    })
                     const taskDescription = createElement('p', {
                         className: 'task-description ws-pre-line wrap-around',
                         attributes: {
@@ -2085,49 +2102,49 @@
                         return html`<sm-option value=${categoryID} ?selected=${category === categoryID}>${categoryName}</sm-option>`
                     })
                     return html`
-                    <li class=${`admin-task ${status}`} .dataset=${{ taskId: task }}>
-                        <div class="flex align-center gap-0-3">
-                            <div class="flex align-center gap-0-5">
-                                <button class="button button--small button--colored" onclick=${initTaskScoring}>
-                                    <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-                                    Mark as complete 
+                        <li class=${`admin-task ${status}`} .dataset=${{ taskId: task }}>
+                            <div class="flex align-center gap-0-3">
+                                <div class="flex align-center gap-0-5">
+                                    <button class="button button--small button--colored" onclick=${initTaskScoring}>
+                                        <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>
+                                        Rate interns
+                                    </button>
+                                    <div class="admin-task__task-number">ID: ${task}</div>
+                                </div>
+                                <button class="button--danger icon-only margin-left-auto"onclick="removeThisTask()">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
                                 </button>
-                                <div class="admin-task__task-number">ID: ${task}</div>
+                                <button class="icon-only task-option">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /> </svg>
+                                </button>
                             </div>
-                            <button class="button--danger icon-only margin-left-auto"onclick="removeThisTask()">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/></svg>
-                            </button>
-                            <button class="icon-only task-option">
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" /> </svg>
-                            </button>
-                        </div>
-                        <h4 class="task-title" data-editable data-edit-field="title">${title}</h4>
-                        <div class="assigned-interns">
-                            <button class="button button--small button--colored" onclick="currentTask=this.closest('.admin-task');openPopup('intern_list_popup')">
-                                <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><path d="M20,9V6h-2v3h-3v2h3v3h2v-3h3V9H20z M9,12c2.21,0,4-1.79,4-4c0-2.21-1.79-4-4-4S5,5.79,5,8C5,10.21,6.79,12,9,12z M9,6 c1.1,0,2,0.9,2,2c0,1.1-0.9,2-2,2S7,9.1,7,8C7,6.9,7.9,6,9,6z M15.39,14.56C13.71,13.7,11.53,13,9,13c-2.53,0-4.71,0.7-6.39,1.56 C1.61,15.07,1,16.1,1,17.22V20h16v-2.78C17,16.1,16.39,15.07,15.39,14.56z M15,18H3v-0.78c0-0.38,0.2-0.72,0.52-0.88 C4.71,15.73,6.63,15,9,15c2.37,0,4.29,0.73,5.48,1.34C14.8,16.5,15,16.84,15,17.22V18z"/></g></svg>
-                                Assign intern
-                            </button>
-                            ${assignedInternsCards}
-                        </div>
-                        ${taskDescription}
-                        ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
-                        <div class="grid gap-0-5 margin-top-1" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
-                            <sm-select data-edit-field="category" label="Category: ">${categories}</sm-select>
-                            <div class="flex flex-1">
-                                <sm-input data-edit-field="duration" value="${duration}" class="flex-1" placeholder="Duration" type="number" style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);" animate="" aria-label="Duration" role="textbox">
-                                    <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <g> <path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z"></path> </g> </g> </g> </svg>
+                            ${taskTitle}
+                            <div class="assigned-interns">
+                                <button class="button button--small button--colored" onclick="currentTask=this.closest('.admin-task');openPopup('intern_list_popup')">
+                                    <svg class="icon margin-right-0-3" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><path d="M20,9V6h-2v3h-3v2h3v3h2v-3h3V9H20z M9,12c2.21,0,4-1.79,4-4c0-2.21-1.79-4-4-4S5,5.79,5,8C5,10.21,6.79,12,9,12z M9,6 c1.1,0,2,0.9,2,2c0,1.1-0.9,2-2,2S7,9.1,7,8C7,6.9,7.9,6,9,6z M15.39,14.56C13.71,13.7,11.53,13,9,13c-2.53,0-4.71,0.7-6.39,1.56 C1.61,15.07,1,16.1,1,17.22V20h16v-2.78C17,16.1,16.39,15.07,15.39,14.56z M15,18H3v-0.78c0-0.38,0.2-0.72,0.52-0.88 C4.71,15.73,6.63,15,9,15c2.37,0,4.29,0.73,5.48,1.34C14.8,16.5,15,16.84,15,17.22V18z"/></g></svg>
+                                    Assign intern
+                                </button>
+                                ${assignedInternsCards}
+                            </div>
+                            ${taskDescription}
+                            ${branchesButtons.length ? html`<div class="task__branch_container">${branchesButtons}</div>` : ''}
+                            <div class="grid gap-0-5 margin-top-1" style="grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));">
+                                <sm-select data-edit-field="category" label="Category: ">${categories}</sm-select>
+                                <div class="flex flex-1">
+                                    <sm-input data-edit-field="duration" value="${duration}" class="flex-1" placeholder="Duration" type="number" style="--border-radius: 0.5rem 0 0 0.5rem; border-right: thin solid rgba(var(--text-color), 0.3);" animate="" aria-label="Duration" role="textbox">
+                                        <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <g> <path d="M15,1H9v2h6V1z M11,14h2V8h-2V14z M19.03,7.39l1.42-1.42c-0.43-0.51-0.9-0.99-1.41-1.41l-1.42,1.42 C16.07,4.74,14.12,4,12,4c-4.97,0-9,4.03-9,9s4.02,9,9,9s9-4.03,9-9C21,10.88,20.26,8.93,19.03,7.39z M12,20c-3.87,0-7-3.13-7-7 s3.13-7,7-7s7,3.13,7,7S15.87,20,12,20z"></path> </g> </g> </g> </svg>
+                                    </sm-input>
+                                    <sm-select data-edit-field="durationType" class="flex-shrink-0" style="--select-border-radius: 0 0.5rem 0.5rem 0;" role="listbox" align-select="right" value="days">
+                                        <sm-option value="days" ?selected=${durationType === "days"}>Days</sm-option>
+                                        <sm-option value="months" ?selected=${durationType === "months"}>Months</sm-option>
+                                    </sm-select>
+                                </div>
+                                <sm-input data-edit-field="maxSlots" value=${maxSlots} placeholder="Max slots available" type="number" animate="" aria-label="Max slots available" role="textbox"> </sm-input>
+                                <sm-input data-edit-field="reward" value=${reward} type="number" placeholder="Reward" animate="" aria-label="Reward" role="textbox">
+                                    <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <path d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z"> </path> </g> </g> </svg>
                                 </sm-input>
-                                <sm-select data-edit-field="durationType" class="flex-shrink-0" style="--select-border-radius: 0 0.5rem 0.5rem 0;" role="listbox" align-select="right" value="days">
-                                    <sm-option value="days" ?selected=${durationType === "days"}>Days</sm-option>
-                                    <sm-option value="months" ?selected=${durationType === "months"}>Months</sm-option>
-                                </sm-select>
                             </div>
-                            <sm-input data-edit-field="maxSlots" value=${maxSlots} placeholder="Max slots available" type="number" animate="" aria-label="Max slots available" role="textbox"> </sm-input>
-                            <sm-input data-edit-field="reward" value=${reward} type="number" placeholder="Reward" animate="" aria-label="Reward" role="textbox">
-                                <svg slot="icon" class="icon" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"> <g> <rect fill="none" height="24" width="24"></rect> </g> <g> <g> <path d="M13.66,7C13.1,5.82,11.9,5,10.5,5L6,5V3h12v2l-3.26,0c0.48,0.58,0.84,1.26,1.05,2L18,7v2l-2.02,0c-0.25,2.8-2.61,5-5.48,5 H9.77l6.73,7h-2.77L7,14v-2h3.5c1.76,0,3.22-1.3,3.46-3L6,9V7L13.66,7z"> </path> </g> </g> </svg>
-                            </sm-input>
-                        </div>
-                    </li>
+                        </li>
                 `;
                 } else {
                     const taskDescription = createElement('p', {
@@ -2866,41 +2883,63 @@
         }
         function initTaskScoring(e) {
             currentTask = e.target.closest('.admin-task');
+            renderInternRatingUI()
+            openPopup('rate_participants_popup')
+        }
+        function renderInternRatingUI() {
             const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
             const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId);
             const completionPoints = 30;
             const taskScoreElems = assignedInterns.map((internId, index) => {
-                const { duration, durationType } = RIBC.getAllTasks()[taskId];
-                const deadlineDays = durationType === 'days' ? duration : duration * 30;
-                const daysTaken = getDaysTaken(RIBC.getInternRecord(internId).assignedTasks[taskId].assignedOn)
-                let quicknessPoints = 0;
-                if (daysTaken < deadlineDays * 0.6) {
-                    quicknessPoints = 30
-                } else if (daysTaken < deadlineDays * 0.8) {
-                    quicknessPoints = 25
-                } else if (daysTaken < deadlineDays) {
-                    quicknessPoints = 20
-                }
-                return html`
-                    <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${internId}>
-                        <h4>${RIBC.getInternList()[internId]}</h4>  
-                        <div class="flex gap-0-5">
-                            <sm-input value=${completionPoints + quicknessPoints} type="number" min="0" max="60" class="flex-1 automated-points" placeholder="Out of 60" error-text="Points must be between 0-60" ?autofocus=${index === 0} animate required></sm-input>
-                            <sm-input type="number" min="0" max="40" class="flex-1 subjective-points" placeholder="Out of 40" error-text="Points must be between 0-40" animate required></sm-input>
-                            <input class="flex-1" type="date" value=${formatDate(new Date())} placeholder="Completion date" aria-label="Set date of completion" required>
+                const { completedTasks, failedTasks } = RIBC.getInternRecord(internId)
+                if (completedTasks[taskId] || failedTasks[taskId]) {
+                    return html`<div class="flex flex-direction-column gap-0-3" data-intern-id=${internId}>
+                        <h3>${RIBC.getInternList()[internId]}</h3>  
+                        <div class="flex align-center space-between">
+                            <p>${completedTasks[taskId] ? 'Task completed' : 'Failed to complete'}</p>
+                            ${completedTasks[taskId] ? html`
+                                <div class="flex align-center gap-0-3">
+                                    <b>${completedTasks[taskId].points}</b>
+                                    <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"></path> </svg>
+                                </div>
+                                ` : ''}
                         </div>
-                    </div>
-                `;
+                    </div>`
+                } else {
+                    const { duration, durationType } = RIBC.getAllTasks()[taskId];
+                    const deadlineDays = durationType === 'days' ? duration : duration * 30;
+                    const daysTaken = getDaysTaken(RIBC.getInternRecord(internId).assignedTasks[taskId].assignedOn)
+                    let quicknessPoints = 0;
+                    if (daysTaken < deadlineDays * 0.6) {
+                        quicknessPoints = 30
+                    } else if (daysTaken < deadlineDays * 0.8) {
+                        quicknessPoints = 25
+                    } else if (daysTaken < deadlineDays) {
+                        quicknessPoints = 20
+                    }
+                    return html`
+                        <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${internId}>
+                            <h3>${RIBC.getInternList()[internId]}</h3>  
+                            <div class="grid gap-0-5">
+                                <div class="flex gap-0-5">
+                                    <sm-input value=${completionPoints + quicknessPoints} type="number" min="0" max="60" class="flex-1 automated-points" placeholder="Out of 60" error-text="Points must be between 0-60" ?autofocus=${index === 0} animate required></sm-input>
+                                    <sm-input type="number" min="0" max="40" class="flex-1 subjective-points" placeholder="Out of 40" error-text="Points must be between 0-40" animate required></sm-input>
+                                </div>
+                                <div class="flex gap-0-5">
+                                    <input class="flex-1" type="date" value=${formatDate(new Date())} placeholder="Completion date" aria-label="Set date of completion" required>
+                                    <button class="button button--primary rate-intern-button">Rate</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
             })
             renderElem(getRef('rating_wrapper'), html`
-                    <h4>${currentTask.querySelector('.task-title').textContent}</h4>
-                    <sm-form>
-                        ${taskScoreElems}
-                        <button id="rate_participants_btn" class="button button--primary" type="submit" disabled onclick="rateParticipants()"> Rate </button>
-                    </sm-form>
-                `)
-
-            openPopup('rate_participants_popup')
+                <h4>${currentTask.querySelector('.task-title').textContent}</h4>
+                <sm-form>
+                    ${taskScoreElems}
+                </sm-form>
+            `)
         }
         function markTaskAsIncomplete(e) {
             currentTask = e.target.closest('.admin-task');
@@ -2914,6 +2953,20 @@
             })
         }
 
+        delegate(getRef('rating_wrapper'), 'click', '.rate-intern-button', e => {
+            const ratingPart = e.target.closest('.rating-part');
+            const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
+            const internId = ratingPart.dataset.internId;
+            const automatedPoints = parseFloat(ratingPart.querySelector('.automated-points').value.trim()) || 0;
+            const subjectivePoints = parseFloat(ratingPart.querySelector('.subjective-points').value.trim()) || 0;
+            const points = automatedPoints + subjectivePoints;
+            const completionDate = new Date(ratingPart.querySelector('input').value).getTime();
+            RIBC.admin.addCompletedTask(internId, taskId, points, { completionDate })
+            notify('Task score added', 'success')
+            adminDataChanged();
+            renderInternRatingUI()
+        })
+
         // format unix timestamp to yyyy-mm-dd
         function formatDate(unixTimestamp) {
             const date = new Date(unixTimestamp);
@@ -2923,27 +2976,18 @@
             return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
         }
         function markTaskAsCompleted() {
-            RIBC.admin.putTaskStatus('completed', appState.params.id, appState.params.branch, currentTask.dataset.taskId)
-            // remove task from displayed list
-            const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
-            const filteredTasks = RIBC.getDisplayedTasks().filter(task => task !== taskId)
-            RIBC.admin.setDisplayedTasks(filteredTasks)
-            renderBranchTasks()
-            adminDataChanged();
-            notify('Task marked as completed', 'success')
-        }
-        function rateParticipants() {
-            document.querySelectorAll('.rating-part').forEach((ratingPart) => {
-                const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
-                const internId = ratingPart.dataset.internId;
-                const automatedPoints = parseFloat(ratingPart.querySelector('.automated-points').value.trim());
-                const subjectivePoints = parseFloat(ratingPart.querySelector('.subjective-points').value.trim());
-                const points = automatedPoints + subjectivePoints;
-                const completionDate = new Date(ratingPart.querySelector('input').value).getTime();
-                RIBC.admin.addCompletedTask(internId, taskId, points, { completionDate })
+            getConfirmation('Mark this task as completed?', { confirmText: 'Mark as completed' }).then(res => {
+                if (res) {
+                    RIBC.admin.putTaskStatus('completed', appState.params.id, appState.params.branch, currentTask.dataset.taskId)
+                    // remove task from displayed list
+                    const taskId = `${appState.params.id}_${appState.params.branch}_${currentTask.dataset.taskId}`;
+                    const filteredTasks = RIBC.getDisplayedTasks().filter(task => task !== taskId)
+                    RIBC.admin.setDisplayedTasks(filteredTasks)
+                    renderBranchTasks()
+                    adminDataChanged();
+                    notify('Task marked as completed', 'success')
+                }
             })
-            markTaskAsCompleted()
-            closePopup()
         }
         delegate(getRef('task_list'), 'change', 'sm-select', (e) => {
             currentTask = e.target.closest('.admin-task');
@@ -3028,13 +3072,13 @@
                 const internId = internCard.dataset.floId
                 const contentMenu = html.node`
                     <ul class="menu" data-flo-id=${internId}>
-                        <li class="menu__item">
+                        <li class="menu__item interactive">
                             <button onclick=${markAsFailed}>
                                 <svg class="icon margin-right-1" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
                                 Mark as failed
                             </button>
                         </li>
-                        <li class="menu__item">
+                        <li class="menu__item interactive">
                             <button onclick=${unassignIntern}>
                                 <svg class="icon margin-right-1" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M14,8c0-2.21-1.79-4-4-4C7.79,4,6,5.79,6,8c0,2.21,1.79,4,4,4C12.21,12,14,10.21,14,8z M12,8c0,1.1-0.9,2-2,2 c-1.1,0-2-0.9-2-2s0.9-2,2-2C11.1,6,12,6.9,12,8z"/><path d="M2,18v2h16v-2c0-2.66-5.33-4-8-4C7.33,14,2,15.34,2,18z M4,18c0.2-0.71,3.3-2,6-2c2.69,0,5.77,1.28,6,2H4z"/><rect height="2" width="6" x="17" y="10"/></g></g></svg>
                                 Unassign
@@ -3713,7 +3757,6 @@
                 floDapps.securePrivKey(password).then(() => {
                     floGlobals.isPrivKeySecured = true;
                     notify('Password set successfully', 'success');
-                    getRef('secure_pwd_button').closest('.card').classList.add('hidden');
                     closePopup();
                 }).catch(err => {
                     notify(err, 'error');

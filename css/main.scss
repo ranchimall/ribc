@@ -583,7 +583,7 @@ ul {
   );
   pointer-events: none;
 }
-.interact {
+.interactive {
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -1534,11 +1534,12 @@ ul {
   min-width: 100%;
   border: solid thin rgba(var(--text-color), 0.2);
   &__item {
+    border-radius: 0.3rem;
+    color: rgba(var(--text-color), 0.8);
+    width: 100%;
+    justify-content: flex-start;
     button {
       padding: 0.6rem 0.8rem;
-      color: rgba(var(--text-color), 0.8);
-      width: 100%;
-      justify-content: flex-start;
     }
   }
 }
@@ -2274,7 +2275,7 @@ input[type="date"] {
       background: rgba(var(--text-color), 0.5);
     }
   }
-  .interact {
+  .interactive {
     transition: background-color 0.2s;
     &:hover {
       background-color: rgba(var(--text-color), 0.04);
