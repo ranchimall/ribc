@@ -2920,16 +2920,16 @@
                     return html`
                         <div class="flex flex-direction-column gap-0-5 rating-part" data-intern-id=${internId}>
                             <h3>${RIBC.getInternList()[internId]}</h3>  
-                            <div class="grid gap-0-5">
+                            <sm-form class="grid gap-0-5">
                                 <div class="flex gap-0-5">
-                                    <sm-input value=${completionPoints + quicknessPoints} type="number" min="0" max="60" class="flex-1 automated-points" placeholder="Out of 60" error-text="Points must be between 0-60" ?autofocus=${index === 0} animate required></sm-input>
-                                    <sm-input type="number" min="0" max="40" class="flex-1 subjective-points" placeholder="Out of 40" error-text="Points must be between 0-40" animate required></sm-input>
+                                    <sm-input value=${completionPoints + quicknessPoints} type="number" min="0" max="60" class="flex-1 automated-points" placeholder="Automated" error-text="Points must be between 0-60" ?autofocus=${index === 0} animate required></sm-input>
+                                    <sm-input type="number" min="0" max="40" class="flex-1 subjective-points" placeholder="Subjective" error-text="Points must be between 0-40" animate required></sm-input>
                                 </div>
                                 <div class="flex gap-0-5">
                                     <input class="flex-1" type="date" value=${formatDate(new Date())} placeholder="Completion date" aria-label="Set date of completion" required>
-                                    <button class="button button--primary rate-intern-button">Rate</button>
+                                    <button class="button button--primary rate-intern-button" type="submit">Rate</button>
                                 </div>
-                            </div>
+                            </sm-form>
                         </div>
                     `;
                 }
