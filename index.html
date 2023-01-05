@@ -55,20 +55,21 @@
             )
             floDapps.launchStartUp().then(result => {
                 console.log(result)
-                let floId = floDapps.user.id
-                if (!floCrypto.validateFloID(floId)) {
-                    const type = coinjs.addressDecode(floId).type
+                if (!floCrypto.validateFloID(floDapps.user.id)) {
+                    floGlobals.myBtcID = floDapps.user.id
+                    const type = coinjs.addressDecode(floGlobals.myBtcID).type
                     if (type === 'standard') {
-                        floId = btcOperator.convert.legacy2legacy(floId, 0x23);
+                        floGlobals.myFloID = btcOperator.convert.legacy2legacy(floGlobals.myBtcID, 0x23);
                     } else if (type === 'bech32') {
-                        floId = btcOperator.convert.bech2legacy(floId, 0x23);
+                        floGlobals.myFloID = btcOperator.convert.bech2legacy(floGlobals.myBtcID, 0x23);
                     } else {
                         notify(`Multisig address can't be used to sign in`, 'error');
                         return;
                     }
+                } else {
+                    floGlobals.myFloID = floDapps.user.id
+                    floGlobals.myBtcID = btcOperator.convert.legacy2bech(floDapps.user.id)
                 }
-                floGlobals.myFloID = floId
-                floGlobals.myBtcID = btcOperator.convert.legacy2bech(floId)
                 getRef('user_profile_id').textContent = floGlobals.myFloID
                 let showingFloID = true
                 // alternating between floID and btcID every 10 seconds
@@ -77,7 +78,7 @@
                     showingFloID = !showingFloID
                 }, 10000)
                 floGlobals.loaded = true
-                RIBC.init(floGlobals.subAdmins.includes(myFloID)).then(result => {
+                RIBC.init(floGlobals.subAdmins.includes(floGlobals.myFloID)).then(result => {
                     console.log(result)
                     renderAllElements()
                     routeTo(window.location.hash, { firstLoad: true })
@@ -1154,13 +1155,14 @@
                     getRef('generated_flo_address').value = floID
                     getRef('generated_private_key').value = privKey
                     break;
-                case 'dashboard_page':
-                    let renderedAssignedTasks
+                case 'dashboard_page': {
+                    let renderedAssignedTasks = []
                     if (userType === 'intern') {
                         // Render assigned task cards
-                        if (floGlobals.assignedTasks.size) {
-                            renderedAssignedTasks = filterMap(floGlobals.assignedTasks, id => render.internTaskCard(id))
-                        } else {
+                        const { assignedTasks } = RIBC.getInternRecord(floGlobals.myFloID)
+                        for (const taskId in assignedTasks)
+                            renderedAssignedTasks.push(render.internTaskCard(taskId))
+                        if (renderedAssignedTasks.length === 0) {
                             renderedAssignedTasks = html`No task assigned yet.`;
                         }
                     }
@@ -1201,6 +1203,7 @@
                         showTaskDetails(params.taskId)
                     } else
                         hideTaskDetails()
+                }
                     break;
                 case 'updates_page': {
                     closePopup()
@@ -1814,7 +1817,7 @@
                     const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task);
                     if (assignedInterns.length >= allTasks[taskId].maxSlots) continue;
                     availableCategories.add(allTasks[taskId].category)
-                    if (userType && userType === 'intern' && floDapps.user.id && assignedInterns.includes(floDapps.user.id)) continue;
+                    if (userType && userType === 'intern' && floGlobals.myFloID && assignedInterns.includes(floGlobals.myFloID)) continue;
                     if (filterCategory && allTasks[taskId].category !== filterCategory) continue;
                     if (searchQuery && searchQuery !== '') {
                         if (!allTasks[taskId].title.toLowerCase().includes(searchQuery.toLowerCase()) && !floGlobals.taskCategories[allTasks[taskId].category].toLowerCase().includes(searchQuery.toLowerCase())) continue;
@@ -1882,7 +1885,7 @@
                 const assignedInternsCards = assignedInterns.map(internFloId => render.assignedInternCard(internFloId));
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 let applyButton
-                if (!assignedInterns.includes(myFloID) && userType !== 'admin') {
+                if (!assignedInterns.includes(floGlobals.myFloID) && userType !== 'admin') {
                     const hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                         return `${appState.params.id}_${appState.params.branch}_${task}` === details.taskId
                     })
@@ -2244,7 +2247,7 @@
                 const [projectCode, branch, task] = uniqueId.split('_');
                 const { title, description, duration, durationType } = RIBC.getTaskDetails(projectCode, branch, task)
                 const projectName = RIBC.getProjectDetails(projectCode).projectName
-                const { assignedTasks } = RIBC.getInternRecord(floDapps.user.id)
+                const { assignedTasks } = RIBC.getInternRecord(floGlobals.myFloID)
                 const linkifyDescription = createElement('p', {
                     innerHTML: DOMPurify.sanitize(linkify(description)),
                     className: `timeline-task__description ws-pre-line wrap-around`
@@ -2546,15 +2549,17 @@
                         </div>
                         <button class="button button--danger justify-self-start" onclick="signOut()">Sign out</button>
                     </div>
-                    <div class="grid gap-1">
-                        <div class="grid gap-0-5">
-                            <h4>Secure private key</h4>
-                            <p>
-                                You can set a password to secure your private key and use the password instead of private key. This is applied to this browser only.
-                            </p>
+                    ${!floGlobals.isPrivKeySecured ? html`
+                        <div class="grid gap-1">
+                            <div class="grid gap-0-5">
+                                <h4>Secure private key</h4>
+                                <p>
+                                    You can set a password to secure your private key and use the password instead of private key. This is applied to this browser only.
+                                </p>
+                            </div>
+                            <button id="secure_pwd_button" class=${`button justify-self-start secure-priv-key`} onclick="openPopup('secure_pwd_popup')">Set password</button>
                         </div>
-                        <button id="secure_pwd_button" class=${`button button--primary justify-self-start secure-priv-key ${floGlobals.isPrivKeySecured ? 'hidden' : ''}`} onclick="openPopup('secure_pwd_popup')">Set password</button>
-                    </div>
+                    `: ''}
                 `;
             }
         }
@@ -3437,13 +3442,13 @@
         getRef('updates_page__date_selector').addEventListener('change', e => setUpdateFilters())
         function pinProject(thisBtn) {
             const projectCode = thisBtn.closest('.pinned-card').dataset.id;
-            pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
+            pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${floGlobals.myFloID}_pinned_projects`).split(',') : []
             if (pinnedProjects.includes(projectCode)) {
                 pinnedProjects = pinnedProjects.filter(project => project !== projectCode)
             } else {
                 pinnedProjects.push(projectCode)
             }
-            localStorage.setItem(`${myFloID}_pinned_projects`, pinnedProjects.join())
+            localStorage.setItem(`${floGlobals.myFloID}_pinned_projects`, pinnedProjects.join())
             renderElem(getRef('projects_wrapper'), render.dashProjects())
         }
 
@@ -3464,8 +3469,13 @@
                     if (hasApplied) {
                         notify('You have already applied for this task', 'error')
                     } else {
-                        if (floGlobals.assignedTasks.has(taskId))
+                        const { assignedTasks, completedTasks, failedTasks } = RIBC.getInternRecord(floGlobals.myFloID)
+                        if (assignedTasks[taskId])
                             return notify('You have already been assigned this task', 'error');
+                        else if (completedTasks[taskId])
+                            return notify('You have already completed this task', 'error');
+                        else if (failedTasks[taskId])
+                            return notify('You have already failed this task', 'error');
                         const [projectCode, branch, task] = taskId.split('_')
                         const { title } = RIBC.getTaskDetails(projectCode, branch, task)
                         getConfirmation(`Do you want to apply for "${title}"`, { confirmText: 'Apply' }).then((result) => {
@@ -3532,8 +3542,6 @@
             zIndex--;
         })
 
-        floGlobals.assignedTasks = new Set()
-
         function renderAllElements() {
 
             let sortedProjectList = getSortedProjectList()
@@ -3542,28 +3550,15 @@
                 link.href = adminPage ? `${link.href}/projects?id=${sortedProjectList[0]}&branch=mainLine` : `${link.href}/project?id=${sortedProjectList[0]}&branch=mainLine`
             })
 
-            pinnedProjects = localStorage.getItem(`${myFloID}_pinned_projects`) ? localStorage.getItem(`${myFloID}_pinned_projects`).split(',') : []
+            pinnedProjects = localStorage.getItem(`${floGlobals.myFloID}_pinned_projects`) ? localStorage.getItem(`${floGlobals.myFloID}_pinned_projects`).split(',') : []
 
             // Intern's view
 
-            if (RIBC.getInternList()[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
+            if (RIBC.getInternList()[floGlobals.myFloID] && !floGlobals.subAdmins.includes(floGlobals.myFloID)) {
                 userType = 'intern';
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.remove('hidden')
                 })
-                floGlobals.assignedProjectsList = new Set();
-                // store all the projects assigned to interns in array
-                const allTasks = RIBC.getAllTasks()
-                for (const taskKey in allTasks) {
-                    const [projectCode, branch, task] = taskKey.split('_')
-                    const assignedInterns = RIBC.getAssignedInterns(projectCode, branch, task)
-                    if (assignedInterns.includes(myFloID)) {
-                        floGlobals.assignedProjectsList.add(projectCode)
-                        if (RIBC.getTaskStatus(projectCode, branch, task) === 'incomplete') {
-                            floGlobals.assignedTasks.add(taskKey);
-                        }
-                    }
-                }
             } else {
                 document.querySelectorAll('.intern-option').forEach((option) => {
                     option.classList.add('hidden')
@@ -3571,7 +3566,7 @@
             }
 
             // admin view
-            if (floGlobals.subAdmins.includes(myFloID)) {
+            if (floGlobals.subAdmins.includes(floGlobals.myFloID)) {
                 userType = 'admin'
                 document.querySelectorAll('.admin-option').forEach((option) => {
                     option.classList.remove('hidden')
@@ -3583,7 +3578,7 @@
             }
 
             // General only view for non admin and non intern
-            if (!RIBC.getInternList()[myFloID] && !floGlobals.subAdmins.includes(myFloID)) {
+            if (!RIBC.getInternList()[floGlobals.myFloID] && !floGlobals.subAdmins.includes(floGlobals.myFloID)) {
                 document.querySelectorAll('.general-only').forEach((elem) => {
                     elem.classList.remove('hidden')
                 })
@@ -3683,12 +3678,10 @@
             const name = getRef('intern_apply__name').value.trim();
             const contact = getRef('intern_apply__contact').value.trim();
             const brief = getRef('intern_apply__brief').value.trim();
-            // const resumeLink = getRef('intern_apply__resume_link').value.trim();
             const portfolioLink = getRef('intern_apply__portfolio_link').value.trim();
             const details = {
                 name,
                 brief,
-                // resumeLink,
                 contact,
                 portfolioLink: portfolioLink !== '' ? portfolioLink : null,
                 taskId: floGlobals.tempUserTaskRequest
