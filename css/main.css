@@ -1848,6 +1848,10 @@ ul {
   margin: 0 -1rem 0.5rem -1rem;
   border: solid thin rgba(var(--text-color), 0.1);
 }
+.task-card .task__completion-timeline.deadline-passed {
+  background-color: var(--danger-color);
+  color: rgba(var(--foreground-color), 1);
+}
 .task-card .task__completion-timeline:hover .task__completion-timeline__progress__disc::before {
   content: "";
   position: absolute;
