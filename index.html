@@ -2919,7 +2919,7 @@
                     const deadlineDays = durationType === 'days' ? duration : duration * 30;
                     const daysTaken = getDaysTaken(RIBC.getInternRecord(internId).assignedTasks[taskId].assignedOn)
                     let quicknessPoints = 0;
-                    if (daysTaken < deadlineDays * 0.6) {
+                    if (daysTaken < deadlineDays * 0.7) {
                         quicknessPoints = 30
                     } else if (daysTaken < deadlineDays * 0.8) {
                         quicknessPoints = 25
