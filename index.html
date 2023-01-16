@@ -683,7 +683,6 @@
         <sm-form>
             <sm-textarea id="update__brief" placeholder="Type the update" rows="4" autofocus required>
             </sm-textarea>
-            <sm-input id="update__link" placeholder="Related link (optional)" animate></sm-input>
             <div class="multi-state-button">
                 <button id="post_update_btn" title="post this update" class="button button--primary" type="submit"
                     disabled onclick="postUpdate()">
@@ -1982,6 +1981,10 @@
                 const { floID, time, note, update: { projectCode, branch, task, description, link }, tag } = update
                 let topic = `${RIBC.getProjectDetails(projectCode).projectName} / ${RIBC.getTaskDetails(projectCode, branch, task).title}`
                 const internName = RIBC.getInternList()[floID]
+                const updateMessage = createElement('p', {
+                    className: 'update__message ws-pre-line wrap-around',
+                    innerHTML: DOMPurify.sanitize(linkify(description))
+                })
                 let replyButton
                 let saveButton
                 if (userType === "admin") {
@@ -2008,7 +2011,7 @@
                             <span class="update__time">${getFormattedTime(time)}</span>
                         </div>
                         <h4 class="update__topic">${topic}</h4>
-                        <p class="update__message ws-pre-line wrap-around">${description}</p>
+                        ${updateMessage}
                         ${providedLink}
                         ${adminReply}
                         ${saveButton || replyButton ? html`<div class="flex align-center gap-0-3">${saveButton}${replyButton}</div>` : ''}
@@ -3621,11 +3624,9 @@
         function postUpdate() {
             const [projectCode, branch, task] = currentTaskId.split('_')
             const description = getRef('update__brief').value.trim()
-            const linkText = getRef('update__link').value.trim()
-            const link = linkText !== '' ? linkText : null
             if (description !== '') {
                 buttonLoader(getRef('post_update_btn'), true)
-                RIBC.postInternUpdate({ projectCode, branch, task, description, link })
+                RIBC.postInternUpdate({ projectCode, branch, task, description })
                     .then((result) => {
                         notify('Update posted', 'success')
                         closePopup()
