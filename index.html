@@ -1173,7 +1173,7 @@
                     const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
                     renderElem(getRef('dashboard_page'), html`
                         <sm-chips id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
-                            ${userType === 'intern' ? html`<sm-chip value="intern_view" selected>My tasks</sm-chip>` : ''}
+                            ${userType === 'intern' ? html`<sm-chip value="intern_view" ?selected=${subPageId1 === 'my_tasks'}>My tasks</sm-chip>` : ''}
                             <sm-chip value="dashboard_tasks_wrapper" ?selected=${subPageId1 === 'all_tasks'}>All tasks</sm-chip>
                             <sm-chip value="projects_wrapper" ?selected=${subPageId1 === 'projects'}>Projects</sm-chip>
                         ${floGlobals.isMobileView ? html`<sm-chip value="intern_leaderboard_container">Leaderboard</sm-chip>` : ''} 
