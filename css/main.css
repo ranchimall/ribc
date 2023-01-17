@@ -2037,24 +2037,36 @@ input[type=date]:focus {
 
 .pinned-card {
   color: inherit;
-  display: grid;
+  display: flex;
   border-radius: 0.5rem;
+  gap: 1rem;
   padding: 1rem;
   background-color: rgba(var(--foreground-color), 1);
-  grid-template-columns: auto 1fr;
+  align-items: center;
 }
 .pinned-card .project-icon {
-  display: flex;
+  display: grid;
   background-color: rgba(var(--text-color), 0.06);
-  justify-self: start;
-  align-self: flex-start;
-  padding: 0.8rem;
+  place-content: center;
+  place-items: center;
   border-radius: 2rem;
-  margin-right: 0.8rem;
-  grid-row: span 3;
+}
+.pinned-card .project-icon > * {
+  grid-area: 1/1;
 }
 .pinned-card .project-icon .icon {
   fill: var(--accent-color);
+}
+.pinned-card .progress-icon {
+  transform: rotate(-90deg);
+  stroke-dasharray: 76;
+  stroke-dashoffset: var(--progress, 0);
+  stroke-width: 2;
+  stroke: var(--accent-color);
+  height: 3rem;
+  width: 3rem;
+  overflow: visible;
+  padding: 0.1rem;
 }
 .pinned-card .project__title {
   color: rgba(var(--text-color), 0.9);
@@ -2065,20 +2077,6 @@ input[type=date]:focus {
 .pinned-card .project__complete-percent {
   font-size: 0.8rem;
   opacity: 0.8;
-  margin-top: 0.5rem;
-}
-
-.progress-bar {
-  display: flex;
-  height: 0.2rem;
-  background-color: rgba(var(--text-color), 0.2);
-  border-radius: 1rem;
-  overflow: hidden;
-  align-self: flex-end;
-}
-.progress-bar .progress-value {
-  background-color: var(--accent-color);
-  transition: width 0.3s;
 }
 
 @media only screen and (max-width: 640px) {
@@ -2116,6 +2114,9 @@ input[type=date]:focus {
   .admin-task {
     margin: 0 -1rem;
     border-radius: 0;
+  }
+  #task_display_container {
+    flex-direction: column;
   }
   .hide-on-mobile {
     display: none !important;

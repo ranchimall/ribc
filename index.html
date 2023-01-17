@@ -77,8 +77,9 @@
                     getRef('user_profile_id').textContent = showingFloID ? floGlobals.myBtcID : floGlobals.myFloID
                     showingFloID = !showingFloID
                 }, 10000)
+                floGlobals.isSubAdmin = floGlobals.subAdmins.includes(floGlobals.myFloID)
                 floGlobals.loaded = true
-                RIBC.init(floGlobals.subAdmins.includes(floGlobals.myFloID)).then(result => {
+                RIBC.init(floGlobals.isSubAdmin).then(result => {
                     console.log(result)
                     renderAllElements()
                     routeTo(window.location.hash, { firstLoad: true })
@@ -1189,7 +1190,7 @@
                             <div class="container-header">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><rect fill="none" height="24" width="24"/><g><path d="M7.5,21H2V9h5.5V21z M14.75,3h-5.5v18h5.5V3z M22,11h-5.5v10H22V11z"/></g></svg>
                                 <h4>Leaderboard</h4>
-                                <a id="all_interns_btn" href="#/all_interns_page" class="button">All</a>
+                                <a id="all_interns_btn" href="#/all_interns_page" class="button button--small">All</a>
                             </div>
                             <div id="top_interns" class="observe-empty-state">${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}</div>
                             <div class="empty-state">
@@ -2386,7 +2387,8 @@
                     })
                 })
                 const completedTasks = projectTasks.filter(task => task === 'completed').length
-                let completePercent = parseFloat(((completedTasks / (projectTasks.length || 1)) * 100).toFixed(2))
+                const completePercent = parseInt((completedTasks / (projectTasks.length || 1)) * 100)
+                const strokeOffset = 76 - (completePercent * 0.76)
                 const isPinned = pinnedProjects.includes(projectCode);
                 let pinIcon = ''
                 if (isPinned) {
@@ -2398,18 +2400,16 @@
                     <div class="pinned-card" data-id=${projectCode}>
                         <div class="project-icon">
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
+                            <svg class="progress-icon" style=${`--progress: ${strokeOffset}`} viewBox="0 0 24 24" height="24" width="24"> <circle cx="12" cy="12" r="12" fill="none" /> </svg>     
                         </div>
-                        <div class="flex space-between align-items-start">
+                        <div class="grid gap-0-5 flex-1">
                             <a class="flex align-center" href=${`#/project_explorer/project?id=${projectCode}&branch=mainLine`}>
                                 <h4 class="project__title">${projectName}</h4>
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
                             </a>
-                            <button class="icon-only pin-project" title=${`${isPinned ? 'Unpin' : 'Pin'} this project`} onclick="pinProject(this)" data-pinned=${isPinned}>${pinIcon}</button>
+                            <span class="project__complete-percent">${completePercent}% complete</span>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style=${`width: ${completePercent}%`}></div>
-                        </div>
-                        <span class="project__complete-percent">${completePercent}% complete</span>
+                        <button class="icon-only pin-project" title=${`${isPinned ? 'Unpin' : 'Pin'} this project`} onclick="pinProject(this)" data-pinned=${isPinned}>${pinIcon}</button>
                     </div>
                 `;
             },
@@ -2431,7 +2431,7 @@
                         <div id="project_list_container">
                             <div class="flex align-center space-between margin-bottom-0-5">
                                 <h4>Projects</h4>
-                                <a href="#/project_explorer" class="button open-first-project">All</a>
+                                <a href="#/project_explorer" class="button button--small open-first-project">All</a>
                             </div>
                             <div id="project_list" class="flex flex-direction-column gap-0-3">${unpinnedProjects}</div>
                         </div>
@@ -2623,7 +2623,7 @@
             let hasApplied = false
             try {
                 floDapps.user.id
-                hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
+                hasApplied = floGlobals.isSubAdmin || [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
                     return taskId === details.taskId
                 })
             } catch (e) { }
