@@ -2389,13 +2389,13 @@
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12.414 5H21a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h7.414l2 2zM4 7v12h16V7H4z" /> </svg>
                             <svg class="progress-icon" style=${`--progress: ${strokeOffset}`} viewBox="0 0 24 24" height="24" width="24"> <circle cx="12" cy="12" r="12" fill="none" /> </svg>     
                         </div>
-                        <div class="grid gap-0-5 flex-1">
-                            <a class="flex align-center" href=${`#/project_explorer/project?id=${projectCode}&branch=mainLine`}>
+                        <a class="grid gap-0-5 flex-1" href=${`#/project_explorer/project?id=${projectCode}&branch=mainLine`}>
+                            <div class="flex align-center">
                                 <h4 class="project__title">${projectName}</h4>
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z"/></svg>
-                            </a>
+                            </div>
                             <span class="project__complete-percent">${completePercent}% complete</span>
-                        </div>
+                        </a>
                         <button class="icon-only pin-project" title=${`${isPinned ? 'Unpin' : 'Pin'} this project`} onclick="pinProject(this)" data-pinned=${isPinned}>${pinIcon}</button>
                     </div>
                 `;
