@@ -1884,16 +1884,6 @@
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task)
                 const assignedInternsCards = assignedInterns.map(internFloId => render.assignedInternCard(internFloId));
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
-                let applyButton
-                if (!assignedInterns.includes(floGlobals.myFloID) && userType !== 'admin') {
-                    const hasApplied = [...RIBC.getTaskRequests(false), ...sessionTaskRequests].find(({ details }) => {
-                        return `${appState.params.id}_${appState.params.branch}_${task}` === details.taskId
-                    })
-                    applyButton = html`
-                <button class="button button--primary apply-button" .dataset=${{ taskId: `${appState.params.id}_${appState.params.branch}_${task}` }} ?disabled=${hasApplied}>
-                    ${hasApplied ? 'Applied' : 'Apply'}
-                </button>`;
-                }
                 const linkifyDescription = createElement('p', {
                     innerHTML: DOMPurify.sanitize(linkify(description)),
                     className: `timeline-task__description ws-pre-line wrap-around`
@@ -1907,10 +1897,7 @@
                             <div class="line"></div>
                         </div>
                         <div class="right">
-                            <div class="apply-container flex space-between align-items-start">
-                                <h4 class="timeline-task__title">${title}</h4>
-                                ${applyButton}
-                            </div>
+                            <h4 class="timeline-task__title">${title}</h4>
                             ${assignedInternsCards.length ? html`<div class="assigned-interns">${assignedInternsCards}</div>` : ''}
                             <collapsed-text>
                                 ${linkifyDescription}
