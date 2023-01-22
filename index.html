@@ -1108,13 +1108,9 @@
                 }
             } else {
                 if (targetPage.includes('/')) {
-                    if (targetPage.includes('?')) {
-                        const splitAddress = targetPage.split('?')
-                        searchParams = splitAddress.pop();
-                        [, pageId, subPageId1] = splitAddress.pop().split('/')
-                    } else {
-                        [, pageId, subPageId1] = targetPage.split('/')
-                    }
+                    let path;
+                    [path, searchParams] = targetPage.split('?');
+                    [, pageId, subPageId1] = path.split('/')
                 } else {
                     pageId = targetPage
                 }
@@ -1185,7 +1181,7 @@
                             </section>
                         ` : ''}
                         <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column justify-content-center dashboard-view__item ${userType === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
-                        <div id="projects_wrapper" class="grid gap-2 align-items-start dashboard-view__item hidden">${render.dashProjects()}</div>
+                        <div id="projects_wrapper" class="grid gap-2 align-items-start align-content-start dashboard-view__item hidden">${render.dashProjects()}</div>
                         <div id="intern_leaderboard_container" class="container-card dashboard-view__item hide-on-mobile">
                             <div class="container-header">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><rect fill="none" height="24" width="24"/><g><path d="M7.5,21H2V9h5.5V21z M14.75,3h-5.5v18h5.5V3z M22,11h-5.5v10H22V11z"/></g></svg>
