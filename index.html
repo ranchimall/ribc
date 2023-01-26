@@ -1166,8 +1166,6 @@
                         subPageId1 = userType === 'intern' ? 'my_tasks' : 'all_tasks'
                     }
                     //creates cards for highest performing interns
-                    //sort interns earned points
-                    const highPerformingInterns = Object.keys(RIBC.getInternList()).sort((a, b) => RIBC.getInternRating(b) - RIBC.getInternRating(a));
                     renderElem(getRef('dashboard_page'), html`
                         <sm-chips id="dashboard_view_selector" class="margin-right-auto" onchange=${handleDashboardViewChange}>
                             ${userType === 'intern' ? html`<sm-chip value="intern_view" ?selected=${subPageId1 === 'my_tasks'}>My tasks</sm-chip>` : ''}
@@ -1182,13 +1180,13 @@
                         ` : ''}
                         <div id="dashboard_tasks_wrapper" class=${`flex flex-direction-column justify-content-center dashboard-view__item ${userType === 'intern' ? 'hidden' : ''}`}>${render.displayTasks(params?.category, params?.search)}</div>
                         <div id="projects_wrapper" class="grid gap-2 align-items-start align-content-start dashboard-view__item hidden">${render.dashProjects()}</div>
-                        <div id="intern_leaderboard_container" class="container-card dashboard-view__item hide-on-mobile">
+                        <div id="intern_leaderboard_container" class="dashboard-view__item hide-on-mobile">
                             <div class="container-header">
                                 <svg class="icon margin-right-0-5" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><rect fill="none" height="24" width="24"/><g><path d="M7.5,21H2V9h5.5V21z M14.75,3h-5.5v18h5.5V3z M22,11h-5.5v10H22V11z"/></g></svg>
                                 <h4>Leaderboard</h4>
                                 <a id="all_interns_btn" href="#/all_interns_page" class="button button--small">All</a>
                             </div>
-                            <div id="top_interns" class="observe-empty-state">${highPerformingInterns.slice(0, 8).map(floId => render.internCard(floId))}</div>
+                            <div id="top_interns" class="observe-empty-state">${filterInterns('', { sortByRating: true, activeOnly: true, limit: 8 })}</div>
                             <div class="empty-state">
                                 <h4>There are no interns</h4>
                             </div>
@@ -1926,6 +1924,7 @@
                 const { selectable } = options
                 const internName = RIBC.getInternList()[internFloId]
                 const internPoints = RIBC.getInternRating(internFloId)
+                const { active } = RIBC.getInternRecord(internFloId)
                 const splitName = internName.split(' ')
                 let initials = splitName[0][0]
                 if (splitName.length > 1) {
@@ -1936,7 +1935,7 @@
                     <label class="intern-card align-center interactive" .dataset=${{ internFloId }} title="Intern Information">
                         <input type="checkbox" class="intern-card__checkbox" value=${internFloId}>
                         <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
-                        <div class="intern-card__name">${internName}</div>
+                        <div class="intern-card__name flex-1">${internName}</div>
                         <div class="intern-card__score-wrapper flex align-center">
                             <b class="intern-card__score">${internPoints}</b>
                             <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
@@ -1946,7 +1945,10 @@
                     return html`
                         <a class="intern-card align-center interactive" href=${`#/intern_profile?id=${internFloId}`} title="Intern Information">
                             <div class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
-                            <div class="intern-card__name">${internName}</div>
+                            <div class="grid gap-0-3 flex-1">
+                                <div class="intern-card__name">${internName}</div>
+                                ${!active ? html`<div class="intern-card__status">Inactive</div>` : ''}
+                            </div>
                             <div class="intern-card__score-wrapper flex align-center">
                                 <b class="intern-card__score">${internPoints}</b>
                                 <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z" /> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z" /> </svg>
@@ -2297,6 +2299,7 @@
                 renderElem(getRef('intern_profile'), html`
                 <div id="intern_profile__left">
                     <div class="flex flex-direction-column align-items-center gap-1-5">
+                        ${userType !== 'admin' && !active ? html` <div id="intern_profile__status">Inactive</div> ` : ''}
                         <div id="intern_profile__initials" class="intern-card__initials" style=${`--color: var(${getInternColor(internFloId)})`}>${initials}</div>
                         <div class="flex flex-direction-column align-items-center gap-0-5">
                             <div class="flex align-center gap-0-5">
@@ -2330,6 +2333,12 @@
                             <p>Points earned</p>
                         </div>
                     </div>
+                    ${userType === "admin" ? html`<sm-switch class="w-100" onchange=${toggleInternStatus} ?checked=${active}>
+                            <div class="grid margin-right-0-5" slot="left">
+                                <h4>Active</h4>
+                                <p>Toggle to change intern status</p>
+                            </div>
+                        </sm-switch> ` : ''} 
                 </div>
                 <div id="intern_profile__right" class="flex flex-direction-column gap-1-5"> 
                     <div class="flex align-center space-between gap-1">
@@ -3278,7 +3287,7 @@
         function toggleInternNameEditing(e) {
             const button = e.target.closest('button');
             if (getRef('intern_profile__name').isContentEditable) {
-                const floId = getRef('intern_profile__flo_id').value;
+                const floId = appState.params.id;
                 const newName = getRef('intern_profile__name').textContent.trim();
                 if (newName !== '' && floGlobals.tempEditableContent !== newName) {
                     RIBC.admin.renameIntern(floId, newName)
@@ -3293,6 +3302,12 @@
                 makeEditable(getRef('intern_profile__name'))
                 button.textContent = 'Done'
             }
+        }
+        function toggleInternStatus(e) {
+            const floId = appState.params.id;
+            RIBC.admin.setInternStatus(floId, e.target.value)
+            notify('Intern status updated locally, please commit changes to make them permanent.', 'success')
+            adminDataChanged();
         }
 
         function clearRequestFilters() {
@@ -3507,7 +3522,7 @@
             getRef('main_page').setAttribute('inert', '')
             switch (e.target.id) {
                 case 'intern_list_popup':
-                    renderElem(getRef('intern_list_container'), filterInterns('', { availableInternsOnly: true }))
+                    renderElem(getRef('intern_list_container'), filterInterns('', { availableInternsOnly: true, activeOnly: true }))
                     break;
                 case 'profile_popup':
                     renderElem(getRef('profile_popup__content'), render.settings())
@@ -3625,21 +3640,37 @@
         function filterInterns(searchKey, options = {}) {
             const {
                 sortByRating = false,
-                availableInternsOnly = false
+                availableInternsOnly = false,
+                activeOnly = false,
+                limit = undefined,
+                sortAlphabetically = false
             } = options
             let filtered = [];
+            let arrayOfInterns = [];
             const allInterns = RIBC.getInternList();
-            const highPerformingInterns = Object.keys(allInterns).sort((a, b) => {
-                return RIBC.getInternRating(b) - RIBC.getInternRating(a)
-            });
-            let arrayOfInterns = Object.keys(allInterns).sort((a, b) => {
-                return allInterns[a].toLowerCase().localeCompare(allInterns[b].toLowerCase())
-            })
+            if (sortByRating)
+                arrayOfInterns = Object.keys(allInterns).sort((a, b) => {
+                    return RIBC.getInternRating(b) - RIBC.getInternRating(a)
+                })
+            else if (sortAlphabetically)
+                arrayOfInterns = Object.keys(allInterns).sort((a, b) => {
+                    return allInterns[a].toLowerCase().localeCompare(allInterns[b].toLowerCase())
+                })
+            else
+                arrayOfInterns = Object.keys(allInterns)
             if (availableInternsOnly) {
                 arrayOfInterns = arrayOfInterns.filter(intern => !RIBC.getAssignedInterns(appState.params.id, appState.params.branch, currentTask.dataset.taskId)?.includes(intern))
             }
+            if (activeOnly) {
+                arrayOfInterns = arrayOfInterns.filter(intern => {
+                    return RIBC.getInternRecord(intern).active
+                })
+            }
+            if (limit) {
+                arrayOfInterns = arrayOfInterns.slice(0, limit)
+            }
             if (searchKey === '') {
-                filtered = (sortByRating ? highPerformingInterns : arrayOfInterns).map(floId => {
+                filtered = arrayOfInterns.map(floId => {
                     return render.internCard(floId, { selectable: availableInternsOnly })
                 })
             } else {
@@ -3652,7 +3683,7 @@
             return html`${filtered}`
         }
         const searchInternPopup = debounce((e) => {
-            renderElem(getRef('intern_list_container'), filterInterns(e.target.value.trim(), { availableInternsOnly: true }))
+            renderElem(getRef('intern_list_container'), filterInterns(e.target.value.trim(), { availableInternsOnly: true, activeOnly: true }))
         }, 150)
         const searchInternPage = debounce((e) => {
             renderElem(getRef('all_interns_list'), filterInterns(e.target.value.trim(), { sortByRating: true }))
