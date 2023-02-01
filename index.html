@@ -1205,13 +1205,8 @@
                         renderProjectSelectorOptions()
                         renderInternSelectorOptions()
                     }
-                    const { projectCode, internId, date } = params || getUpdateFilters()
-                    if (params) {
-                        setUpdateFilters({ projectCode, internId, date })
-                    } else if (projectCode) {
-                        const dateParam = date !== '' ? `&date=${date}` : ''
-                        history.replaceState(null, null, `#/updates_page?projectCode=${projectCode}&internId=${internId}${dateParam}`)
-                    }
+                    const { projectCode = 'all', internId = 'all', date } = params || {}
+                    setUpdateFilters({ projectCode, internId, date })
                     let matchedUpdates
                     if (projectCode !== 'all') {
                         matchedUpdates = getUpdatesByProject(projectCode)
@@ -2041,12 +2036,20 @@
                 }
                 return assignedTasksList.length > 0 ? assignedTasksList : false
             },
-            completedInternTasks(internId) {
+            completedInternTasks(internId, savedUpdates) {
                 const { completedTasks } = RIBC.getInternRecord(internId)
                 if (getObjLength(completedTasks) === 0) return false
                 return Object.keys(completedTasks).map(task => {
+                    const { link, description } = savedUpdates.get(task) || {}
                     const { points, completionDate } = completedTasks[task];
                     const { title } = RIBC.getAllTasks()[task];
+                    const div = document.createElement('div')
+                    div.innerHTML = DOMPurify.sanitize(linkify(link || description))
+                    const links = [...div.querySelectorAll('a')].map(link => {
+                        link.textContent = 'See task output'
+                        link.className = 'button button--small button--colored margin-right-auto'
+                        return link
+                    })
                     return html`
                         <div class="intern_profile__task intern_profile__task--completed">
                             <h4>${title}</h4>
@@ -2055,6 +2058,7 @@
                                 ${points}
                                 <svg class="icon icon--star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"> <path fill="none" d="M0 0h24v24H0z"></path> <path d="M12 18.26l-7.053 3.948 1.575-7.928L.587 8.792l8.027-.952L12 .5l3.386 7.34 8.027.952-5.935 5.488 1.575 7.928z"></path> </svg>
                             </p>
+                            ${links}
                         </div>`})
             },
             adminTask(task) {
@@ -2296,6 +2300,13 @@
                 if (splitName.length > 1) {
                     initials += splitName[splitName.length - 1][0]
                 }
+                const savedUpdates = new Map()
+                RIBC.getInternUpdates().map(update => {
+                    const { tag, floID, update: { projectCode, branch, task, link, description } } = update
+                    if (tag && floID === internFloId) {
+                        savedUpdates.set(`${projectCode}_${branch}_${task}`, { link, description })
+                    }
+                })
                 renderElem(getRef('intern_profile'), html`
                 <div id="intern_profile__left">
                     <div class="flex flex-direction-column align-items-center gap-1-5">
@@ -2354,7 +2365,7 @@
                     <div>
                         <h4>Completed</h4>
                         <div>
-                            ${render.completedInternTasks(internFloId) || html`<p>No tasks completed yet</p>`}
+                            ${render.completedInternTasks(internFloId, savedUpdates) || html`<p>No tasks completed yet</p>`}
                         </div>
                     </div>
                 </div>
