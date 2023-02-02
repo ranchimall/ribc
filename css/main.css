@@ -1076,9 +1076,6 @@ ul {
 .task h4 {
   margin-top: 0.4rem;
 }
-.task .assigned-interns .assigned-intern {
-  padding: 0.4rem;
-}
 
 .admin-reply__description {
   max-width: 100%;
@@ -1097,6 +1094,12 @@ ul {
 
 .padding {
   padding: 1rem;
+}
+
+#task_editing_popup [contenteditable] {
+  padding: 0.8rem;
+  background-color: rgba(var(--text-color), 0.06);
+  border-radius: 0.5rem;
 }
 
 #dashboard_page {
@@ -1318,10 +1321,8 @@ ul {
   display: flex;
   gap: 1rem;
   justify-content: space-evenly;
+  flex-wrap: wrap;
   margin: 1.5rem 0;
-}
-#stats_wrapper > * {
-  flex: 1;
 }
 
 .stat {
@@ -1330,6 +1331,7 @@ ul {
   align-items: center;
   text-align: center;
   gap: 0.5rem;
+  flex: 1;
 }
 .stat__display {
   display: grid;
@@ -1519,6 +1521,11 @@ ul {
   padding: 0.2rem 0.4rem;
   font-weight: 500;
 }
+.admin-task .intern-section {
+  margin: 0 -1rem;
+  background-color: rgba(var(--text-color), 0.03);
+  padding: 1rem;
+}
 
 .tag {
   padding: 0.4rem 0.8rem;
@@ -1572,12 +1579,7 @@ ul {
   word-wrap: break-word;
 }
 
-.assigned-interns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-.assigned-interns .assigned-intern {
+.assigned-intern {
   position: relative;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -1590,8 +1592,9 @@ ul {
   align-items: center;
   white-space: nowrap;
   text-transform: capitalize;
+  height: 100%;
 }
-.assigned-interns .assigned-intern .unassign-intern-button {
+.assigned-intern .unassign-intern-button {
   padding: 0.4rem;
   margin-right: -0.4rem;
 }
@@ -1616,34 +1619,6 @@ ul {
 }
 .menu__item button {
   padding: 0.6rem 0.8rem;
-}
-
-#task_context {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: -1rem 1rem 0 1rem;
-  list-style: none;
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: fit-content;
-  border-radius: 0.5rem;
-  transition: 0.3s opacity;
-  background-color: rgba(var(--foreground-color), 1);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.16);
-  transform-origin: top right;
-  border: solid thin rgba(var(--text-color), 0.16);
-}
-#task_context li {
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  margin: 0.2rem;
-  padding: 0.6rem 0.8rem;
-  border-radius: 0.3rem;
-}
-#task_context li .icon {
-  margin-right: 0.5rem;
 }
 
 #branch_container {
@@ -2284,6 +2259,9 @@ input[type=date]:focus {
   }
   #post_update_popup {
     --width: 28rem;
+  }
+  #task_editing_popup {
+    --width: 42rem;
   }
   #updates_page {
     height: 100%;
