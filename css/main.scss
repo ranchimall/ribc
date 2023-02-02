@@ -1533,17 +1533,49 @@ ul {
   position: relative;
   user-select: none;
   display: flex;
+  gap: 0.5rem;
   font-size: 0.9rem;
   padding: 0 0.4rem;
   border-radius: 0.3rem;
-  border: 1px solid rgba(var(--text-color), 0.24);
+  background-color: rgba(var(--foreground-color), 1);
   align-items: center;
   white-space: nowrap;
   text-transform: capitalize;
   height: 100%;
   .unassign-intern-button {
     padding: 0.4rem;
-    margin-right: -0.4rem;
+  }
+  .task-status {
+    color: rgba(var(--text-color), 0.8);
+    font-weight: 500;
+    font-size: 0.8rem;
+    &:empty {
+      display: none;
+    }
+    &--overdue {
+      color: var(--danger-color);
+    }
+    &--in-progress {
+      color: var(--green);
+    }
+    &--completed {
+      color: var(--green);
+    }
+  }
+  &--completed {
+    padding: 0.4rem;
+  }
+  &--in-progress {
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--progress, 0);
+      height: 100%;
+      background-color: rgba(64, 255, 64, 0.2);
+      border-radius: 0.3rem;
+    }
   }
 }
 .menu {
@@ -1564,6 +1596,8 @@ ul {
     justify-content: flex-start;
     button {
       padding: 0.6rem 0.8rem;
+      width: 100%;
+      justify-content: flex-start;
     }
   }
 }

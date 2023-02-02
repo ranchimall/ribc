@@ -1585,10 +1585,11 @@ ul {
      -moz-user-select: none;
           user-select: none;
   display: flex;
+  gap: 0.5rem;
   font-size: 0.9rem;
   padding: 0 0.4rem;
   border-radius: 0.3rem;
-  border: 1px solid rgba(var(--text-color), 0.24);
+  background-color: rgba(var(--foreground-color), 1);
   align-items: center;
   white-space: nowrap;
   text-transform: capitalize;
@@ -1596,7 +1597,36 @@ ul {
 }
 .assigned-intern .unassign-intern-button {
   padding: 0.4rem;
-  margin-right: -0.4rem;
+}
+.assigned-intern .task-status {
+  color: rgba(var(--text-color), 0.8);
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+.assigned-intern .task-status:empty {
+  display: none;
+}
+.assigned-intern .task-status--overdue {
+  color: var(--danger-color);
+}
+.assigned-intern .task-status--in-progress {
+  color: var(--green);
+}
+.assigned-intern .task-status--completed {
+  color: var(--green);
+}
+.assigned-intern--completed {
+  padding: 0.4rem;
+}
+.assigned-intern--in-progress::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--progress, 0);
+  height: 100%;
+  background-color: rgba(64, 255, 64, 0.2);
+  border-radius: 0.3rem;
 }
 
 .menu {
@@ -1619,6 +1649,8 @@ ul {
 }
 .menu__item button {
   padding: 0.6rem 0.8rem;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 #branch_container {

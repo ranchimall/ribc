@@ -1907,7 +1907,7 @@
                     }
                 })
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task)
-                const assignedInternsCards = assignedInterns.map(internFloId => render.assignedInternCard(internFloId));
+                const assignedInternsCards = assignedInterns.map(internFloId => render.assignedInternCard(internFloId, `${appState.params.id}_${appState.params.branch}_${task}`));
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 const linkifyDescription = createElement('p', {
                     innerHTML: DOMPurify.sanitize(linkify(description)),
@@ -2043,15 +2043,29 @@
                 `;
             },
             assignedInternCard(internFloId, taskId) {
+                const { hasDeadlinePassed, elapsedPercentage, taskDeadline } = getTaskDeadline(taskId, internFloId)
+                const taskCompleted = RIBC.getInternRecord(internFloId).completedTasks.hasOwnProperty(taskId)
+                let taskStatus = 'In progress'
+                let statusModifier = '--in-progress'
+                if (taskCompleted) {
+                    taskStatus = 'Completed'
+                    statusModifier = '--completed'
+                } else if (hasDeadlinePassed) {
+                    taskStatus = 'Overdue'
+                    statusModifier = '--overdue'
+                }
+                let isInProgress = !taskCompleted && !hasDeadlinePassed
                 let optionsButton
-                if (taskId && !RIBC.getInternRecord(internFloId).completedTasks.hasOwnProperty(taskId)) {
+                if (taskId && !taskCompleted) {
                     optionsButton = html` <button class="unassign-intern-button">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
                 </button> `;
                 }
+                const title = isInProgress ? `Deadline: ${getFormattedTime(taskDeadline, 'date-only')}` : ''
                 return html`
-                    <span class="assigned-intern" data-flo-id="${internFloId}">
+                    <span class=${`assigned-intern assigned-intern${statusModifier}`} title=${title} data-flo-id="${internFloId}" style=${`--progress: ${elapsedPercentage}`}>
                         ${RIBC.getInternList()[internFloId]}
+                        <span class=${`task-status task-status${statusModifier}`}>${taskStatus}</span>
                         ${optionsButton}
                     </span>
                 `
@@ -2283,11 +2297,7 @@
                     innerHTML: DOMPurify.sanitize(linkify(description)),
                     className: `timeline-task__description ws-pre-line wrap-around`
                 })
-                // add days to milliseconds
-                const durationMilliseconds = durationType === 'days' ? duration * 24 * 60 * 60 * 1000 : duration * 60 * 60 * 1000
-                const taskDeadline = assignedTasks[taskId].assignedOn + durationMilliseconds
-                const elapsedTime = Math.round((Date.now() - assignedTasks[taskId].assignedOn) / durationMilliseconds * 100)
-                const hasDeadlinePassed = Date.now() > taskDeadline
+                const { hasDeadlinePassed, taskDeadline, elapsedPercentage } = getTaskDeadline(taskId)
                 return html`
                     <li class="task-card" data-unique-id="${taskId}">
                         <span class="task__project-title">${projectName}</span>
@@ -2304,7 +2314,7 @@
                                     <time style="font-size: 0.9rem;font-weight: 500; white-space: nowrap">${getFormattedTime(assignedTasks[taskId].assignedOn, 'date-only')}</time>
                                 </div>    
                                 <div class="task__completion-timeline__progress" role="progressbar">
-                                    <div class="task__completion-timeline__progress__bar" style=${`--progress: ${elapsedTime}%`}></div>    
+                                    <div class="task__completion-timeline__progress__bar" style=${`--progress: ${elapsedPercentage}%`}></div>    
                                     <div class="task__completion-timeline__progress__disc"></div>    
                                 </div>
                                 <div class="flex flex-direction-column gap-0-3">
@@ -2658,6 +2668,21 @@
             getRef('commit_changes_button').setAttribute('data-badge', floGlobals.adminChanges)
             if (floGlobals.adminChanges === 1) {
                 addEventListener("beforeunload", beforeUnloadListener, { capture: true });
+            }
+        }
+        function getTaskDeadline(taskId, internId = floGlobals.myFloID) {
+            const [projectCode, branch, task] = taskId.split('_');
+            const { title, description, duration, durationType } = RIBC.getTaskDetails(projectCode, branch, task)
+            const { assignedTasks } = RIBC.getInternRecord(internId)
+            const assignedOn = assignedTasks[taskId].assignedOn || assignedTasks[taskId]
+            const durationMilliseconds = durationType === 'days' ? duration * 24 * 60 * 60 * 1000 : duration * 60 * 60 * 1000
+            const taskDeadline = assignedOn + durationMilliseconds
+            const elapsedPercentage = Math.round((Date.now() - assignedOn) / durationMilliseconds * 100)
+            const hasDeadlinePassed = Date.now() > taskDeadline
+            return {
+                taskDeadline,
+                elapsedPercentage,
+                hasDeadlinePassed
             }
         }
 
