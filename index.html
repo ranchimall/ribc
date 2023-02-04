@@ -2042,7 +2042,8 @@
                     </a>
                 `;
             },
-            assignedInternCard(internFloId, taskId) {
+            assignedInternCard(internFloId, taskId, options = {}) {
+                const { shouldShowOptions = false } = options
                 const { hasDeadlinePassed, elapsedPercentage, taskDeadline } = getTaskDeadline(taskId, internFloId)
                 const taskCompleted = RIBC.getInternRecord(internFloId).completedTasks.hasOwnProperty(taskId)
                 let taskStatus = 'In Progress';
@@ -2056,7 +2057,7 @@
                 }
                 let isInProgress = !taskCompleted && !hasDeadlinePassed
                 let optionsButton
-                if (taskId && !taskCompleted) {
+                if (shouldShowOptions && taskId && !taskCompleted) {
                     optionsButton = html` <button class="unassign-intern-button">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
                 </button> `;
@@ -2115,7 +2116,7 @@
                 const assignedInterns = RIBC.getAssignedInterns(appState.params.id, appState.params.branch, task)
                 const status = RIBC.getTaskStatus(appState.params.id, appState.params.branch, task)
                 const { title, description, category, maxSlots, duration, durationType, reward } = RIBC.getTaskDetails(appState.params.id, appState.params.branch, task)
-                let assignedInternsCards = assignedInterns.map(internFloId => render.assignedInternCard(internFloId, `${appState.params.id}_${appState.params.branch}_${task}`))
+                let assignedInternsCards = assignedInterns.map(internFloId => render.assignedInternCard(internFloId, `${appState.params.id}_${appState.params.branch}_${task}`, { showOptions: true }))
                 const branches = getAllBranches(appState.params.id)
                 const branchesButtons = filterMap(branches, (branch) => {
                     const { branchName, parentBranch, startPoint, endPoint } = branch
