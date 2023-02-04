@@ -139,7 +139,7 @@ button,
 
 .button {
   background-color: rgba(var(--text-color), 0.02);
-  border: solid thin rgba(var(--text-color), 0.06);
+  border: solid 1px rgba(var(--text-color), 0.1);
   &--primary {
     color: rgba(var(--background-color), 1);
     background-color: var(--accent-color);
@@ -157,6 +157,7 @@ button,
   &--danger {
     background-color: #ff737310;
     color: var(--danger-color);
+    border: solid 1px #ff737350;
     .icon {
       fill: var(--danger-color);
     }
@@ -280,6 +281,7 @@ sm-chip {
 }
 
 collapsed-text {
+  --line-clamp: 2;
   --button-background: rgba(var(--foreground-color), 1);
   &:not([open]) {
     cursor: pointer;
@@ -1457,7 +1459,7 @@ ul {
   gap: 0.5rem;
   border-radius: 0.5rem;
   background: rgba(var(--foreground-color), 1);
-  border: solid thin rgba(var(--text-color), 0.4);
+  border: solid thin rgba(var(--text-color), 0.3);
   .task-title {
     line-height: 1.6;
     font-size: 1.1rem;

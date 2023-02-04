@@ -150,7 +150,7 @@ button:not(:disabled),
 
 .button {
   background-color: rgba(var(--text-color), 0.02);
-  border: solid thin rgba(var(--text-color), 0.06);
+  border: solid 1px rgba(var(--text-color), 0.1);
 }
 .button--primary {
   color: rgba(var(--background-color), 1);
@@ -168,6 +168,7 @@ button:not(:disabled),
 .button--danger {
   background-color: rgba(255, 115, 115, 0.062745098);
   color: var(--danger-color);
+  border: solid 1px rgba(255, 115, 115, 0.3137254902);
 }
 .button--danger .icon {
   fill: var(--danger-color);
@@ -298,6 +299,7 @@ sm-chip[selected] {
 }
 
 collapsed-text {
+  --line-clamp: 2;
   --button-background: rgba(var(--foreground-color), 1);
 }
 collapsed-text:not([open]) {
@@ -1508,7 +1510,7 @@ ul {
   gap: 0.5rem;
   border-radius: 0.5rem;
   background: rgba(var(--foreground-color), 1);
-  border: solid thin rgba(var(--text-color), 0.4);
+  border: solid thin rgba(var(--text-color), 0.3);
 }
 .admin-task .task-title {
   line-height: 1.6;
