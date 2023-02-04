@@ -878,6 +878,9 @@ ul {
   font-size: 0.8rem;
   padding: 0.6rem 0.8rem;
 }
+#commit_wrapper {
+  grid-area: 2/1/3/-1;
+}
 
 #main_nav {
   grid-area: main-nav;
@@ -935,7 +938,7 @@ ul {
   border-radius: 0.5rem;
   background-color: rgba(var(--foreground-color), 1);
   width: 100%;
-  border: solid thin rgba(var(--text-color), 0.1);
+  border: solid 1px rgba(var(--text-color), 0.2);
   font-size: 0.9rem;
   &__category {
     display: inline-flex;
@@ -1205,6 +1208,7 @@ ul {
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: rgba(var(--foreground-color), 1);
+  border: solid rgba(var(--text-color), 0.1) 1px;
 }
 
 .update__topic {
@@ -1384,6 +1388,7 @@ ul {
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: rgba(var(--foreground-color), 1);
+  border: solid 1px rgba(var(--text-color), 0.1);
   p {
     font-weight: 500;
   }
@@ -1459,7 +1464,7 @@ ul {
   gap: 0.5rem;
   border-radius: 0.5rem;
   background: rgba(var(--foreground-color), 1);
-  border: solid thin rgba(var(--text-color), 0.3);
+  border: solid thin rgba(var(--text-color), 0.2);
   .task-title {
     line-height: 1.6;
     font-size: 1.1rem;
