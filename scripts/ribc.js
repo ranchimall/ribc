@@ -100,12 +100,12 @@
     Ribc.getProjectDetails = (project) => _.projectDetails[project];
     Ribc.getProjectMap = (project) => _.projectMap[project];
     Ribc.getProjectBranches = (project) => findAllBranches(project);
-    Ribc.getTaskDetails = (project, branch, task) => _.projectTaskDetails[project + "_" + branch + "_" + task];
-    Ribc.getTaskStatus = (project, branch, task) => _.projectTaskStatus[project + "_" + branch + "_" + task];
+    Ribc.getTaskDetails = (taskId) => _.projectTaskDetails[taskId];
+    Ribc.getTaskStatus = (taskId) => _.projectTaskStatus[taskId];
     Ribc.getInternList = () => _.internList;
     Ribc.getInternRating = (floID) => _.internRating[floID] || 0;
     Ribc.getInternRecord = (floID) => _.internRecord[floID] || {};
-    Ribc.getAssignedInterns = (projectCode, branch, taskNumber) => _.internsAssigned[projectCode + "_" + branch + "_" + taskNumber] || [];
+    Ribc.getAssignedInterns = (taskId) => _.internsAssigned[taskId] || [];
     Ribc.getAllTasks = () => _.projectTaskDetails
     Ribc.getDisplayedTasks = () => floGlobals.appObjects.RIBC.displayedTasks || [];
 

@@ -1057,9 +1057,9 @@ ul {
   position: absolute;
   left: 50%;
   height: 100%;
-  width: 2px;
+  width: 0.15rem;
   transform: translateX(-50%) scaleY(1);
-  background-color: rgba(var(--text-color), 0.4);
+  border-left: 0.15rem dotted rgba(var(--text-color), 0.4);
 }
 .task .right {
   margin-left: 1rem;
@@ -1096,6 +1096,17 @@ ul {
 
 .completed .left .line {
   background-color: #00c853 !important;
+}
+
+.active-task {
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: solid 1px rgba(var(--text-color), 0.2);
+  background-color: rgba(var(--foreground-color), 1);
+}
+.active-task .assigned-intern {
+  background-color: rgba(var(--text-color), 0.03);
+  border: solid 1px rgba(var(--text-color), 0.2);
 }
 
 .padding {
