@@ -783,11 +783,11 @@ ul {
   margin-top: 1rem;
   padding-bottom: 1.5rem;
 }
-#sign_in,
-#sign_up {
+#sign_in {
   justify-items: center;
   align-content: center;
-
+  padding: 1.5rem;
+  margin: 0;
   section {
     margin-top: -8rem;
     width: min(26rem, 100%);
@@ -799,25 +799,14 @@ ul {
 }
 
 #sign_up {
+  justify-items: center;
+  align-content: center;
+  keys-generator {
+    width: min(26rem, 100%);
+    margin-top: -4rem;
+  }
   .h2 {
     margin-bottom: 0.5rem;
-  }
-}
-.generated-keys-wrapper {
-  padding: 1rem;
-  background-color: rgba(var(--foreground-color), 1);
-  border-radius: 0.5rem;
-}
-#flo_id_warning {
-  padding-bottom: 1.5rem;
-  .icon {
-    height: 3rem;
-    width: 3rem;
-    padding: 0.8rem;
-    overflow: visible;
-    background-color: #ffc107;
-    border-radius: 3rem;
-    fill: rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -1075,6 +1064,7 @@ ul {
   .assigned-intern {
     background-color: rgba(var(--text-color), 0.03);
     border: solid 1px rgba(var(--text-color), 0.2);
+    padding: 0.4rem;
   }
 }
 
