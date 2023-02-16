@@ -2877,7 +2877,6 @@
             return Object.keys(object).find(key => object[key] === value);
         }
         function handleDashboardViewChange(e) {
-            changeDashboardView(e.target.value)
             location.hash = `#/${appState.currentPage}/${floGlobals.dashboardPages[e.target.value]}`
         }
         function changeDashboardView(viewId = 'dashboard_tasks_wrapper') {
