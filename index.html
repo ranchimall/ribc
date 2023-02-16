@@ -2010,7 +2010,7 @@
             },
             activeTaskCard(taskId) {
                 const { title } = RIBC.getTaskDetails(taskId)
-                const assignedInterns = RIBC.getAssignedInterns(taskId).map(internFloId => render.assignedInternCard(internFloId, taskId))
+                const assignedInterns = (RIBC.getAssignedInterns(taskId) || []).map(internFloId => render.assignedInternCard(internFloId, taskId))
                 return html`
                     <div class="active-task grid align-center gap-0-5">
                         <h4 class="active-task-card__title">${title}</h4>
