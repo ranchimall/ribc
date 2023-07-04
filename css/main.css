@@ -846,6 +846,22 @@ ul {
   margin-bottom: 0.5rem;
 }
 
+.app-brand {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+.app-brand .icon {
+  height: 1.7rem;
+  width: 1.7rem;
+}
+
+.app-name__company {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(var(--text-color), 0.8);
+}
+
 #task_details {
   position: fixed;
   width: 100%;
@@ -1765,6 +1781,7 @@ ul {
   text-align: center;
   place-content: center;
   justify-items: center;
+  background-color: rgba(var(--foreground-color), 1);
 }
 
 #pinned_project_section {
