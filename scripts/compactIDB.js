@@ -1,4 +1,4 @@
-(function (EXPORTS) { //compactIDB v2.1.0
+(function (EXPORTS) { //compactIDB v2.1.2
     /* Compact IndexedDB operations */
     'use strict';
     const compactIDB = EXPORTS;
@@ -226,10 +226,9 @@
     compactIDB.searchData = function (obsName, options = {}, dbName = defaultDB) {
         options.lowerKey = options.atKey || options.lowerKey || 0
         options.upperKey = options.atKey || options.upperKey || false
-        options.patternEval = options.patternEval || ((k, v) => {
-            return true
-        })
+        options.patternEval = options.patternEval || ((k, v) => true);
         options.limit = options.limit || false;
+        options.reverse = options.reverse || false;
         options.lastOnly = options.lastOnly || false
         return new Promise((resolve, reject) => {
             openDB(dbName).then(db => {
@@ -237,17 +236,16 @@
                 var filteredResult = {}
                 let curReq = obs.openCursor(
                     options.upperKey ? IDBKeyRange.bound(options.lowerKey, options.upperKey) : IDBKeyRange.lowerBound(options.lowerKey),
-                    options.lastOnly ? "prev" : "next");
+                    options.lastOnly || options.reverse ? "prev" : "next");
                 curReq.onsuccess = (evt) => {
                     var cursor = evt.target.result;
-                    if (cursor) {
-                        if (options.patternEval(cursor.primaryKey, cursor.value)) {
-                            filteredResult[cursor.primaryKey] = cursor.value;
-                            options.lastOnly ? resolve(filteredResult) : cursor.continue();
-                        } else
-                            cursor.continue();
+                    if (!cursor || (options.limit && options.limit <= Object.keys(filteredResult).length))
+                        return resolve(filteredResult); //reached end of key list or limit reached
+                    else if (options.patternEval(cursor.primaryKey, cursor.value)) {
+                        filteredResult[cursor.primaryKey] = cursor.value;
+                        options.lastOnly ? resolve(filteredResult) : cursor.continue();
                     } else
-                        resolve(filteredResult);
+                        cursor.continue();
                 }
                 curReq.onerror = (evt) => reject(`Search unsuccessful [${evt.target.error.name}] ${evt.target.error.message}`);
                 db.close();
