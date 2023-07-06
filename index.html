@@ -181,7 +181,7 @@
     </div>
     <main id="main_page" class="grid page hidden">
         <header id="main_header" class="space-between">
-            <div class="app-brand">
+            <div class="app-brand hide-on-mobile">
                 <svg id="main_logo" class="icon" viewBox="0 0 27.25 32">
                     <title>RanchiMall</title>
                     <path
@@ -3917,6 +3917,8 @@
         }
         // detect url within text and convert to link
         function linkify(inputText) {
+            if (!inputText)
+                return ''
             let replacedText, replacePattern1, replacePattern2, replacePattern3;
             //URLs starting with http://, https://, or ftp://
             replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
