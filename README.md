@@ -1,7 +1,7 @@
 # RIBC
 Ranchimall Internship Blockchain Contract is a global platform for skilled interns specializing in high-demand areas like blockchain, JavaScript, Python, video making, 3D modeling, etc. This platform departs from the conventional monthly-based system and instead adopts a task-based approach. To maintain exceptional output quality, all performance evaluations are recorded on the blockchain, guaranteeing transparency and reliability throughout the internship journey.  
 
-### Live URL for FLO Pay:
+### Live URL for RIBC:
 *https://ranchimall.github.io/ribc/*  
 
 ## Note:  
