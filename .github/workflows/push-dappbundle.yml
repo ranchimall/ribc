@@ -6,7 +6,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Executing remote command
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.0.4
         with:
           host: ${{ secrets.R_HOST }}
           username: ${{ secrets.P_USERNAME }}
