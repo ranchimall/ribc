@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build:
     name: Build
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Executing remote command
         uses: appleboy/ssh-action@v1.0.3
