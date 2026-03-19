@@ -3,10 +3,10 @@ on: [push]
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Executing remote command
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.R_HOST }}
           username: ${{ secrets.P_USERNAME }}
@@ -29,4 +29,4 @@ jobs:
             cd ${{ secrets.DEPLOYMENT_LOCATION}}/dappbundle && git clone https://github.com/ranchimall/${{ github.event.repository.name }}
 
             cd "${{ secrets.DEPLOYMENT_LOCATION}}/dappbundle/${{ github.event.repository.name }}" && rm -rf .gitattributes .git .github .gitignore
-            cd ${{ secrets.DEPLOYMENT_LOCATION}}/dappbundle/ && git add . && git commit -m "Workflow updating files of ${{ github.event.repository.name }}" && git push "https://ranchimalldev:${{ secrets.RM_ACCESS_TOKEN }}@github.com/ranchimall/dappbundle.git"
+            cd ${{ secrets.DEPLOYMENT_LOCATION}}/dappbundle/ && git add . && git commit -m "Workflow updating files of ${{ github.event.repository.name }}" && git push "https://saketongit:${{ secrets.RM_ACCESS_TOKEN }}@github.com/ranchimall/dappbundle.git"
